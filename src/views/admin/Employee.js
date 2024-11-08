@@ -35,17 +35,51 @@ import {
 // core components
 import React, { useState } from "react";
 import Header from "components/Headers/Header.js";
-import { useGetPageEmployee } from "hooks/UseEmployeeApi.js";
+import { useFilterEmployee } from "hooks/UseEmployeeApi.js";
 import CustomPagination from "components/Pagination/Pagination.js";
-import ItemPerPageDropdown from "components/Dropdowns/ItemPerPageDropdown.js";
+import DropdownButtonSmall from "components/Dropdowns/DropdownButtonSmall.js";
 import FilterPopup from "components/Popups/FilterPopup.js";
 
 const Tables = () => {
   const [pageIndex, setPageIndex] = useState(1);
   const [pageSize, setPageSize] = useState(5);
-  const arrayItemPerPage = [5, 10, 30, 50, 100];
+  const [dataFilter, setDataFilter] = useState({});
+  const [sortBy, setSortBy] = useState("");
 
-  const { data, loading, error } = useGetPageEmployee(pageIndex, pageSize);
+  const arrayItemPerPage = [
+    { text: "Item per page: ", value: 5 },
+    { text: "Item per page: ", value: 10 },
+    { text: "Item per page: ", value: 30 },
+    { text: "Item per page: ", value: 50 },
+    { text: "Item per page: ", value: 100 }
+  ];
+  const buttonPerPageState = useState(arrayItemPerPage[0]);
+
+  const arrayItemSortBy = [
+    { text: "Sort by fullname ascending", value: "fullname:asc" },
+    { text: "Sort by fullname decreasing", value: "fullname:dec" },
+    { text: "Sort by birthday ascending", value: "dateOfBirth:asc" },
+    { text: "Sort by birthday decreasing", value: "dateOfBirth:dec" },
+    { text: "Sort by start date ascending", value: "startDate:asc" },
+    { text: "Sort by start date decreasing", value: "startDate:dec" }
+  ];
+  const buttonSortByState = useState(arrayItemSortBy[0])
+
+  const itemSingleFilters = [
+    { labelName: "Name Or Id", nameInput: "nameOrId", type: "text" },
+    { labelName: "Address", nameInput: "address", type: "text" },
+    { labelName: "Position", nameInput: "position", type: "text" },
+    { labelName: "Department Id", nameInput: "departmentId", type: "number" },
+    { labelName: "Status", nameInput: "status", type: "text" }
+  ];
+
+  const itemRangeFilters = [
+    { labelName: "Salary", nameInputFrom: "fromSalary", nameInputTo: "toSalary", type: "number" },
+    { labelName: "Date Of Birth", nameInputFrom: "fromDoB", nameInputTo: "toDoB", type: "date" },
+    { labelName: "Start Date", nameInputFrom: "fromStartDate", nameInputTo: "toStartDate", type: "date" }
+  ];
+
+  const { data, loading, error } = useFilterEmployee(dataFilter, sortBy, pageIndex, pageSize);
   const totalPage = data.totalPage;
 
   if (loading) return <p>Loading...</p>;
@@ -56,9 +90,18 @@ const Tables = () => {
   };
 
   const handleSelectPerPageChange = (newItemPerPage) => {
-    setPageSize(newItemPerPage);
     setPageIndex(1);
+    setPageSize(newItemPerPage); 
   };
+
+  const onConfirmFilter = (dataFilter) => {
+    setPageIndex(1);
+    setDataFilter(dataFilter);
+  }
+
+  const handleSelectSortByChange = (newItem) => {
+    setSortBy(newItem);
+  }
 
   return (
     <>
@@ -76,7 +119,18 @@ const Tables = () => {
                       <h3 className="mb-0">Employees</h3>
                     </Col>
                     <Col className="text-right">
-                      <FilterPopup />
+                      <DropdownButtonSmall
+                        selectedItemState={buttonSortByState}
+                        viewValue={false}
+                        arrayItems={arrayItemSortBy}
+                        onSelectChange={handleSelectSortByChange}
+                      />
+                      <FilterPopup
+                        itemSingleFilters={itemSingleFilters}
+                        itemRangeFilters={itemRangeFilters}
+                        onConfirmFilter={onConfirmFilter}
+                        dataFilterUseState={dataFilter}
+                      />
                     </Col>
                   </Row>
                 </Container>
@@ -176,7 +230,7 @@ const Tables = () => {
                 <Container>
                   <Row>
                     <Col>
-                      <ItemPerPageDropdown itemPerPage={pageSize} arrayItems={arrayItemPerPage} onSelectChange={handleSelectPerPageChange} />
+                      <DropdownButtonSmall selectedItemState={buttonPerPageState} viewValue={true} arrayItems={arrayItemPerPage} onSelectChange={handleSelectPerPageChange} />
                     </Col>
                     <Col>
                       <CustomPagination pageIndex={pageIndex} totalPage={totalPage} maxPageView={5} onPageChange={handlePageChange} />

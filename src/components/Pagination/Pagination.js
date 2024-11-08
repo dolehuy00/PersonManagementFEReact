@@ -49,7 +49,7 @@ const CustomPagination = ({ pageIndex, totalPage, maxPageView, onPageChange }) =
                 className="pagination justify-content-end mb-0"
                 listClassName="justify-content-end mb-0"
             >
-                <PaginationItem className={pageIndex===1 ? "disabled" : ""}>
+                <PaginationItem className={pageIndex === 1 ? "disabled" : ""}>
                     <PaginationLink
                         href="#prev-to-head"
                         onClick={(e) => {
@@ -63,7 +63,7 @@ const CustomPagination = ({ pageIndex, totalPage, maxPageView, onPageChange }) =
                         <span className="sr-only">Previous To Head</span>
                     </PaginationLink>
                 </PaginationItem>
-                <PaginationItem className={pageIndex===1 ? "disabled" : ""}>
+                <PaginationItem className={pageIndex === 1 ? "disabled" : ""}>
                     <PaginationLink
                         href="#prev"
                         onClick={(e) => {
@@ -92,7 +92,7 @@ const CustomPagination = ({ pageIndex, totalPage, maxPageView, onPageChange }) =
                 {[...Array(end - start + 1)].map((_, i) => {
                     const pageNum = start + i;
                     return (
-                        <PaginationItem className={pageIndex === pageNum ? "active" : ""}>
+                        <PaginationItem className={pageIndex === pageNum ? "active" : ""} key={"select-page-" + i}>
                             <PaginationLink
                                 href={`#page-${pageNum}`}
                                 onClick={(e) => { e.preventDefault(); onPageChange(pageNum); }}
