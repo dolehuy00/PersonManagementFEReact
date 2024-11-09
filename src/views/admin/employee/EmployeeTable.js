@@ -161,7 +161,7 @@ const Tables = () => {
                             >
                               <img
                                 alt="..."
-                                src={require("../../assets/img/theme/bootstrap.jpg")}
+                                src={require("../../../assets/img/theme/bootstrap.jpg")}
                               />
                             </a>
                             <Media>
@@ -204,19 +204,19 @@ const Tables = () => {
                                 href="#pablo"
                                 onClick={(e) => e.preventDefault()}
                               >
-                                Action
+                                View
                               </DropdownItem>
                               <DropdownItem
                                 href="#pablo"
                                 onClick={(e) => e.preventDefault()}
                               >
-                                Another action
+                                Edit
                               </DropdownItem>
                               <DropdownItem
                                 href="#pablo"
                                 onClick={(e) => e.preventDefault()}
                               >
-                                Something else here
+                                Lock
                               </DropdownItem>
                             </DropdownMenu>
                           </UncontrolledDropdown>

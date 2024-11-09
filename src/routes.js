@@ -20,7 +20,7 @@ import Login from "views/auth/Login.js";
 
 // Admin
 import AdminDashboard from "views/admin/Dashboard.js";
-import Employee from "views/admin/Employee.js";
+import Employee from "views/admin/employee/EmployeeTable.js";
 
 //User
 import UserDashboard from "views/user/Dashboard.js";
