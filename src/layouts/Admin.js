@@ -51,8 +51,7 @@ const Admin = (props) => {
   const getBrandText = (path) => {
     for (let i = 0; i < managerRoutes.length; i++) {
       if (
-        props?.location?.pathname.indexOf(managerRoutes[i].layout + managerRoutes[i].path) !==
-        -1
+        path.indexOf(managerRoutes[i].layout + managerRoutes[i].path) !== -1
       ) {
         return managerRoutes[i].name;
       }
@@ -74,7 +73,8 @@ const Admin = (props) => {
       <div className="main-content" ref={mainContent}>
         <AdminNavbar
           {...props}
-          brandText={getBrandText(props?.location?.pathname)}
+          brandText={getBrandText(location?.pathname)}
+          linkText={location?.pathname}
         />
         <Routes>
           {getRoutes(managerRoutes)}

@@ -61,7 +61,7 @@ class Modals extends React.Component {
             onConfirmFilter(this.state["dataFilters"]);
             this.toggleModal("exampleModal");
         };
-        
+
         return (
             <>
                 {/* Button trigger modal */}
@@ -74,7 +74,10 @@ class Modals extends React.Component {
                         this.toggleModal("exampleModal");
                         handleOpen()
                     }}>
-                    <i className="fas fa-filter"></i><span>({Object.keys(dataFilterUseState).length})</span>
+                    <i className="fas fa-filter"></i>
+                    <span>
+                        ({Object.values(dataFilterUseState).filter(value => value !== "").length})
+                    </span>
                 </Button>
                 {/* Modal */}
                 <Modal
@@ -141,6 +144,7 @@ class Modals extends React.Component {
                                                                     name: item.nameInputFrom
                                                                 }}
                                                                 timeFormat={false}
+                                                                dateFormat="YYYY-MM-DD"
                                                                 value={this.state.dataFilters[item.nameInputFrom] || ""}
                                                                 onChange={(date) => this.handleDateChange(date, item.nameInputFrom)}
                                                             />
@@ -155,6 +159,7 @@ class Modals extends React.Component {
                                                                     name: item.nameInputTo
                                                                 }}
                                                                 timeFormat={false}
+                                                                dateFormat="YYYY-MM-DD"
                                                                 value={this.state.dataFilters[item.nameInputTo] || ""}
                                                                 onChange={(date) => this.handleDateChange(date, item.nameInputTo)}
                                                             />

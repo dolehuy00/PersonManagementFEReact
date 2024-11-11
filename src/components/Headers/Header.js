@@ -24,7 +24,7 @@ const Header = () => {
     <>
       <div className="header bg-gradient-info pb-8 pt-5 pt-md-8">
         <Container fluid>
-          <div className="header-body">
+          {/* <div className="header-body"> */}
             {/* Card stats */}
             {/* <Row>
               <Col lg="6" xl="3">
@@ -142,7 +142,7 @@ const Header = () => {
                 </Card>
               </Col>
             </Row> */}
-          </div>
+          {/* </div> */}
         </Container>
       </div>
     </>

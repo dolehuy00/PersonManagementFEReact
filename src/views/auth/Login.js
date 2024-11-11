@@ -31,6 +31,7 @@ import {
   Row,
   Col,
   Alert,
+  Spinner
 } from "reactstrap";
 
 import React, { useState } from "react";
@@ -105,7 +106,12 @@ const Login = () => {
               <div className="text-center">
                 {isLoading ? (
                   <Button className="my-4" color="primary" type="button" disabled="true">
-                    Wating...
+                    <Spinner size="sm">
+                      Wating...
+                    </Spinner>
+                    <span>
+                      {' '}Wating...
+                    </span>
                   </Button>
                 ) : (
                   <Button className="my-4" color="primary" type="submit">

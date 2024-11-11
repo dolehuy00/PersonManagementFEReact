@@ -1,4 +1,5 @@
 import axios from 'axios';
+//import MockAdapter from 'axios-mock-adapter';
 
 const API_BASE_URL = 'https://localhost:7297/api/Employee';
 
@@ -28,6 +29,36 @@ export const filterEmployee = async (dataFilter, sortBy, pageNumber, pageSize) =
             }
         });
         return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const addEmployee = async (data) => {
+    try {
+
+        const token = localStorage.getItem('accessToken');
+
+        data.dateOfBirth += "T00:00:00";
+        data.startDate += "T00:00:00";
+
+        // const mock = new MockAdapter(axios);
+        // // Giả lập lỗi 400 cho một endpoint nhất định
+        // mock.onPost(`${API_BASE_URL}/add`).reply(400, {
+        //     message: "Save failed, an error occurred, please try again later!",
+        // });
+
+        const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+        await delay(2000);
+
+        const response = await axios.post(`${API_BASE_URL}/add`, data, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            },
+        });
+        
+        return response.data;
+
     } catch (error) {
         throw error;
     }

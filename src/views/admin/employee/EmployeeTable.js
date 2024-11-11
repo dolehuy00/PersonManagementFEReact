@@ -30,6 +30,7 @@ import {
   Container,
   Row,
   Col,
+  Button
 } from "reactstrap";
 
 // core components
@@ -39,12 +40,14 @@ import { useFilterEmployee } from "hooks/UseEmployeeApi.js";
 import CustomPagination from "components/Pagination/Pagination.js";
 import DropdownButtonSmall from "components/Dropdowns/DropdownButtonSmall.js";
 import FilterPopup from "components/Popups/FilterPopup.js";
+import EmployeeAdd from "./EmployeeAdd.js";
 
 const Tables = () => {
   const [pageIndex, setPageIndex] = useState(1);
   const [pageSize, setPageSize] = useState(5);
   const [dataFilter, setDataFilter] = useState({});
   const [sortBy, setSortBy] = useState("");
+  const [bodyView, setBodyView] = useState("");
 
   const arrayItemPerPage = [
     { text: "Item per page: ", value: 5 },
@@ -91,7 +94,7 @@ const Tables = () => {
 
   const handleSelectPerPageChange = (newItemPerPage) => {
     setPageIndex(1);
-    setPageSize(newItemPerPage); 
+    setPageSize(newItemPerPage);
   };
 
   const onConfirmFilter = (dataFilter) => {
@@ -103,6 +106,15 @@ const Tables = () => {
     setSortBy(newItem);
   }
 
+  const handleClickCreate = () => {
+    setBodyView("create");
+  }
+
+  const handleCancelCreate = (event) => {
+    event.preventDefault();
+    setBodyView("table")
+  }
+
   return (
     <>
       <Header />
@@ -111,134 +123,147 @@ const Tables = () => {
         {/* Table */}
         <Row>
           <div className="col">
-            <Card className="shadow">
-              <CardHeader className="border-0">
-                <Container>
-                  <Row>
-                    <Col>
-                      <h3 className="mb-0">Employees</h3>
-                    </Col>
-                    <Col className="text-right">
-                      <DropdownButtonSmall
-                        selectedItemState={buttonSortByState}
-                        viewValue={false}
-                        arrayItems={arrayItemSortBy}
-                        onSelectChange={handleSelectSortByChange}
-                      />
-                      <FilterPopup
-                        itemSingleFilters={itemSingleFilters}
-                        itemRangeFilters={itemRangeFilters}
-                        onConfirmFilter={onConfirmFilter}
-                        dataFilterUseState={dataFilter}
-                      />
-                    </Col>
-                  </Row>
-                </Container>
-              </CardHeader>
-              <Table className="align-items-center table-flush" responsive>
-                <thead className="thead-light">
-                  <tr className="text-center">
-                    <th scope="col">Id</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Basic Salary</th>
-                    <th scope="col">Account Id</th>
-                    <th scope="col">Department</th>
-                    <th scope="col">Status</th>
-                    <th scope="col" />
-                  </tr>
-                </thead>
-                <tbody>
-                  {data
-                    ? data.results.map((item, index) => (
-                      <tr key={index} className="text-center">
-                        <th scope="row">{item.id}</th>
-                        <td>
-                          <Media className="align-items-center">
-                            <a
-                              className="avatar rounded-circle mr-3"
-                              href="#pablo"
-                              onClick={(e) => e.preventDefault()}
-                            >
-                              <img
-                                alt="..."
-                                src={require("../../../assets/img/theme/bootstrap.jpg")}
-                              />
-                            </a>
-                            <Media>
-                              <span className="mb-0 text-sm">
-                                {item.fullname}
-                              </span>
-                            </Media>
-                          </Media>
-                        </td>
-                        <td>{item.basicSalary}</td>
-                        <td>{item.accountId === null
-                          ? "No account"
-                          : item.accountId}
-                        </td>
-                        <td>{item.departmentName}</td>
-                        <td>
-                          <Badge color="" className="badge-dot mr-4">
-                            {item.status === "Active" ? (
-                              <i className="bg-success" />
-                            ) : (
-                              <i className="bg-danger" />
-                            )}
-                            {item.status}
-                          </Badge>
-                        </td>
-                        <td className="text-right">
-                          <UncontrolledDropdown>
-                            <DropdownToggle
-                              className="btn-icon-only text-light"
-                              href="#pablo"
-                              role="button"
-                              size="sm"
-                              color=""
-                              onClick={(e) => e.preventDefault()}
-                            >
-                              <i className="fas fa-ellipsis-v" />
-                            </DropdownToggle>
-                            <DropdownMenu className="dropdown-menu-arrow" right>
-                              <DropdownItem
-                                href="#pablo"
-                                onClick={(e) => e.preventDefault()}
-                              >
-                                View
-                              </DropdownItem>
-                              <DropdownItem
-                                href="#pablo"
-                                onClick={(e) => e.preventDefault()}
-                              >
-                                Edit
-                              </DropdownItem>
-                              <DropdownItem
-                                href="#pablo"
-                                onClick={(e) => e.preventDefault()}
-                              >
-                                Lock
-                              </DropdownItem>
-                            </DropdownMenu>
-                          </UncontrolledDropdown>
-                        </td>
+            {bodyView === "create"
+              ? (<EmployeeAdd onCancel={handleCancelCreate} />)
+              : (
+                <Card className="shadow">
+                  <CardHeader className="border-0">
+                    <Container>
+                      <Row>
+                        <Col className="text-left">
+                          <Button
+                            className="btn-icon btn-3"
+                            size="sm" color="primary"
+                            type="button"
+                            onClick={handleClickCreate}
+                          >
+                            <i className="fa-solid fa-plus mr-1"></i>
+                            <span className="btn-inner--text m-0">Create</span>
+                          </Button>
+                        </Col>
+                        <Col className="text-right">
+                          <DropdownButtonSmall
+                            selectedItemState={buttonSortByState}
+                            viewValue={false}
+                            arrayItems={arrayItemSortBy}
+                            onSelectChange={handleSelectSortByChange}
+                          />
+                          <FilterPopup
+                            itemSingleFilters={itemSingleFilters}
+                            itemRangeFilters={itemRangeFilters}
+                            onConfirmFilter={onConfirmFilter}
+                            dataFilterUseState={dataFilter}
+                          />
+                        </Col>
+                      </Row>
+                    </Container>
+                  </CardHeader>
+                  <Table className="align-items-center table-flush" responsive>
+                    <thead className="thead-light">
+                      <tr className="text-center">
+                        <th scope="col">Id</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Basic Salary</th>
+                        <th scope="col">Account Id</th>
+                        <th scope="col">Department</th>
+                        <th scope="col">Status</th>
+                        <th scope="col" />
                       </tr>
-                    ))
-                    : ""}
-                </tbody>
-              </Table>
-              <CardFooter className="py-4">
-                <Container>
-                  <Row>
-                    <Col>
-                      <DropdownButtonSmall selectedItemState={buttonPerPageState} viewValue={true} arrayItems={arrayItemPerPage} onSelectChange={handleSelectPerPageChange} />
-                    </Col>
-                    <Col>
-                      <CustomPagination pageIndex={pageIndex} totalPage={totalPage} maxPageView={5} onPageChange={handlePageChange} />
-                    </Col>
-                  </Row>
-                </Container>
-              </CardFooter>
-            </Card>
+                    </thead>
+                    <tbody>
+                      {data
+                        ? data.results.map((item, index) => (
+                          <tr key={index} className="text-center">
+                            <th scope="row">{item.id}</th>
+                            <td>
+                              <Media className="align-items-center">
+                                <a
+                                  className="avatar rounded-circle mr-3"
+                                  href="#pablo"
+                                  onClick={(e) => e.preventDefault()}
+                                >
+                                  <img
+                                    alt="..."
+                                    src={require("../../../assets/img/theme/bootstrap.jpg")}
+                                  />
+                                </a>
+                                <Media>
+                                  <span className="mb-0 text-sm">
+                                    {item.fullname}
+                                  </span>
+                                </Media>
+                              </Media>
+                            </td>
+                            <td>{item.basicSalary}</td>
+                            <td>{item.accountId === null
+                              ? "No account"
+                              : item.accountId}
+                            </td>
+                            <td>{item.departmentName}</td>
+                            <td>
+                              <Badge color="" className="badge-dot mr-4">
+                                {item.status === "Active" ? (
+                                  <i className="bg-success" />
+                                ) : (
+                                  <i className="bg-danger" />
+                                )}
+                                {item.status}
+                              </Badge>
+                            </td>
+                            <td className="text-right">
+                              <UncontrolledDropdown>
+                                <DropdownToggle
+                                  className="btn-icon-only text-light"
+                                  href="#pablo"
+                                  role="button"
+                                  size="sm"
+                                  color=""
+                                  onClick={(e) => e.preventDefault()}
+                                >
+                                  <i className="fas fa-ellipsis-v" />
+                                </DropdownToggle>
+                                <DropdownMenu className="dropdown-menu-arrow" right>
+                                  <DropdownItem
+                                    href="#pablo"
+                                    onClick={(e) => e.preventDefault()}
+                                  >
+                                    View
+                                  </DropdownItem>
+                                  <DropdownItem
+                                    href="#pablo"
+                                    onClick={(e) => e.preventDefault()}
+                                  >
+                                    Edit
+                                  </DropdownItem>
+                                  <DropdownItem
+                                    href="#pablo"
+                                    onClick={(e) => e.preventDefault()}
+                                  >
+                                    Lock
+                                  </DropdownItem>
+                                </DropdownMenu>
+                              </UncontrolledDropdown>
+                            </td>
+                          </tr>
+                        ))
+                        : ""}
+                    </tbody>
+                  </Table>
+                  <CardFooter className="py-4">
+                    <Container>
+                      <Row>
+                        <Col>
+                          <DropdownButtonSmall selectedItemState={buttonPerPageState} viewValue={true} arrayItems={arrayItemPerPage} onSelectChange={handleSelectPerPageChange} />
+                        </Col>
+                        <Col>
+                          <CustomPagination pageIndex={pageIndex} totalPage={totalPage} maxPageView={5} onPageChange={handlePageChange} />
+                        </Col>
+                      </Row>
+                    </Container>
+                  </CardFooter>
+                </Card>
+              )
+            }
           </div>
         </Row>
       </Container>
