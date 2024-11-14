@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import { filterEmployee, addEmployee } from 'services/management/EmployeeApi.js';
+import { filterEmployee, addEmployee, getOneEmployee, editEmployee } from 'services/management/EmployeeApi.js';
 import { useNavigate } from "react-router-dom";
 
 export const useFilterEmployee = (dataFilter, sortBy, page, pageSize) => {
@@ -43,6 +43,66 @@ export const useAddEmployee = (dataBody) => {
             try {
                 if (Object.keys(dataBody).length > 0) {
                     const result = await addEmployee(dataBody);
+                    setData(result);
+                }
+                setLoading(false);
+            } catch (error) {
+                if (error.response.status === 401) {
+                    navigate('/auth');
+                } else {
+                    setLoading(false);
+                    setError(error);
+                }
+            }
+        };
+        getData();
+    }, [dataBody, navigate]);
+
+    return { data, loading, error };
+};
+
+
+export const useGetOneEmployee = (employeeId) => {
+    const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const getData = async () => {
+            setLoading(true);
+            try {
+                const result = await getOneEmployee(employeeId);
+                setData(result);
+                setLoading(false);
+            } catch (error) {
+                if (error.response.status === 401) {
+                    navigate('/auth');
+                } else {
+                    setLoading(false);
+                    setError(error);
+                }
+            }
+        };
+        getData();
+    }, [employeeId, navigate]);
+
+    return { data, loading, error };
+};
+
+
+export const useEditEmployee = (dataBody) => {
+    const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const getData = async () => {
+            setLoading(true);
+            try {
+                if (Object.keys(dataBody).length > 0) {
+                    const result = await editEmployee(dataBody);
                     setData(result);
                 }
                 setLoading(false);

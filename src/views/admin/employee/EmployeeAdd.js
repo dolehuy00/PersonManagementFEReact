@@ -12,7 +12,7 @@ import {
 } from "reactstrap";
 import { useState, useRef, useEffect } from "react";
 import Datetime from "react-datetime";
-import { Slide, Bounce, ToastContainer, toast } from 'react-toastify';
+import { Slide, ToastContainer, toast } from 'react-toastify';
 import { useAddEmployee } from "hooks/UseEmployeeApi.js";
 
 const EmployeeAdd = ({ onCancel }) => {
@@ -53,7 +53,7 @@ const EmployeeAdd = ({ onCancel }) => {
                 draggable: true,
                 progress: undefined,
                 theme: "colored",
-                transition: Bounce,
+                transition: Slide,
             });
         }
     }, [error, data]);
@@ -128,6 +128,7 @@ const EmployeeAdd = ({ onCancel }) => {
                                                 inputProps={{
                                                     className: "form-control-alternative form-control",
                                                     name: "dateOfBirth",
+                                                    placeholder: "YYYY-MM-DD",
                                                     required: "required"
                                                 }}
                                                 value={dateOfBirth}
@@ -212,6 +213,7 @@ const EmployeeAdd = ({ onCancel }) => {
                                                 inputProps={{
                                                     className: "form-control-alternative form-control",
                                                     name: "startDate",
+                                                    placeholder: "YYYY-MM-DD",
                                                     required: "required"
                                                 }}
                                                 value={startDate}

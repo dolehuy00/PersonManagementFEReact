@@ -141,7 +141,8 @@ class Modals extends React.Component {
                                                             <ReactDatetime
                                                                 inputProps={{
                                                                     className: "form-control-alternative text-body form-control",
-                                                                    name: item.nameInputFrom
+                                                                    name: item.nameInputFrom,
+                                                                    placeholder: "YYYY-MM-DD",
                                                                 }}
                                                                 timeFormat={false}
                                                                 dateFormat="YYYY-MM-DD"
@@ -156,7 +157,8 @@ class Modals extends React.Component {
                                                             <ReactDatetime
                                                                 inputProps={{
                                                                     className: "form-control-alternative text-body form-control",
-                                                                    name: item.nameInputTo
+                                                                    name: item.nameInputTo,
+                                                                    placeholder: "YYYY-MM-DD",
                                                                 }}
                                                                 timeFormat={false}
                                                                 dateFormat="YYYY-MM-DD"

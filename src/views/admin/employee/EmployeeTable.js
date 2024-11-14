@@ -32,23 +32,20 @@ import {
   Col,
   Button
 } from "reactstrap";
-
 // core components
 import React, { useState } from "react";
-import Header from "components/Headers/Header.js";
+// hooks
 import { useFilterEmployee } from "hooks/UseEmployeeApi.js";
+//components
 import CustomPagination from "components/Pagination/Pagination.js";
 import DropdownButtonSmall from "components/Dropdowns/DropdownButtonSmall.js";
 import FilterPopup from "components/Popups/FilterPopup.js";
+import Header from "components/Headers/Header.js";
 import EmployeeAdd from "./EmployeeAdd.js";
+import LoadingOrError from "components/Notifications/LoadingOrError.js";
 
 const Tables = () => {
-  const [pageIndex, setPageIndex] = useState(1);
-  const [pageSize, setPageSize] = useState(5);
-  const [dataFilter, setDataFilter] = useState({});
-  const [sortBy, setSortBy] = useState("");
-  const [bodyView, setBodyView] = useState("");
-
+  // data component
   const arrayItemPerPage = [
     { text: "Item per page: ", value: 5 },
     { text: "Item per page: ", value: 10 },
@@ -56,8 +53,6 @@ const Tables = () => {
     { text: "Item per page: ", value: 50 },
     { text: "Item per page: ", value: 100 }
   ];
-  const buttonPerPageState = useState(arrayItemPerPage[0]);
-
   const arrayItemSortBy = [
     { text: "Sort by fullname ascending", value: "fullname:asc" },
     { text: "Sort by fullname decreasing", value: "fullname:dec" },
@@ -66,8 +61,6 @@ const Tables = () => {
     { text: "Sort by start date ascending", value: "startDate:asc" },
     { text: "Sort by start date decreasing", value: "startDate:dec" }
   ];
-  const buttonSortByState = useState(arrayItemSortBy[0])
-
   const itemSingleFilters = [
     { labelName: "Name Or Id", nameInput: "nameOrId", type: "text" },
     { labelName: "Address", nameInput: "address", type: "text" },
@@ -82,12 +75,16 @@ const Tables = () => {
     { labelName: "Start Date", nameInputFrom: "fromStartDate", nameInputTo: "toStartDate", type: "date" }
   ];
 
-  const { data, loading, error } = useFilterEmployee(dataFilter, sortBy, pageIndex, pageSize);
-  const totalPage = data.totalPage;
+  //state
+  const [pageIndex, setPageIndex] = useState(1);
+  const [pageSize, setPageSize] = useState(5);
+  const [dataFilter, setDataFilter] = useState({});
+  const [sortBy, setSortBy] = useState("");
+  const [bodyView, setBodyView] = useState("");
+  const buttonPerPageState = useState(arrayItemPerPage[0]);
+  const buttonSortByState = useState(arrayItemSortBy[0])
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error loading data</p>;
-
+  // handle function
   const handlePageChange = (newPageIndex) => {
     setPageIndex(newPageIndex);
   };
@@ -114,6 +111,25 @@ const Tables = () => {
     event.preventDefault();
     setBodyView("table")
   }
+
+  // request data
+  const { data, loading, error } = useFilterEmployee(dataFilter, sortBy, pageIndex, pageSize);
+  const totalPage = data.totalPage;
+
+  // render
+  if (loading) return (
+    <>
+      <Header />
+      <LoadingOrError status="loading" />
+    </>
+  );
+
+  if (error) return (
+    <>
+      <Header />
+      <LoadingOrError status="error" />
+    </>
+  );
 
   return (
     <>
@@ -224,14 +240,12 @@ const Tables = () => {
                                 </DropdownToggle>
                                 <DropdownMenu className="dropdown-menu-arrow" right>
                                   <DropdownItem
-                                    href="#pablo"
-                                    onClick={(e) => e.preventDefault()}
+                                    href={`employee/view?id=${item.id}`}
                                   >
                                     View
                                   </DropdownItem>
                                   <DropdownItem
-                                    href="#pablo"
-                                    onClick={(e) => e.preventDefault()}
+                                    href={`employee/view?id=${item.id}&mode=edit`}
                                   >
                                     Edit
                                   </DropdownItem>

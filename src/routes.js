@@ -21,6 +21,7 @@ import Login from "views/auth/Login.js";
 // Admin
 import AdminDashboard from "views/admin/Dashboard.js";
 import Employee from "views/admin/employee/EmployeeTable.js";
+import EmployeeView from "views/admin/employee/EmployeeView.js";
 
 //User
 import UserDashboard from "views/user/Dashboard.js";
@@ -33,6 +34,7 @@ export var managerRoutes = [
     icon: "ni ni-tv-2 text-primary",
     component: <AdminDashboard />,
     layout: "/admin",
+    viewOnSidebar: true,
   },
   {
     path: "/employee",
@@ -40,6 +42,15 @@ export var managerRoutes = [
     icon: "ni ni-bullet-list-67 text-red",
     component: <Employee />,
     layout: "/admin",
+    viewOnSidebar: true,
+  },
+  {
+    path: "/employee/view",
+    name: "Employee View",
+    icon: "ni ni-bullet-list-67 text-red",
+    component: <EmployeeView />,
+    layout: "/admin",
+    viewOnSidebar: false,
   }
 ];
 
@@ -52,6 +63,7 @@ export var userRoutes = [
     icon: "ni ni-tv-2 text-primary",
     component: <UserDashboard />,
     layout: "/user",
+    viewOnSidebar: true,
   },
   {
     path: "/user-profile",
@@ -59,6 +71,7 @@ export var userRoutes = [
     icon: "ni ni-single-02 text-yellow",
     component: <Profile />,
     layout: "/user",
+    viewOnSidebar: true,
   }
 ];
 
@@ -69,5 +82,6 @@ export var authRoutes = [
     icon: "ni ni-key-25 text-info",
     component: <Login />,
     layout: "/auth",
+    viewOnSidebar: false,
   },
 ];

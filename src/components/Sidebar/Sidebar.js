@@ -71,18 +71,20 @@ const Sidebar = (props) => {
   // creates the links that appear in the left menu / Sidebar
   const createLinks = (routes) => {
     return routes.map((prop, key) => {
-      return (
-        <NavItem key={key}>
-          <NavLink
-            to={prop.layout + prop.path}
-            tag={NavLinkRRD}
-            onClick={closeCollapse}
-          >
-            <i className={prop.icon} />
-            {prop.name}
-          </NavLink>
-        </NavItem>
-      );
+      if (prop.viewOnSidebar) {
+        return (
+          <NavItem key={key}>
+            <NavLink
+              to={prop.layout + prop.path}
+              tag={NavLinkRRD}
+              onClick={closeCollapse}
+            >
+              <i className={prop.icon} />
+              {prop.name}
+            </NavLink>
+          </NavItem>
+        );
+      };
     });
   };
 
@@ -136,7 +138,7 @@ const Sidebar = (props) => {
               className="dropdown-menu-arrow"
               right
             >
-              <DropdownItem>Action</DropdownItem>
+              <DropdownItem>Action1</DropdownItem>
               <DropdownItem>Another action</DropdownItem>
               <DropdownItem divider />
               <DropdownItem>Something else here</DropdownItem>
@@ -176,7 +178,7 @@ const Sidebar = (props) => {
         {/* Collapse */}
         <Collapse navbar isOpen={collapseOpen}>
           {/* Collapse header */}
-          <div className="navbar-collapse-header d-md-none">
+          {/* <div className="navbar-collapse-header d-md-none">
             <Row>
               {logo ? (
                 <Col className="collapse-brand" xs="6">
@@ -202,9 +204,9 @@ const Sidebar = (props) => {
                 </button>
               </Col>
             </Row>
-          </div>
+          </div> */}
           {/* Form */}
-          <Form className="mt-4 mb-3 d-md-none">
+          {/* <Form className="mt-4 mb-3 d-md-none">
             <InputGroup className="input-group-rounded input-group-merge">
               <Input
                 aria-label="Search"
@@ -218,10 +220,10 @@ const Sidebar = (props) => {
                 </InputGroupText>
               </InputGroupAddon>
             </InputGroup>
-          </Form>
+          </Form> */}
           {/* Navigation */}
           <Nav navbar>{createLinks(routes)}</Nav>
-          {/* Divider */}      
+          {/* Divider */}
         </Collapse>
       </Container>
     </Navbar>
