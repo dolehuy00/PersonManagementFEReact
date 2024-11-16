@@ -1,6 +1,13 @@
 
 import { useState, useEffect } from 'react';
-import { filterEmployee, addEmployee, getOneEmployee, editEmployee } from 'services/management/EmployeeApi.js';
+import {
+    filterEmployee,
+    addEmployee,
+    getOneEmployee,
+    editEmployee,
+    lockEmployee,
+    unlockEmployee
+} from 'services/management/EmployeeApi.js';
 import { useNavigate } from "react-router-dom";
 
 export const useFilterEmployee = (dataFilter, sortBy, page, pageSize) => {
@@ -38,7 +45,7 @@ export const useAddEmployee = (dataBody) => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const getData = async () => {
+        const request = async () => {
             setLoading(true);
             try {
                 if (Object.keys(dataBody).length > 0) {
@@ -55,12 +62,11 @@ export const useAddEmployee = (dataBody) => {
                 }
             }
         };
-        getData();
+        request();
     }, [dataBody, navigate]);
 
     return { data, loading, error };
 };
-
 
 export const useGetOneEmployee = (employeeId) => {
     const [data, setData] = useState([]);
@@ -69,7 +75,7 @@ export const useGetOneEmployee = (employeeId) => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const getData = async () => {
+        const request = async () => {
             setLoading(true);
             try {
                 const result = await getOneEmployee(employeeId);
@@ -84,12 +90,11 @@ export const useGetOneEmployee = (employeeId) => {
                 }
             }
         };
-        getData();
+        request();
     }, [employeeId, navigate]);
 
     return { data, loading, error };
 };
-
 
 export const useEditEmployee = (dataBody) => {
     const [data, setData] = useState([]);
@@ -98,7 +103,7 @@ export const useEditEmployee = (dataBody) => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const getData = async () => {
+        const request = async () => {
             setLoading(true);
             try {
                 if (Object.keys(dataBody).length > 0) {
@@ -115,8 +120,38 @@ export const useEditEmployee = (dataBody) => {
                 }
             }
         };
-        getData();
+        request();
     }, [dataBody, navigate]);
 
     return { data, loading, error };
+};
+
+export const useChangeStatusEmployee = () => {
+    const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const navigate = useNavigate();
+
+    const request = async (employeeId, curentStatus) => {
+        setLoading(true);
+        try {
+            if (curentStatus === "Active") {
+                const result = await lockEmployee(employeeId);
+                setData(result);
+            } else {
+                const result = await unlockEmployee(employeeId);
+                setData(result);
+            }
+            setLoading(false);
+        } catch (error) {
+            if (error.response.status === 401) {
+                navigate('/auth');
+            } else {
+                setLoading(false);
+                setError(error);
+            }
+        }
+    };
+
+    return { data, loading, error, request };
 };

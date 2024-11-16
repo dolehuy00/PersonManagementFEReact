@@ -1,19 +1,21 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import Datetime from "react-datetime";
 import { Tooltip } from 'reactstrap';
 import moment from "moment";
 
-const DatePickerWithTooltip = ({ value, dateFormat = "YYYY-MM-DD", className, name, required, placeholder, disabled, id }) => {
+const DatePickerWithTooltip = ({ value, dateFormat = "YYYY-MM-DD", className, name, required, placeholder, disabled, id, onChange }) => {
     const [tooltipOpen, setTooltipOpen] = useState(false);
     const [isDateInvalid, setIsDateInvalid] = useState(false);
     const toggleTooltip = () => setTooltipOpen(!tooltipOpen);
     
-    const handleDateChange = (date, name) => {
-        if (moment(date, "YYYY-MM-DD", true).isValid()) {
-            setIsDateInvalid(false);
+    const handleDateChange = (date) => {
+        if (moment(date, dateFormat , true).isValid()) {
+            setIsDateInvalid(false); 
+            onChange(date, true);
         } else {
             setIsDateInvalid(true);
             setTooltipOpen(true)
+            onChange(date, false);
         }
     };
 
@@ -31,17 +33,18 @@ const DatePickerWithTooltip = ({ value, dateFormat = "YYYY-MM-DD", className, na
                 value={value || ""}
                 timeFormat={false}
                 dateFormat={dateFormat}
-                onChange={(date) => handleDateChange(date, name)}
+                onChange={handleDateChange}
             />
             <Tooltip
-                placement="right"
-                isOpen={tooltipOpen && isDateInvalid}
+                placement="bottom"
+                isOpen={isDateInvalid}
                 target={id}
                 toggle={toggleTooltip}
-                delay={{ show: 0, hide: 2000 }}
                 autohide={true}
             >
-                Ngày không hợp lệ. Vui lòng nhập ngày hợp lệ.
+                Invalid date.
+                <br/>
+                Format <b>{dateFormat}</b>
             </Tooltip>
         </>
     )

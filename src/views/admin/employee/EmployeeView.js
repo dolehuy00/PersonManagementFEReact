@@ -15,15 +15,20 @@ import {
 } from "reactstrap";
 // core components
 import { useState, useEffect } from "react";
-import Datetime from "react-datetime";
 import { useLocation } from 'react-router-dom';
 import { Slide, ToastContainer, toast } from 'react-toastify';
-import moment from "moment";
+
 // component
 import Header from "components/Headers/Header.js";
 import LoadingOrError from "components/Notifications/LoadingOrError.js";
+import DatePickerWithTooltip from "components/DateTimePickers/DatePickerWithTooltip.js";
+
 // custom hooks
-import { useGetOneEmployee, useEditEmployee } from "hooks/UseEmployeeApi.js";
+import {
+    useGetOneEmployee,
+    useEditEmployee,
+    useChangeStatusEmployee
+} from "hooks/UseEmployeeApi.js";
 
 const ViewEmployee = () => {
     // search params
@@ -38,16 +43,19 @@ const ViewEmployee = () => {
     const [viewMode, setViewMode] = useState(mode || "");
     const [formValueIsValid, setFormValueIsValid] = useState(false);
     const [dataEdit, setDataEdit] = useState({});
+    const [statusValue, setStatusValue] = useState("");
 
     // request data
     const { data: dataGetEmpl, loading: loadingGetEmpl, error: errorGetEmpl } = useGetOneEmployee(employeeId);
     const { data: dataEditResponse, loading: loadingEdit, error: errorEdit } = useEditEmployee(dataEdit);
+    const { data: dataLockResponse, loading: loadingLock, error: errorLock, request: requestLock } = useChangeStatusEmployee();
 
     // effect
     useEffect(() => {
         if (Object.keys(dataGetEmpl).length > 0) {
             setDataForm(dataGetEmpl);
             setFormValuesDefault(dataGetEmpl)
+            setStatusValue(dataGetEmpl.results[0].status || "")
         }
     }, [dataGetEmpl]);
 
@@ -85,22 +93,59 @@ const ViewEmployee = () => {
         }
     }, [dataEditResponse]);
 
+    useEffect(() => {
+        if (errorLock) {
+            toast.error(`Change status fail, ${errorLock.response?.data?.messages[0]}`, {
+                position: "bottom-right",
+                autoClose: 10000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+                transition: Slide,
+            });
+        }
+    }, [errorLock]);
+
+    useEffect(() => {
+        if (dataLockResponse.status === 200) {
+            setStatusValue(dataLockResponse?.messages[0])
+            toast.success('Change status successfully', {
+                position: "bottom-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+                transition: Slide,
+            });
+        }
+    }, [dataLockResponse]);
+
+
     // handle function
     const handleSubmit = (event) => {
         event.preventDefault();
-        setDataEdit(structuredClone(formValues));
+        setDataEdit(formValues);
         setFormValueIsValid(false);
     };
+
     const handleCancelEdit = (event) => {
         event.preventDefault();
         setViewMode("view");
         setDataForm(formValuesDefault);
         setFormValueIsValid(false);
     }
+
     const handleClickEdit = (event) => {
         event.preventDefault();
         setViewMode("edit");
     }
+
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormValues((prevValues) => ({
@@ -109,8 +154,9 @@ const ViewEmployee = () => {
         }));
         setFormValueIsValid(true);
     };
-    const handleDateChange = (date, name) => {
-        if (moment(date, "YYYY-MM-DD", true).isValid()) {
+
+    const handleDateChange = (date, isValid, name) => {
+        if (isValid) {
             setFormValues((prevValues) => ({
                 ...prevValues,
                 [name]: date.format("YYYY-MM-DD"),
@@ -125,10 +171,16 @@ const ViewEmployee = () => {
         }
     };
 
+    const handleLock = () => {
+        requestLock(employeeId, statusValue)
+    }
+
+
     // other function
     const isEditMode = () => {
         return viewMode === "edit";
     };
+
     const setDataForm = (data) => {
         if (data.results) {
             const result = data.results[0];
@@ -140,10 +192,10 @@ const ViewEmployee = () => {
                 fullname: result.fullname || "",
                 position: result.position || "",
                 startDate: result.startDate || "",
-                status: result.status || ""
             });
         }
     }
+
 
     // render
     if (loadingGetEmpl) return (
@@ -255,18 +307,16 @@ const ViewEmployee = () => {
                                                                 Date of Birth
                                                             </label>
                                                             <InputGroup className="input-group-alternative">
-                                                                <Datetime
-                                                                    inputProps={{
-                                                                        className: "form-control-alternative form-control",
-                                                                        name: "dateOfBirth",
-                                                                        required: "required",
-                                                                        placeholder: "YYYY-MM-DD",
-                                                                        disabled: !isEditMode()
-                                                                    }}
+                                                                <DatePickerWithTooltip
                                                                     value={formValues.dateOfBirth || ""}
-                                                                    timeFormat={false}
                                                                     dateFormat="YYYY-MM-DD"
-                                                                    onChange={(date) => handleDateChange(date, "dateOfBirth")}
+                                                                    className="form-control-alternative form-control"
+                                                                    name="dateOfBirth"
+                                                                    required="required"
+                                                                    placeholder="YYYY-MM-DD"
+                                                                    disabled={!isEditMode()}
+                                                                    id="dateOfBirth"
+                                                                    onChange={(date, isValid) => handleDateChange(date, isValid, "dateOfBirth")}
                                                                 />
                                                             </InputGroup>
                                                         </FormGroup>
@@ -349,19 +399,16 @@ const ViewEmployee = () => {
                                                                 Start Date
                                                             </label>
                                                             <InputGroup className="input-group-alternative">
-                                                                <Datetime
-                                                                    inputProps={{
-                                                                        className: "form-control-alternative form-control",
-                                                                        name: "startDate",
-                                                                        required: "required",
-                                                                        placeholder: "YYYY-MM-DD",
-                                                                        disabled: !isEditMode()
-                                                                    }}
+                                                                <DatePickerWithTooltip
                                                                     value={formValues.startDate || ""}
-                                                                    timeFormat={false}
                                                                     dateFormat="YYYY-MM-DD"
-                                                                    onChange={(date) => handleDateChange(date, "startDate")}
-                                                                    required
+                                                                    className="form-control-alternative form-control"
+                                                                    name="startDate"
+                                                                    required="required"
+                                                                    placeholder="YYYY-MM-DD"
+                                                                    disabled={!isEditMode()}
+                                                                    id="startDate"
+                                                                    onChange={(date, isValid) => handleDateChange(date, isValid, "startDate")}
                                                                 />
                                                             </InputGroup>
                                                         </FormGroup>
@@ -374,16 +421,36 @@ const ViewEmployee = () => {
                                                             >
                                                                 Status
                                                             </label>
-                                                            <Input
-                                                                className="form-control-alternative"
-                                                                id="input-status"
-                                                                type="text"
-                                                                name="status"
-                                                                value={formValues.status || ""}
-                                                                required
-                                                                disabled={!isEditMode()}
-                                                                onChange={handleInputChange}
-                                                            />
+                                                            <Row>
+                                                                <Col>
+                                                                    <Input
+                                                                        className="form-control-alternative"
+                                                                        id="input-status"
+                                                                        type="text"
+                                                                        value={statusValue}
+                                                                        required
+                                                                        disabled="disabled"
+                                                                    />
+                                                                </Col>
+                                                                {viewMode === "edit"
+                                                                    ? (<>
+                                                                        <Col lg={{ size: "auto" }} className="pl-0">
+                                                                            <Button
+                                                                                color={statusValue === "Active" ? "warning" : "info"}
+                                                                                type="button"
+                                                                                disabled={loadingLock}
+                                                                                onClick={handleLock}
+                                                                            >
+                                                                                {loadingLock
+                                                                                    ? (<Spinner color="primary" size="sm"> </Spinner>)
+                                                                                    : statusValue === "Active" ? "Lock" : "Unlock"
+                                                                                }
+                                                                            </Button>
+                                                                        </Col>
+                                                                    </>)
+                                                                    : ""
+                                                                }
+                                                            </Row>
                                                         </FormGroup>
                                                     </Col>
                                                 </Row>
