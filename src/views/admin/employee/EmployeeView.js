@@ -95,7 +95,7 @@ const ViewEmployee = () => {
 
     useEffect(() => {
         if (errorLock) {
-            toast.error(`Change status fail, ${errorLock.response?.data?.messages[0]}`, {
+            toast.error(`Change status fail, ${errorLock.response?.data?.messages[1]}`, {
                 position: "bottom-right",
                 autoClose: 10000,
                 hideProgressBar: false,
@@ -111,7 +111,7 @@ const ViewEmployee = () => {
 
     useEffect(() => {
         if (dataLockResponse.status === 200) {
-            setStatusValue(dataLockResponse?.messages[0])
+            setStatusValue(dataLockResponse?.messages[1])
             toast.success('Change status successfully', {
                 position: "bottom-right",
                 autoClose: 5000,

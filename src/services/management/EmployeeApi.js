@@ -15,7 +15,7 @@ export const getOneEmployee = async (employeeId) => {
         var data = response.data;
         data.results[0].startDate = data.results[0].startDate.split("T")[0];
         data.results[0].dateOfBirth = data.results[0].dateOfBirth.split("T")[0];
-        
+
         return data;
     } catch (error) {
         throw error;
@@ -71,8 +71,8 @@ export const addEmployee = async (data) => {
     }
 };
 
-export async function editEmployee(dataRequest){
-    try {  
+export async function editEmployee(dataRequest) {
+    try {
         const token = localStorage.getItem('accessToken');
 
         const response = await axios.put(`${API_BASE_URL}/edit`, dataRequest, {
@@ -84,7 +84,7 @@ export async function editEmployee(dataRequest){
         var dataResponse = response.data;
         dataResponse.results[0].startDate = dataResponse.results[0].startDate.split("T")[0];
         dataResponse.results[0].dateOfBirth = dataResponse.results[0].dateOfBirth.split("T")[0];
-        
+
         return dataResponse;
 
     } catch (error) {
@@ -92,12 +92,8 @@ export async function editEmployee(dataRequest){
     }
 };
 
-export async function lockEmployee(employeeId){
+export async function lockEmployee(employeeId) {
     try {
-        // delay
-        const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
-        await delay(3000);
-        
         const token = localStorage.getItem('accessToken');
 
         const response = await axios.put(`${API_BASE_URL}/lock/${employeeId}`, null, {
@@ -112,12 +108,8 @@ export async function lockEmployee(employeeId){
     }
 };
 
-export async function unlockEmployee(employeeId){
+export async function unlockEmployee(employeeId) {
     try {
-        // delay
-        const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
-        await delay(3000);
-        
         const token = localStorage.getItem('accessToken');
 
         const response = await axios.put(`${API_BASE_URL}/unlock/${employeeId}`, null, {
@@ -125,7 +117,7 @@ export async function unlockEmployee(employeeId){
                 'Authorization': `Bearer ${token}`
             },
         });
-        
+
         return response.data;
     } catch (error) {
         throw error;

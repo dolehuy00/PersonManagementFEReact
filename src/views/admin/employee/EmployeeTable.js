@@ -30,12 +30,14 @@ import {
   Container,
   Row,
   Col,
-  Button
+  Button,
+  Spinner
 } from "reactstrap";
 // core components
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { Slide, ToastContainer, toast } from 'react-toastify';
 // hooks
-import { useFilterEmployee } from "hooks/UseEmployeeApi.js";
+import { useFilterEmployee, useChangeStatusEmployee } from "hooks/UseEmployeeApi.js";
 //components
 import CustomPagination from "components/Pagination/Pagination.js";
 import DropdownButtonSmall from "components/Dropdowns/DropdownButtonSmall.js";
@@ -75,7 +77,7 @@ const Tables = () => {
     { labelName: "Start Date", nameInputFrom: "fromStartDate", nameInputTo: "toStartDate", type: "date" }
   ];
 
-  //state
+  //states
   const [pageIndex, setPageIndex] = useState(1);
   const [pageSize, setPageSize] = useState(5);
   const [dataFilter, setDataFilter] = useState({});
@@ -83,6 +85,7 @@ const Tables = () => {
   const [bodyView, setBodyView] = useState("");
   const buttonPerPageState = useState(arrayItemPerPage[0]);
   const buttonSortByState = useState(arrayItemSortBy[0])
+  const [statusColMap, setStatusColMap] = useState({});
 
   // handle function
   const handlePageChange = (newPageIndex) => {
@@ -112,9 +115,113 @@ const Tables = () => {
     setBodyView("table")
   }
 
+  const handleLockEmployee = (employeeId, statusValue) => {
+    requestLock(employeeId, statusValue)
+  }
+
   // request data
   const { data, loading, error } = useFilterEmployee(dataFilter, sortBy, pageIndex, pageSize);
   const totalPage = data.totalPage;
+  const {
+    data: dataLockResponse,
+    loading: loadingLock,
+    error: errorLock,
+    request: requestLock
+  } = useChangeStatusEmployee();
+
+
+  // effect
+  useEffect(() => {
+    if (errorLock) {
+      toast.error(`Change status fail, ${errorLock.response?.data?.messages[0]}`, {
+        position: "bottom-right",
+        autoClose: 10000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Slide,
+      });
+    }
+  }, [errorLock]);
+
+  useEffect(() => {
+    if (dataLockResponse.status === 200) {
+      changeStatusCol(
+        dataLockResponse.messages[0],
+        dataLockResponse.messages[1]
+      );
+      toast.success(
+        `${dataLockResponse.messages[1] === "Active" ? "Unlock" : "Lock"} 
+        ${dataLockResponse.messages[0]} successfully`,
+        {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          transition: Slide,
+        }
+      );
+    }
+  }, [dataLockResponse]);
+
+  // fuction
+  const changeStatusCol = (key, newStatus) => {
+    setStatusColMap((prev) => ({ ...prev, [key]: newStatus }));
+  };
+
+  // render fuction
+  const renderDataColStatus = (status) => {
+    return (
+      <>
+        {status === "Active" ? (
+          <i className="bg-success" />
+        ) : (
+          <i className="bg-danger" />
+        )}
+        {status}
+      </>
+    );
+  }
+
+  const renderContentItemLockDropdown = (emplId, status) => {
+    return (
+      <>
+        {status === "Active"
+          ? (
+            <DropdownItem
+              disabled={loadingLock}
+              href="#pablo"
+              onClick={(e) => {
+                e.preventDefault();
+                handleLockEmployee(emplId, status);
+              }}
+            >
+              Lock
+            </DropdownItem>
+          )
+          : (
+            <DropdownItem
+              disabled={loadingLock}
+              href="#pablo"
+              onClick={(e) => {
+                e.preventDefault();
+                handleLockEmployee(emplId, status)
+              }}
+            >
+              Unlock
+            </DropdownItem>
+          )
+        }
+      </>
+    )
+  }
 
   // render
   if (loading) return (
@@ -174,6 +281,11 @@ const Tables = () => {
                       </Row>
                     </Container>
                   </CardHeader>
+                  {loadingLock && (
+                    <div className="overlay-spinner-table-loading">
+                      <Spinner color="info"></Spinner>
+                    </div>
+                  )}
                   <Table className="align-items-center table-flush" responsive>
                     <thead className="thead-light">
                       <tr className="text-center">
@@ -211,19 +323,21 @@ const Tables = () => {
                               </Media>
                             </td>
                             <td>{item.basicSalary}</td>
-                            <td>{item.accountId === null
-                              ? "No account"
-                              : item.accountId}
+                            <td>
+                              {item.accountId === null
+                                ? "No account"
+                                : item.accountId
+                              }
                             </td>
                             <td>{item.departmentName}</td>
                             <td>
-                              <Badge color="" className="badge-dot mr-4">
-                                {item.status === "Active" ? (
-                                  <i className="bg-success" />
-                                ) : (
-                                  <i className="bg-danger" />
-                                )}
-                                {item.status}
+                              <Badge
+                                color=""
+                                className="badge-dot mr-4">
+                                {statusColMap[item.id]
+                                  ? renderDataColStatus(statusColMap[item.id])
+                                  : renderDataColStatus(item.status)
+                                }
                               </Badge>
                             </td>
                             <td className="text-right">
@@ -249,12 +363,10 @@ const Tables = () => {
                                   >
                                     Edit
                                   </DropdownItem>
-                                  <DropdownItem
-                                    href="#pablo"
-                                    onClick={(e) => e.preventDefault()}
-                                  >
-                                    Lock
-                                  </DropdownItem>
+                                  {statusColMap[item.id]
+                                    ? renderContentItemLockDropdown(item.id, statusColMap[item.id])
+                                    : renderContentItemLockDropdown(item.id, item.status)
+                                  }
                                 </DropdownMenu>
                               </UncontrolledDropdown>
                             </td>
@@ -281,6 +393,9 @@ const Tables = () => {
           </div>
         </Row>
       </Container>
+      <div>
+        <ToastContainer />
+      </div>
     </>
   );
 };

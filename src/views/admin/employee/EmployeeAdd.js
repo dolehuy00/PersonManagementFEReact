@@ -44,6 +44,7 @@ const EmployeeAdd = ({ onCancel }) => {
             });
         }
         if (data.status === 200) {
+            handleReset();
             toast.success('Add successfully', {
                 position: "bottom-right",
                 autoClose: 5000,
@@ -233,13 +234,15 @@ const EmployeeAdd = ({ onCancel }) => {
                                         >
                                             Status
                                         </label>
-                                        <Input
-                                            className="form-control-alternative"
-                                            id="input-status"
-                                            type="text"
+                                        <select
+                                            id="status"
                                             name="status"
+                                            className="form-control"
                                             required
-                                        />
+                                        >
+                                            <option value="Active">Active</option>
+                                            <option value="Lock">Lock</option>
+                                        </select>
                                     </FormGroup>
                                 </Col>
                             </Row>

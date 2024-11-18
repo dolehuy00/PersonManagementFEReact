@@ -8,12 +8,14 @@ import {
 
 import React from "react";
 
+// arrayItems = [{ text: "Item per page: ", value: 5 }];
 const DropdownButtonSmall = ({ selectedItemState,
                                viewText = true, 
                                viewValue = false, 
                                arrayItems, 
                                onSelectChange, 
-                               color = "primary" }) => {
+                               color = "primary",
+                               size="sm" }) => {
   var [itemSelected, setItemSelected] = selectedItemState;
 
   const handleSelect = (item) => {
@@ -33,7 +35,7 @@ const DropdownButtonSmall = ({ selectedItemState,
       <UncontrolledDropdown>
         <DropdownToggle caret
           color={color}
-          size="sm"
+          size={size}
           outline
         >
           {buildButtonText(viewText, viewValue, itemSelected)}

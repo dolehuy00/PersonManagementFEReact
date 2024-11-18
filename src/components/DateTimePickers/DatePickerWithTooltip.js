@@ -1,19 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, forwardRef } from 'react';
 import Datetime from "react-datetime";
 import { Tooltip } from 'reactstrap';
 import moment from "moment";
 
-const DatePickerWithTooltip = ({ value, dateFormat = "YYYY-MM-DD", className, name, required, placeholder, disabled, id, onChange }) => {
+const DatePickerWithTooltip = forwardRef(({
+    value,
+    dateFormat = "YYYY-MM-DD",
+    className,
+    name,
+    required,
+    placeholder,
+    disabled,
+    id,
+    onChange,
+}, ref) => {
     const [tooltipOpen, setTooltipOpen] = useState(false);
     const [isDateInvalid, setIsDateInvalid] = useState(false);
     const toggleTooltip = () => setTooltipOpen(!tooltipOpen);
-    
+
     const handleDateChange = (date) => {
-        if (moment(date, dateFormat , true).isValid()) {
-            setIsDateInvalid(false); 
+        if (moment(date, dateFormat, true).isValid()) {
+            setIsDateInvalid(false);
             onChange(date, true);
         } else {
-            setIsDateInvalid(true);
+            setIsDateInvalid(date !== "");
             setTooltipOpen(true)
             onChange(date, false);
         }
@@ -22,6 +32,7 @@ const DatePickerWithTooltip = ({ value, dateFormat = "YYYY-MM-DD", className, na
     return (
         <>
             <Datetime
+                ref={ref}
                 inputProps={{
                     className: className,
                     name: name,
@@ -43,12 +54,12 @@ const DatePickerWithTooltip = ({ value, dateFormat = "YYYY-MM-DD", className, na
                 autohide={true}
             >
                 Invalid date.
-                <br/>
+                <br />
                 Format <b>{dateFormat}</b>
             </Tooltip>
         </>
     )
-}
+});
 
 
 export default DatePickerWithTooltip;

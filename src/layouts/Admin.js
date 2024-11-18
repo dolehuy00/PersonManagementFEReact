@@ -74,7 +74,7 @@ const Admin = (props) => {
         <AdminNavbar
           {...props}
           brandText={getBrandText(location?.pathname)}
-          linkText={location?.pathname}
+          linkText={location?.pathname.split("/")[2]}
         />
         <Routes>
           {getRoutes(managerRoutes)}
