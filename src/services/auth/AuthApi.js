@@ -90,3 +90,14 @@ axios.interceptors.response.use(
 );
 
 
+
+export const forgotPassword = async (email) => {
+    try {
+
+        const response = await axios.post(`${API_BASE_URL}/forgot-password-request`, { email });
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+

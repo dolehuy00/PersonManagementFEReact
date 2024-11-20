@@ -17,6 +17,7 @@
 */
 // Auth
 import Login from "views/auth/Login.js";
+import ForgotPassword from "views/auth/ForgotPassword.js"
 
 // Admin
 import AdminDashboard from "views/admin/Dashboard.js";
@@ -81,6 +82,14 @@ export var authRoutes = [
     name: "Login",
     icon: "ni ni-key-25 text-info",
     component: <Login />,
+    layout: "/auth",
+    viewOnSidebar: false,
+  },
+  {
+    path: "/forgot",
+    name: "Forgot Password",
+    icon: "ni ni-key-25 text-info",
+    component: <ForgotPassword />,
     layout: "/auth",
     viewOnSidebar: false,
   },

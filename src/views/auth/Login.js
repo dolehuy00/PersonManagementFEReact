@@ -73,7 +73,7 @@ const Login = () => {
                   />
                 </InputGroup>
               </FormGroup>
-              <FormGroup>
+              <FormGroup className="mb-2">
                 <InputGroup className="input-group-alternative">
                   <InputGroupAddon addonType="prepend">
                     <InputGroupText>
@@ -89,23 +89,13 @@ const Login = () => {
                 </InputGroup>
               </FormGroup>
               {error && (
-                <Alert color="danger">
+                <Alert color="danger" className="py-1 mb-0">
                   {error}
                 </Alert>
               )}
-              <div className="custom-control custom-control-alternative custom-checkbox mb-3">
-                <input
-                  className="custom-control-input"
-                  id="customCheck2"
-                  type="checkbox"
-                />
-                <label className="custom-control-label" htmlFor="customCheck2">
-                  Remember me
-                </label>
-              </div>
               <div className="text-center">
                 {isLoading ? (
-                  <Button className="my-4" color="primary" type="button" disabled="true">
+                  <Button className="my-4" color="primary" type="button" disabled>
                     <Spinner size="sm">
                       Wating...
                     </Spinner>
@@ -127,8 +117,7 @@ const Login = () => {
           <Col xs="6">
             <a
               className="text-light"
-              href="#pablo"
-              onClick={(e) => e.preventDefault()}
+              href="forgot"
             >
               <small>Forgot password?</small>
             </a>
