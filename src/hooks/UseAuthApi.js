@@ -1,6 +1,11 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // Sử dụng useNavigate thay cho useHistory
-import { login, forgotPassword } from 'services/auth/AuthApi';
+import {
+    login,
+    forgotPassword,
+    forgotPasswordChangePassword,
+    forgotPasswordVertifyCode
+} from 'services/auth/AuthApi';
 
 export const useLogin = () => {
     const [isLoading, setIsLoading] = useState(false);
@@ -17,7 +22,7 @@ export const useLogin = () => {
             if (data.results[0].role === 'Admin') {
                 navigate('/admin');
             } else if (data.results[0].role === 'User') {
-                navigate('/user'); 
+                navigate('/user');
             } else {
                 throw new Error('Role invalid.');
             }
@@ -44,12 +49,60 @@ export const useForgotPassword = () => {
             return data;
         } catch (error) {
             setIsLoading(false);
-            if(error.response?.data?.status === 400){
+            if (error.response?.data?.status === 400) {
                 setError(error.response?.data?.messages[0])
-            }else{
+            } else {
                 setError(error.message);
-            }      
+            }
         }
     };
     return { handleForgot, isLoading, error };
+};
+
+export const useForgotPasswordVertifyCode = () => {
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState(null);
+
+    const handleForgotPasswordVertifyCode = async (email, code) => {
+        setIsLoading(true);
+        setError(null);
+
+        try {
+            const data = await forgotPasswordVertifyCode(email, code);
+            setIsLoading(false);
+            return data;
+        } catch (error) {
+            setIsLoading(false);
+            if (error.response?.data?.status === 400) {
+                setError(error.response?.data?.messages[0])
+            } else {
+                setError(error.message);
+            }
+        }
+    };
+    return { handleForgotPasswordVertifyCode, isLoading, error };
+};
+
+export const useForgotPasswordChangePassword = () => {
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState(null);
+
+    const handleForgotPasswordChangePassword = async (email, code, password, passwordConfirm) => {
+        setIsLoading(true);
+        setError(null);
+
+        try {
+            const data = await forgotPasswordChangePassword(email, code, password, passwordConfirm);
+            setIsLoading(false);
+            return data;
+        } catch (error) {
+            setIsLoading(false);
+            if (error.response?.data?.status === 400) {
+                setError(error.response?.data?.messages[0])
+            } else {
+                setError(error.message);
+            }
+        }
+    };
+    return { handleForgotPasswordChangePassword, isLoading, error };
 };

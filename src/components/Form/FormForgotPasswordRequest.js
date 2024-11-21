@@ -36,6 +36,7 @@ const FormForgotPasswordRequest = ({onSubmit, error, isLoading}) => {
                             placeholder="Email"
                             type="email"
                             autoComplete="new-email"
+                            required
                             onChange={(e) => setEmail(e.target.value)}
                         />
                     </InputGroup>
@@ -47,7 +48,7 @@ const FormForgotPasswordRequest = ({onSubmit, error, isLoading}) => {
                 )}
                 <div className="text-center">
                     {isLoading ? (
-                        <Button className="my-4" color="primary" type="button" disabled="true">
+                        <Button className="mt-2" color="primary" type="button" disabled>
                             <Spinner size="sm">
                                 Wating...
                             </Spinner>
@@ -56,7 +57,7 @@ const FormForgotPasswordRequest = ({onSubmit, error, isLoading}) => {
                             </span>
                         </Button>
                     ) : (
-                        <Button className="my-4" color="primary" type="submit">
+                        <Button className="mt-2" color="primary" type="submit">
                             Confirm
                         </Button>
                     )}

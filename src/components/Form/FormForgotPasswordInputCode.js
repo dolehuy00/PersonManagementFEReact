@@ -5,8 +5,9 @@ import {
     Alert
 } from "reactstrap";
 import React, { useState } from "react";
+import CountdownTimerButton from "components/Button/ButtonCountdownTimer.js";
 
-const FormForgotPasswordInputCode = ({ onSubmit, isLoading, error }) => {
+const FormForgotPasswordInputCode = ({ onSubmit, isLoading, error, onClickGetCodeAgain, lodingGetCodeAgain }) => {
     const [code, setCode] = useState(new Array(6).fill(""));
 
     // Hàm xử lý thay đổi
@@ -37,54 +38,58 @@ const FormForgotPasswordInputCode = ({ onSubmit, isLoading, error }) => {
     // Hàm xử lý submit
     const handleSubmitForm = (e) => {
         e.preventDefault();
-        onSubmit(code);
+        onSubmit(code.join(""));
     };
 
     return (
-        <form onSubmit={handleSubmitForm}>
-            <div className="d-flex justify-content-center" style={{ gap: "10px" }}>
-                {code.map((value, index) => (
-                    <input
-                        key={index}
-                        id={`code-input-${index}`}
-                        type="text"
-                        maxLength="1"
-                        value={value}
-                        onChange={(e) => handleChange(e, index)}
-                        onKeyDown={(e) => handleKeyDown(e, index)}
-                        style={{
-                            width: "40px",
-                            height: "40px",
-                            textAlign: "center",
-                            fontSize: "18px",
-                            border: "1px solid #ccc",
-                            borderRadius: "4px",
-                        }}
-                    />
-                ))}
-            </div>
-            {error && (
-                <Alert color="danger" className="py-1 mb-0">
-                    {error}
-                </Alert>
-            )}
-            <div className="text-center">
-                {isLoading ? (
-                    <Button className="my-4" color="primary" type="button" disabled="true">
-                        <Spinner size="sm">
-                            Wating...
-                        </Spinner>
-                        <span>
-                            {' '}Wating...
-                        </span>
-                    </Button>
-                ) : (
-                    <Button className="my-4" color="primary" type="submit">
-                        Confirm
-                    </Button>
+        <>
+            <form onSubmit={handleSubmitForm}>
+                <div className="d-flex justify-content-center" style={{ gap: "10px" }}>
+                    {code.map((value, index) => (
+                        <input
+                            key={index}
+                            id={`code-input-${index}`}
+                            type="text"
+                            maxLength="1"
+                            value={value}
+                            required
+                            onChange={(e) => handleChange(e, index)}
+                            onKeyDown={(e) => handleKeyDown(e, index)}
+                            style={{
+                                width: "40px",
+                                height: "40px",
+                                textAlign: "center",
+                                fontSize: "18px",
+                                border: "1px solid #ccc",
+                                borderRadius: "4px",
+                            }}
+                        />
+                    ))}
+                </div>
+                {error && (
+                    <Alert color="danger" className="py-1 mb-0 mt-2">
+                        {error}
+                    </Alert>
                 )}
-            </div>
-        </form>
+                <div className="text-center">
+                    <CountdownTimerButton disableTime={70} onClick={onClickGetCodeAgain} loading={lodingGetCodeAgain} />
+                    {isLoading ? (
+                        <Button className="mt-2" color="primary" type="button" disabled>
+                            <Spinner size="sm">
+                                Wating...
+                            </Spinner>
+                            <span>
+                                {' '}Wating...
+                            </span>
+                        </Button>
+                    ) : (
+                        <Button className="mt-2" color="primary" type="submit">
+                            Confirm
+                        </Button>
+                    )}
+                </div>
+            </form>
+        </>
     );
 };
 

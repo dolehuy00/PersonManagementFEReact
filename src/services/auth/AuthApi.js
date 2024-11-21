@@ -89,12 +89,28 @@ axios.interceptors.response.use(
     }
 );
 
-
-
 export const forgotPassword = async (email) => {
     try {
-
         const response = await axios.post(`${API_BASE_URL}/forgot-password-request`, { email });
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const forgotPasswordVertifyCode = async (email, code) => {
+    try {
+        const response = await axios.post(`${API_BASE_URL}/forgot-password-verify-code`, { email, code });
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const forgotPasswordChangePassword = async (email, code, password, passwordConfirm) => {
+    try {
+        const response = await axios.post(`${API_BASE_URL}/forgot-password-change`,
+             { email, code, password, passwordConfirm });
         return response.data;
     } catch (error) {
         throw error;
