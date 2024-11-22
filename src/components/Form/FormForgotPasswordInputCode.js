@@ -7,7 +7,13 @@ import {
 import React, { useState } from "react";
 import CountdownTimerButton from "components/Button/ButtonCountdownTimer.js";
 
-const FormForgotPasswordInputCode = ({ onSubmit, isLoading, error, onClickGetCodeAgain, lodingGetCodeAgain }) => {
+const FormForgotPasswordInputCode = ({
+    onSubmit,
+    isLoading,
+    error,
+    onClickGetCodeAgain,
+    lodingGetCodeAgain
+}) => {
     const [code, setCode] = useState(new Array(6).fill(""));
 
     // Hàm xử lý thay đổi
@@ -45,6 +51,7 @@ const FormForgotPasswordInputCode = ({ onSubmit, isLoading, error, onClickGetCod
         <>
             <form onSubmit={handleSubmitForm}>
                 <div className="d-flex justify-content-center" style={{ gap: "10px" }}>
+                    {/* render inputs */}
                     {code.map((value, index) => (
                         <input
                             key={index}
@@ -66,11 +73,13 @@ const FormForgotPasswordInputCode = ({ onSubmit, isLoading, error, onClickGetCod
                         />
                     ))}
                 </div>
+                {/* message error */}
                 {error && (
                     <Alert color="danger" className="py-1 mb-0 mt-2">
                         {error}
                     </Alert>
                 )}
+                {/* button confirm */}
                 <div className="text-center">
                     <CountdownTimerButton disableTime={70} onClick={onClickGetCodeAgain} loading={lodingGetCodeAgain} />
                     {isLoading ? (

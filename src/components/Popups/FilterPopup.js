@@ -63,12 +63,14 @@ class Modals extends React.Component {
 
         const { itemSingleFilters, itemRangeFilters, onConfirmFilter, dataFilterUseState } = this.props;
 
-        itemRangeFilters.forEach((item) => {
-            if(item.type === "date"){
-                this.datePickerRefs[`datePicker${item.nameInputFrom}`] = React.createRef();
-                this.datePickerRefs[`datePicker${item.nameInputTo}`] = React.createRef();
-            }
-        });
+        if (itemRangeFilters) {
+            itemRangeFilters.forEach((item) => {
+                if (item.type === "date") {
+                    this.datePickerRefs[`datePicker${item.nameInputFrom}`] = React.createRef();
+                    this.datePickerRefs[`datePicker${item.nameInputTo}`] = React.createRef();
+                }
+            });
+        }
 
         const handleOpen = () => {
             Object.entries(dataFilterUseState).forEach(([key, value]) => {
@@ -154,7 +156,7 @@ class Modals extends React.Component {
                                     ? itemRangeFilters.map((item) => (
                                         item.type === "date"
                                             ? (
-                                                <Row 
+                                                <Row
                                                     className="d-flex align-items-center mb-2"
                                                     key={"filter-input-" + item.nameInputFrom}
                                                 >
@@ -164,13 +166,13 @@ class Modals extends React.Component {
                                                     <Col>
                                                         <div className="input-group-alternative rounded-lg">
                                                             <DatePickerWithTooltip
-                                                                ref = {this.datePickerRefs[`datePicker${item.nameInputFrom}`]}
+                                                                ref={this.datePickerRefs[`datePicker${item.nameInputFrom}`]}
                                                                 value={this.state.dataFilters[item.nameInputFrom] || ""}
                                                                 dateFormat="YYYY-MM-DD"
                                                                 className="form-control-alternative text-body form-control"
                                                                 name={item.nameInputFrom}
                                                                 placeholder="YYYY-MM-DD"
-                                                                id={`datePicker`+ item.nameInputFrom}
+                                                                id={`datePicker` + item.nameInputFrom}
                                                                 onChange={(date, isValid) => this.handleDateChange(date, isValid, item.nameInputFrom)}
                                                             />
                                                         </div>
@@ -179,13 +181,13 @@ class Modals extends React.Component {
                                                     <Col>
                                                         <div className="input-group-alternative rounded-lg">
                                                             <DatePickerWithTooltip
-                                                                ref = {this.datePickerRefs[`datePicker${item.nameInputTo}`]}
+                                                                ref={this.datePickerRefs[`datePicker${item.nameInputTo}`]}
                                                                 value={this.state.dataFilters[item.nameInputTo] || ""}
                                                                 dateFormat="YYYY-MM-DD"
                                                                 className="form-control-alternative text-body form-control"
                                                                 name={item.nameInputTo}
                                                                 placeholder="YYYY-MM-DD"
-                                                                id={`datePicker`+ item.nameInputTo}
+                                                                id={`datePicker` + item.nameInputTo}
                                                                 onChange={(date, isValid) => this.handleDateChange(date, isValid, item.nameInputTo)}
                                                             />
                                                         </div>

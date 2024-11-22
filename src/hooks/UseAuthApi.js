@@ -7,6 +7,7 @@ import {
     forgotPasswordVertifyCode
 } from 'services/auth/AuthApi';
 
+// use login function
 export const useLogin = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -35,6 +36,7 @@ export const useLogin = () => {
     return { handleLogin, isLoading, error };
 };
 
+// use request forgot password function
 export const useForgotPassword = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -59,6 +61,7 @@ export const useForgotPassword = () => {
     return { handleForgot, isLoading, error };
 };
 
+// use forogot password vetify code function
 export const useForgotPasswordVertifyCode = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -83,6 +86,7 @@ export const useForgotPasswordVertifyCode = () => {
     return { handleForgotPasswordVertifyCode, isLoading, error };
 };
 
+// use forgot forgot password step change password
 export const useForgotPasswordChangePassword = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);

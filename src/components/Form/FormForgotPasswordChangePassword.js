@@ -15,9 +15,11 @@ import {
 import React, { useState } from "react";
 
 const FormForgotPasswordChangePassword = ({ onSubmit, error, isLoading }) => {
+    // state variable
     const [password, setPassword] = useState("");
     const [confirmPassword, setComfirmPassword] = useState("");
 
+    // handle submit form
     const handleSubmit = async (e) => {
         e.preventDefault();
         onSubmit(password, confirmPassword);

@@ -56,6 +56,7 @@ const Tables = () => {
     { text: "Item per page: ", value: 100 }
   ];
   const arrayItemSortBy = [
+    { text: "No sort", value: "" },
     { text: "Sort by fullname ascending", value: "fullname:asc" },
     { text: "Sort by fullname decreasing", value: "fullname:dec" },
     { text: "Sort by birthday ascending", value: "dateOfBirth:asc" },

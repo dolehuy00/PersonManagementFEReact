@@ -23,6 +23,8 @@ import ForgotPassword from "views/auth/ForgotPassword.js"
 import AdminDashboard from "views/admin/Dashboard.js";
 import Employee from "views/admin/employee/EmployeeTable.js";
 import EmployeeView from "views/admin/employee/EmployeeView.js";
+import Account from "views/admin/account/AccountTable.js";
+import AccountView from "views/admin/account/AccountView.js";
 
 //User
 import UserDashboard from "views/user/Dashboard.js";
@@ -40,7 +42,7 @@ export var managerRoutes = [
   {
     path: "/employee",
     name: "Employee",
-    icon: "ni ni-bullet-list-67 text-red",
+    icon: "fa-solid fa-users text-orange",
     component: <Employee />,
     layout: "/admin",
     viewOnSidebar: true,
@@ -48,8 +50,24 @@ export var managerRoutes = [
   {
     path: "/employee/view",
     name: "Employee View",
-    icon: "ni ni-bullet-list-67 text-red",
+    icon: "fa-solid fa-users text-orange",
     component: <EmployeeView />,
+    layout: "/admin",
+    viewOnSidebar: false,
+  },
+  {
+    path: "/account",
+    name: "Account",
+    icon: "fa-regular fa-address-card text-green",
+    component: <Account />,
+    layout: "/admin",
+    viewOnSidebar: true,
+  },
+  {
+    path: "/account/view",
+    name: "Account View",
+    icon: "fa-regular fa-address-card text-green",
+    component: <AccountView />,
     layout: "/admin",
     viewOnSidebar: false,
   }
