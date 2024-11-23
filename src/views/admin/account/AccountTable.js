@@ -62,7 +62,7 @@ import {
     ];
     const itemSingleFilters = [
       { labelName: "Keyword", nameInput: "keyword", type: "text" },
-      { labelName: "Keyword By Employee", nameInput: "keywordByEmployee", type: "number" },
+      { labelName: "Name Or Id Employee", nameInput: "keywordByEmployee", type: "text" },
       { labelName: "Status", nameInput: "filterByStatus", type: "text" },
       { labelName: "Role", nameInput: "filterByRole", type: "text" },
     ];
@@ -144,8 +144,7 @@ import {
           dataLockResponse.messages[1]
         );
         toast.success(
-          `${dataLockResponse.messages[1] === "Active" ? "Unlock" : "Lock"} 
-          ${dataLockResponse.messages[0]} successfully`,
+          `${dataLockResponse.messages[1] === "Active" ? "Unlock" : "Lock"} "${dataLockResponse.messages[0]}" successfully`,
           {
             position: "bottom-right",
             autoClose: 5000,

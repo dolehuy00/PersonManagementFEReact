@@ -35,6 +35,7 @@ import {
 } from "reactstrap";
 // core components
 import React, { useState, useEffect } from "react";
+// react toastify component
 import { Slide, ToastContainer, toast } from 'react-toastify';
 // hooks
 import { useFilterEmployee, useChangeStatusEmployee } from "hooks/UseEmployeeApi.js";
@@ -155,8 +156,7 @@ const Tables = () => {
         dataLockResponse.messages[1]
       );
       toast.success(
-        `${dataLockResponse.messages[1] === "Active" ? "Unlock" : "Lock"} 
-        ${dataLockResponse.messages[0]} successfully`,
+        `${dataLockResponse.messages[1] === "Active" ? "Unlock" : "Lock"} "${dataLockResponse.messages[0]}" successfully`,
         {
           position: "bottom-right",
           autoClose: 5000,
