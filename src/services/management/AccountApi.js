@@ -18,7 +18,6 @@ export const getOneAccount = async (accountId) => {
     }
 }
 
-
 export const filterAccount = async (dataFilter, sortBy, pageNumber, pageSize) => {
     try {
         const token = localStorage.getItem('accessToken');

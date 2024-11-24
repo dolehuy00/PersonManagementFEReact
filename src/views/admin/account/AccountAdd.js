@@ -8,20 +8,23 @@ import {
     Input,
     Row,
     Col,
-    InputGroup,
     Spinner,
 } from "reactstrap";
 // core component
 import { useState, useRef, useEffect } from "react";
 // react toastify component
 import { Slide, ToastContainer, toast } from 'react-toastify';
+// custom component
+import SearchWithPopup from "components/Popups/SearchWithPopup.js";
 // hooks
 import { useAddAccount } from "hooks/UseAccountApi.js";
 import { useGetAllRole } from "hooks/UseRoleApi.js";
+import { useSearchEmployee } from "hooks/UseEmployeeApi.js";
 
 const AccountAdd = ({ onCancel }) => {
     const [dataBody, setDataBody] = useState({});
     const formRef = useRef(null);
+    let arrSetValueInput = useState([]);
 
     const { data, loading, error } = useAddAccount(dataBody);
     const {
@@ -63,6 +66,7 @@ const AccountAdd = ({ onCancel }) => {
                 transition: Slide,
             });
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [error, data]);
 
     const handleSubmit = (event) => {
@@ -74,6 +78,8 @@ const AccountAdd = ({ onCancel }) => {
 
     const handleReset = () => {
         formRef.current.reset();
+        arrSetValueInput[0]("");
+        arrSetValueInput[1]("");
     };
 
     return (
@@ -118,7 +124,6 @@ const AccountAdd = ({ onCancel }) => {
                                     </FormGroup>
                                 </Col>
                                 <Col lg="6">
-                                    
                                     <FormGroup>
                                         <label
                                             className="form-control-label"
@@ -127,34 +132,33 @@ const AccountAdd = ({ onCancel }) => {
                                             Role
                                         </label>
                                         <div className="position-relative">
-                                        {loadingRole && (
-                                        <div className="overlay-spinner-table-loading">
-                                            <Spinner size="sm" color="info"></Spinner>
+                                            {loadingRole && (
+                                                <div className="overlay-spinner-table-loading">
+                                                    <Spinner size="sm" color="info"></Spinner>
+                                                </div>
+                                            )}
+                                            <select
+                                                id="roleId"
+                                                name="roleId"
+                                                className="form-control"
+                                                required
+                                            >
+                                                <option value="">Select Role</option>
+                                                {dataRole
+                                                    ? dataRole.results?.map(item => (
+                                                        <option key={`option-role-${item.id}`} value={item.id}>{item.name}</option>
+                                                    ))
+                                                    : ""
+                                                }
+                                            </select>
+
                                         </div>
-                                    )}
-                                        <select
-                                            id="roleId"
-                                            name="roleId"
-                                            className="form-control"
-                                            required
-                                        >
-                                            <option value="">Select Role</option>
-                                            {dataRole
-                                                ? dataRole.results?.map(item => (
-                                                    <option value={item.id}>{item.name}</option>
-                                                ))
-                                                : ""
-                                            }
-                                        </select>
-                                    
-                                        </div>
-                                      </FormGroup>  
+                                    </FormGroup>
                                 </Col>
                             </Row>
                         </div>
                         <div className="pl-lg-4">
                             <Row>
-
                                 <Col lg="6">
                                     <FormGroup>
                                         <label
@@ -173,6 +177,33 @@ const AccountAdd = ({ onCancel }) => {
                                             <option value="Active">Active</option>
                                             <option value="Lock">Lock</option>
                                         </select>
+                                    </FormGroup>
+                                </Col>
+                                <Col lg="6">
+                                    <FormGroup>
+                                        <label
+                                            className="form-control-label"
+                                            htmlFor="input-status"
+                                        >
+                                            Employee
+                                        </label>
+                                        <SearchWithPopup
+                                            titleModal="Search Employee (Name or ID)"
+                                            nameInput="employeeId"
+                                            searchApiFunc={useSearchEmployee}
+                                            propertyInDataToViewSearch={
+                                                [
+                                                    { text: "ID: ", property: "id" },
+                                                    { text: " ~ ", property: "fullname" },
+                                                    { text: " ~ ", property: "dateOfBirth" },
+                                                ]
+                                            }
+                                            propertyInDataToViewDisableInput={["id", "fullname"]}
+                                            propertyInDataToSetRealInput="id"
+                                            required="required"
+                                            deboundTimeOut={1500}
+                                            arrSetValueInput = {arrSetValueInput}
+                                        />
                                     </FormGroup>
                                 </Col>
                             </Row>

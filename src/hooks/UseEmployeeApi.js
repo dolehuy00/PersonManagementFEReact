@@ -6,7 +6,8 @@ import {
     getOneEmployee,
     editEmployee,
     lockEmployee,
-    unlockEmployee
+    unlockEmployee,
+    searchEmployee
 } from 'services/management/EmployeeApi.js';
 import { useNavigate } from "react-router-dom";
 
@@ -154,4 +155,31 @@ export const useChangeStatusEmployee = () => {
     };
 
     return { data, loading, error, request };
+};
+
+export const useSearchEmployee = () => {
+    const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const navigate = useNavigate();
+
+    const requestSearch = async (fullnameOrId) => {
+        setLoading(true);
+        try {
+            if (fullnameOrId.length > 0) {
+                const result = await searchEmployee(fullnameOrId);
+                setData(result.results);
+            }
+            setLoading(false);
+        } catch (error) {
+            if (error.response.status === 401) {
+                navigate('/auth');
+            } else {
+                setLoading(false);
+                setError(error);
+            }
+        }
+    };
+
+    return { data, loading, error, requestSearch };
 };

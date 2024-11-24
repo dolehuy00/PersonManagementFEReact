@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   Button,
   Input,
@@ -8,15 +8,30 @@ import {
   ModalFooter,
   ListGroup,
   ListGroupItem,
+  Spinner,
+  Row,
+  Col,
 } from 'reactstrap';
-import axios from 'axios';
 
-const SearchWithPopup = () => {
+const SearchWithPopup = ({
+  titleModal, // string
+  nameInput, // string
+  searchApiFunc, // fuction
+  propertyInDataToViewSearch, // array dictionaries [{text: "", property: "id"},{text: " ~ ", property: "fullname"}]
+  propertyInDataToViewDisableInput, // array ["property_1", ["property_2"]]
+  required, // string
+  propertyInDataToSetRealInput,// string
+  deboundTimeOut, // integer
+  arrSetValueInput, // array
+  disabled // string
+}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [disabledInput, setDisabledInput] = useState('');
+  const [disabledInputValue, setDisabledInputValue] = useState('');
+  const [realInputValue, setRealInputValue] = useState('');
   const [searchValue, setSearchValue] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
   const [typingTimeout, setTypingTimeout] = useState(null);
+
+  const { data, loading, error, requestSearch } = searchApiFunc();
 
   // Toggle Popup
   const toggleModal = () => setIsModalOpen(!isModalOpen);
@@ -34,52 +49,53 @@ const SearchWithPopup = () => {
     // Set new timeout
     setTypingTimeout(
       setTimeout(() => {
-        fetchSearchResults(value);
-      }, 1000)
+        requestSearch(value);
+      }, deboundTimeOut)
     );
-  };
-
-  // Fetch search results from API
-  const fetchSearchResults = async (query) => {
-    if (!query) {
-      setSearchResults([]);
-      return;
-    }
-    try {
-      const response = await axios.get(`https://api.example.com/search`, {
-        params: { query },
-      });
-      setSearchResults(response.data); // Assume API returns an array of { id, name }
-    } catch (error) {
-      console.error('Error fetching search results:', error);
-    }
   };
 
   // Handle selection of a search result
   const handleSelectResult = (result) => {
-    setDisabledInput(result.name); // Update the disabled input
+    setDisabledInputValue(`${result[propertyInDataToViewDisableInput[0]]} ~ ${result[propertyInDataToViewDisableInput[1]]}`); // Update the disabled input
+    setRealInputValue(result[propertyInDataToSetRealInput])
     toggleModal(); // Close modal
   };
 
   return (
-    <div className="container mt-4">
-      {/* Disabled Input */}
-      <Input
-        type="text"
-        value={disabledInput}
-        disabled
-        placeholder="Selected value will appear here"
-      />
-
-      {/* Button to open modal */}
-      <Button color="primary" className="mt-2" onClick={toggleModal}>
-        Search Here
-      </Button>
-
+    <div className="container">
+      <Row>
+        <Col className="px-0">
+          {/* Disabled Input */}
+          <Input
+            innerRef={() => { if (arrSetValueInput) arrSetValueInput[0] = setDisabledInputValue }}
+            type="text"
+            value={disabledInputValue}
+            placeholder="Search and select at the button next to"
+            required={required}
+            disabled={disabled}
+            onChange={(e) => e.preventDefault()}
+          />
+          <Input
+            innerRef={() => { if (arrSetValueInput) arrSetValueInput[1] = setRealInputValue }}
+            type="number"
+            value={realInputValue}
+            hidden
+            readOnly
+            name={nameInput}
+            required={required}
+          />
+        </Col>
+        <Col lg={{ size: "auto" }} className="pr-0">
+          {/* Button to open modal */}
+          <Button color="primary" className="" onClick={toggleModal}>
+            Choose
+          </Button>
+        </Col>
+      </Row>
       {/* Modal */}
       <Modal isOpen={isModalOpen} toggle={toggleModal}>
-        <ModalHeader toggle={toggleModal}>Search</ModalHeader>
-        <ModalBody>
+        <ModalHeader toggle={toggleModal}>{titleModal}</ModalHeader>
+        <ModalBody className="pt-0">
           {/* Input for search */}
           <Input
             type="text"
@@ -88,19 +104,38 @@ const SearchWithPopup = () => {
             onChange={handleSearchChange}
           />
 
+          {/* Loading spinner */}
+          {loading && (
+            <div className="text-center mt-3">
+              <Spinner color="info" type="grow" size="sm" />
+              <p className="mb-0">Loading...</p>
+            </div>
+          )}
+
           {/* Display search results */}
-          <ListGroup className="mt-3">
-            {searchResults.map((result) => (
-              <ListGroupItem
-                key={result.id}
-                tag="button"
-                action
-                onClick={() => handleSelectResult(result)}
-              >
-                {result.name}
-              </ListGroupItem>
-            ))}
-          </ListGroup>
+          {!loading && (
+            <ListGroup className="mt-3">
+              {data.map((result) => (
+                <ListGroupItem
+                  key={result.id}
+                  tag="button"
+                  action
+                  onClick={() => handleSelectResult(result)}
+                >
+                  {propertyInDataToViewSearch?.map((item) => (item.text + result[item.property]))}
+                </ListGroupItem>
+              ))}
+
+              {/* No results message */}
+              {data?.length === 0 && (
+                <p className="text-center mt-3 text-muted">No results found.</p>
+              )}
+              {/* Error message */}
+              {error && (
+                <p className="text-center mt-3 text-muted">Error load data.</p>
+              )}
+            </ListGroup>
+          )}
         </ModalBody>
         <ModalFooter>
           <Button color="secondary" onClick={toggleModal}>

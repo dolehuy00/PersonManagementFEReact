@@ -22,7 +22,6 @@ export const getOneEmployee = async (employeeId) => {
     }
 }
 
-
 export const filterEmployee = async (dataFilter, sortBy, pageNumber, pageSize) => {
     try {
         const token = localStorage.getItem('accessToken');
@@ -123,6 +122,27 @@ export async function unlockEmployee(employeeId) {
         throw error;
     }
 };
+
+
+export const searchEmployee = async (fullnameOrId) => {
+    try {
+        const accessToken = localStorage.getItem('accessToken');
+        const response = await axios.get(`${API_BASE_URL}/search`, {
+            params: { fullnameOrId },
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            },
+        });
+
+        var data = response.data;
+        for (let index = 0; index < data?.results?.length; index++) {
+            data.results[index].dateOfBirth = data.results[index].dateOfBirth.split("T")[0];  
+        }
+        return data;
+    } catch (error) {
+        throw error;
+    }
+}
 
 
 // // delay
