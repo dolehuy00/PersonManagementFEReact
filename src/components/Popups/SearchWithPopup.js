@@ -22,8 +22,9 @@ const SearchWithPopup = ({
   required, // string
   propertyInDataToSetRealInput,// string
   deboundTimeOut, // integer
-  arrSetValueInput, // array
-  disabled // string
+  arraySetValueInput, // array
+  disabled, // string
+  onChange
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [disabledInputValue, setDisabledInputValue] = useState('');
@@ -58,7 +59,23 @@ const SearchWithPopup = ({
   const handleSelectResult = (result) => {
     setDisabledInputValue(`${result[propertyInDataToViewDisableInput[0]]} ~ ${result[propertyInDataToViewDisableInput[1]]}`); // Update the disabled input
     setRealInputValue(result[propertyInDataToSetRealInput])
+    const fakeEvent = {
+      target: {
+        name: nameInput,
+        value: result[propertyInDataToSetRealInput],
+      },
+    };
+    onChange(fakeEvent)
     toggleModal(); // Close modal
+  };
+
+  const handleSetData = (result) => {
+    setDisabledInputValue(
+      `${result[propertyInDataToViewDisableInput[0]]}`+
+      `${result[propertyInDataToViewDisableInput[0]] && result[propertyInDataToViewDisableInput[1]] ? " ~ " : ""}`+
+      `${result[propertyInDataToViewDisableInput[1]]}`
+    ); // Update the disabled input
+    setRealInputValue(result[propertyInDataToSetRealInput])
   };
 
   return (
@@ -67,7 +84,7 @@ const SearchWithPopup = ({
         <Col className="px-0">
           {/* Disabled Input */}
           <Input
-            innerRef={() => { if (arrSetValueInput) arrSetValueInput[0] = setDisabledInputValue }}
+            innerRef={() => { if (arraySetValueInput) arraySetValueInput[0] = handleSetData }}
             type="text"
             value={disabledInputValue}
             placeholder="Search and select at the button next to"
@@ -76,7 +93,6 @@ const SearchWithPopup = ({
             onChange={(e) => e.preventDefault()}
           />
           <Input
-            innerRef={() => { if (arrSetValueInput) arrSetValueInput[1] = setRealInputValue }}
             type="number"
             value={realInputValue}
             hidden
@@ -87,7 +103,7 @@ const SearchWithPopup = ({
         </Col>
         <Col lg={{ size: "auto" }} className="pr-0">
           {/* Button to open modal */}
-          <Button color="primary" className="" onClick={toggleModal}>
+          <Button color="primary" className="" onClick={toggleModal} disabled={disabled}>
             Choose
           </Button>
         </Col>

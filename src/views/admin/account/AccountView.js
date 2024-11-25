@@ -9,7 +9,6 @@ import {
     Input,
     CardBody,
     FormGroup,
-    InputGroup,
     Spinner,
     Form
 } from "reactstrap";
@@ -21,7 +20,6 @@ import { Slide, ToastContainer, toast } from 'react-toastify';
 // component
 import Header from "components/Headers/Header.js";
 import LoadingOrError from "components/Notifications/LoadingOrError.js";
-import DatePickerWithTooltip from "components/DateTimePickers/DatePickerWithTooltip.js";
 import SearchWithPopup from "components/Popups/SearchWithPopup.js";
 
 // custom hooks
@@ -40,13 +38,15 @@ const ViewAccount = () => {
     const accountId = searchParams.get("id");
     const mode = searchParams.get("mode")
 
-    // state variable
+    // state constant
     const [formValues, setFormValues] = useState({});
     const [formValuesDefault, setFormValuesDefault] = useState({});
     const [viewMode, setViewMode] = useState(mode || "");
     const [formValueIsValid, setFormValueIsValid] = useState(false);
     const [dataEdit, setDataEdit] = useState({});
     const [statusValue, setStatusValue] = useState("");
+
+    // state variable
     let arrSetValueInput = useState([]);
 
     // request data
@@ -55,20 +55,23 @@ const ViewAccount = () => {
     const { data: dataEditResponse, loading: loadingEdit, error: errorEdit } = useEditAccount(dataEdit);
     const { data: dataLockResponse, loading: loadingLock, error: errorLock, request: requestLock } = useChangeStatusAccount();
 
-    // effect
+    // effect for get all role for dropdown choose role
     useEffect(() => {
         requestGetAllRole()
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
+    // effect for get object data
     useEffect(() => {
         if (Object.keys(dataGetAcc).length > 0) {
             setDataForm(dataGetAcc);
             setFormValuesDefault(dataGetAcc)
             setStatusValue(dataGetAcc.results[0].status || "")
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dataGetAcc]);
 
+    // effect error edit to show toast error
     useEffect(() => {
         if (errorEdit) {
             toast.error("Save failed, an error occurred, please try again later!", {
@@ -85,6 +88,7 @@ const ViewAccount = () => {
         }
     }, [errorEdit]);
 
+    // effect success edit to show toast edit success
     useEffect(() => {
         if (dataEditResponse.status === 200) {
             setFormValuesDefault(dataEditResponse)
@@ -102,7 +106,8 @@ const ViewAccount = () => {
             });
         }
     }, [dataEditResponse]);
-
+ 
+    // effect error lock object to show error toast
     useEffect(() => {
         if (errorLock) {
             toast.error(`Change status fail, ${errorLock.response?.data?.messages[1]}`, {
@@ -119,6 +124,7 @@ const ViewAccount = () => {
         }
     }, [errorLock]);
 
+    // effect success lock object to show success message
     useEffect(() => {
         if (dataLockResponse.status === 200) {
             setStatusValue(dataLockResponse?.messages[1])
@@ -137,13 +143,14 @@ const ViewAccount = () => {
     }, [dataLockResponse]);
 
 
-    // handle function
+    // handle submit form
     const handleSubmit = (event) => {
         event.preventDefault();
         setDataEdit(formValues);
         setFormValueIsValid(false);
     };
 
+    //handle click cancel edit mode
     const handleCancelEdit = (event) => {
         event.preventDefault();
         setViewMode("view");
@@ -151,12 +158,7 @@ const ViewAccount = () => {
         setFormValueIsValid(false);
     }
 
-    const handleClickEdit = (event) => {
-        event.preventDefault();
-        setViewMode("edit");
-    }
-
-    const handleInputChange = (e) => {
+    const handleSelectChange = (e) => {
         const { name, value } = e.target;
         setFormValues((prevValues) => ({
             ...prevValues,
@@ -165,16 +167,23 @@ const ViewAccount = () => {
         setFormValueIsValid(true);
     };
 
+    // handle click edit button
+    const handleClickEdit = (event) => {
+        event.preventDefault();
+        setViewMode("edit");
+    }
+
+    // handle click button lock/unlock status
     const handleLock = () => {
         requestLock(accountId, statusValue)
     }
 
-
-    // other function
+    // check edit mode
     const isEditMode = () => {
         return viewMode === "edit";
     };
 
+    // set data to dataForm constant
     const setDataForm = (data) => {
         if (data.results) {
             const result = data.results[0];
@@ -182,10 +191,9 @@ const ViewAccount = () => {
                 id: result.id || -1,
                 email: result.email || "",
                 roleId: result.roleId || -1,
-                roleName: result.roleName || "",
-                employeeId: result.employeeId || -1,
-                employeeName: result.employeeName || "",
+                employeeId: result.employeeId || -1
             });
+            arrSetValueInput[0]({fullname: result.employeeName, id: result.employeeId})     
         }
     }
 
@@ -308,13 +316,20 @@ const ViewAccount = () => {
                                                                     id="roleId"
                                                                     name="roleId"
                                                                     className="form-control"
+                                                                    value={formValues.roleId || ""}
                                                                     required
                                                                     disabled={!isEditMode()}
+                                                                    onChange={handleSelectChange}
                                                                 >
                                                                     <option value="">Select Role</option>
                                                                     {dataRole
                                                                         ? dataRole.results?.map(item => (
-                                                                            <option key={`option-role-${item.id}`} value={item.id}>{item.name}</option>
+                                                                            <option
+                                                                                key={`option-role-${item.id}`}
+                                                                                value={item.id}
+                                                                            >
+                                                                                {item.name}
+                                                                            </option>
                                                                         ))
                                                                         : ""
                                                                     }
@@ -388,7 +403,8 @@ const ViewAccount = () => {
                                                                 required="required"
                                                                 deboundTimeOut={1500}
                                                                 disabled={!isEditMode()}
-                                                                arrSetValueInput = {arrSetValueInput}
+                                                                arraySetValueInput={arrSetValueInput}
+                                                                onChange={handleSelectChange}
                                                             />
                                                         </FormGroup>
                                                     </Col>

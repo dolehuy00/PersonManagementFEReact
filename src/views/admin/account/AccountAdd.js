@@ -40,7 +40,7 @@ const AccountAdd = ({ onCancel }) => {
 
     useEffect(() => {
         if (error) {
-            toast.error("Save failed, an error occurred, please try again later!", {
+            toast.error(error.response.data.messages[0] || "Save failed, an error occurred, please try again later!", {
                 position: "bottom-right",
                 autoClose: 10000,
                 hideProgressBar: false,
@@ -78,8 +78,7 @@ const AccountAdd = ({ onCancel }) => {
 
     const handleReset = () => {
         formRef.current.reset();
-        arrSetValueInput[0]("");
-        arrSetValueInput[1]("");
+        arrSetValueInput[0]({fullname: "", id: ""})     
     };
 
     return (
@@ -202,7 +201,7 @@ const AccountAdd = ({ onCancel }) => {
                                             propertyInDataToSetRealInput="id"
                                             required="required"
                                             deboundTimeOut={1500}
-                                            arrSetValueInput = {arrSetValueInput}
+                                            arraySetValueInput = {arrSetValueInput}
                                         />
                                     </FormGroup>
                                 </Col>
