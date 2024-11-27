@@ -38,7 +38,7 @@ const User = (props) => {
 
   const getRoutes = (routes) => {
     return routes.map((prop, key) => {
-      if (prop.layout === "/user") {
+      if (prop.layout === "") {
         return (
           <Route path={prop.path} element={prop.component} key={key} exact />
         );
@@ -66,7 +66,7 @@ const User = (props) => {
         {...props}
         routes={userRoutes}
         logo={{
-          innerLink: "/user/dashboard",
+          innerLink: "/dashboard",
           imgSrc: require("../assets/img/brand/argon-react.png"),
           imgAlt: "...",
         }}
@@ -78,7 +78,7 @@ const User = (props) => {
         />
         <Routes>
           {getRoutes(userRoutes)}
-          <Route path="*" element={<Navigate to="/user/dashboard" replace />} />
+          <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>
         <Container fluid>
           <AdminFooter />

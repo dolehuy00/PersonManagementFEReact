@@ -37,7 +37,7 @@ const ViewEmployee = () => {
     const employeeId = searchParams.get("id");
     const mode = searchParams.get("mode")
 
-    // state
+    // state constant
     const [formValues, setFormValues] = useState({});
     const [formValuesDefault, setFormValuesDefault] = useState({});
     const [viewMode, setViewMode] = useState(mode || "");
@@ -50,7 +50,7 @@ const ViewEmployee = () => {
     const { data: dataEditResponse, loading: loadingEdit, error: errorEdit } = useEditEmployee(dataEdit);
     const { data: dataLockResponse, loading: loadingLock, error: errorLock, request: requestLock } = useChangeStatusEmployee();
 
-    // effect
+    // effect set data to form
     useEffect(() => {
         if (Object.keys(dataGetEmpl).length > 0) {
             setDataForm(dataGetEmpl);
@@ -59,6 +59,7 @@ const ViewEmployee = () => {
         }
     }, [dataGetEmpl]);
 
+    // effect show toast error respone save change
     useEffect(() => {
         if (errorEdit) {
             toast.error("Save failed, an error occurred, please try again later!", {
@@ -75,6 +76,7 @@ const ViewEmployee = () => {
         }
     }, [errorEdit]);
 
+    // effect show toast success respone save change
     useEffect(() => {
         if (dataEditResponse.status === 200) {
             setFormValuesDefault(dataEditResponse)
@@ -93,6 +95,7 @@ const ViewEmployee = () => {
         }
     }, [dataEditResponse]);
 
+    // effect show toast error change status
     useEffect(() => {
         if (errorLock) {
             toast.error(`Change status fail, ${errorLock.response?.data?.messages[1]}`, {
@@ -109,6 +112,7 @@ const ViewEmployee = () => {
         }
     }, [errorLock]);
 
+    // effect show toast success change status
     useEffect(() => {
         if (dataLockResponse.status === 200) {
             setStatusValue(dataLockResponse?.messages[1])
@@ -127,13 +131,14 @@ const ViewEmployee = () => {
     }, [dataLockResponse]);
 
 
-    // handle function
+    // handle submit form data
     const handleSubmit = (event) => {
         event.preventDefault();
         setDataEdit(formValues);
         setFormValueIsValid(false);
     };
 
+    // handle cancel edit mode
     const handleCancelEdit = (event) => {
         event.preventDefault();
         setViewMode("view");
@@ -141,11 +146,13 @@ const ViewEmployee = () => {
         setFormValueIsValid(false);
     }
 
+    // handle view edit mode
     const handleClickEdit = (event) => {
         event.preventDefault();
         setViewMode("edit");
     }
 
+    // handle common input change
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormValues((prevValues) => ({
@@ -155,6 +162,7 @@ const ViewEmployee = () => {
         setFormValueIsValid(true);
     };
 
+    // handle date input change
     const handleDateChange = (date, isValid, name) => {
         if (isValid) {
             setFormValues((prevValues) => ({
@@ -171,16 +179,18 @@ const ViewEmployee = () => {
         }
     };
 
+    // handle click lock/unlock button
     const handleLock = () => {
         requestLock(employeeId, statusValue)
     }
 
 
-    // other function
+    // check edit mode function
     const isEditMode = () => {
         return viewMode === "edit";
     };
 
+    // set data to form fuction
     const setDataForm = (data) => {
         if (data.results) {
             const result = data.results[0];
@@ -196,20 +206,23 @@ const ViewEmployee = () => {
         }
     }
 
-
-    // render
+    // render loading data employee
     if (loadingGetEmpl) return (
         <>
             <Header />
             <LoadingOrError status="loading" />
         </>
     );
+
+    // render error load data employee
     if (errorGetEmpl) return (
         <>
             <Header />
             <LoadingOrError status="error" />
         </>
     );
+
+    // render loaded data employee
     return (
         <>
             <Header />

@@ -1,7 +1,6 @@
 
 // reactstrap components
 import {
-    Badge,
     Card,
     CardHeader,
     CardFooter,
@@ -9,25 +8,25 @@ import {
     DropdownItem,
     UncontrolledDropdown,
     DropdownToggle,
-    Media,
     Table,
     Container,
     Row,
     Col,
     Button,
-    Spinner
   } from "reactstrap";
+
   // core components
-  import React, { useState, useEffect } from "react";
-  import { Slide, ToastContainer, toast } from 'react-toastify';
+  import React, { useState } from "react";
+
   // hooks
-  import { useFilterAccount, useChangeStatusAccount } from "hooks/UseAccountApi.js";
-  //components
+  import { useFilterSalaryHistory } from "hooks/UseSalaryHistoryApi.js";
+
+  // components
   import CustomPagination from "components/Pagination/Pagination.js";
   import DropdownButtonSmall from "components/Dropdowns/DropdownButtonSmall.js";
   import FilterPopup from "components/Popups/FilterPopup.js";
   import Header from "components/Headers/Header.js";
-  import AccountAdd from "./AccountAdd.js";
+  import SalaryHistoryAdd from "./SalaryHistoryAdd.js";
   import LoadingOrError from "components/Notifications/LoadingOrError.js";
   
   const Tables = () => {
@@ -41,17 +40,14 @@ import {
     ];
     const arrayItemSortBy = [
       { text: "No sort", value: "" },
-      { text: "Sort by email ascending", value: "asc" },
-      { text: "Sort by email decreasing", value: "dec" },
+      { text: "Sort by date ascending", value: "asc" },
+      { text: "Sort by date decreasing", value: "dec" },
     ];
     const itemSingleFilters = [
-      { labelName: "Keyword", nameInput: "keyword", type: "text" },
-      { labelName: "Name Or Id Employee", nameInput: "keywordByEmployee", type: "text" },
-      { labelName: "Status", nameInput: "filterByStatus", type: "text" },
-      { labelName: "Role", nameInput: "filterByRole", type: "text" },
+      { labelName: "Employee Id", nameInput: "employeeId", type: "number" }
     ];
   
-    //states
+    //state constant
     const [pageIndex, setPageIndex] = useState(1);
     const [pageSize, setPageSize] = useState(5);
     const [dataFilter, setDataFilter] = useState({});
@@ -59,7 +55,6 @@ import {
     const [bodyView, setBodyView] = useState("");
     const buttonPerPageState = useState(arrayItemPerPage[0]);
     const buttonSortByState = useState(arrayItemSortBy[0])
-    const [statusColMap, setStatusColMap] = useState({});
   
     // handle function
     const handlePageChange = (newPageIndex) => {
@@ -88,114 +83,11 @@ import {
       event.preventDefault();
       setBodyView("table")
     }
-  
-    const handleLockAccount = (accountId, statusValue) => {
-      requestLock(accountId, statusValue)
-    }
-  
+
     // request data
-    const { data, loading, error } = useFilterAccount(dataFilter, sortBy, pageIndex, pageSize);
+    const { data, loading, error } = useFilterSalaryHistory(dataFilter, sortBy, pageIndex, pageSize);
     const totalPage = data.totalPage;
-    const {
-      data: dataLockResponse,
-      loading: loadingLock,
-      error: errorLock,
-      request: requestLock
-    } = useChangeStatusAccount();
-  
-  
-    // effect
-    useEffect(() => {
-      if (errorLock) {
-        toast.error(`Change status fail, ${errorLock.response?.data?.messages[0]}`, {
-          position: "bottom-right",
-          autoClose: 10000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "colored",
-          transition: Slide,
-        });
-      }
-    }, [errorLock]);
-  
-    useEffect(() => {
-      if (dataLockResponse.status === 200) {
-        changeStatusCol(
-          dataLockResponse.messages[0],
-          dataLockResponse.messages[1]
-        );
-        toast.success(
-          `${dataLockResponse.messages[1] === "Active" ? "Unlock" : "Lock"} "${dataLockResponse.messages[0]}" successfully`,
-          {
-            position: "bottom-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "colored",
-            transition: Slide,
-          }
-        );
-      }
-    }, [dataLockResponse]);
-  
-    // fuction
-    const changeStatusCol = (key, newStatus) => {
-      setStatusColMap((prev) => ({ ...prev, [key]: newStatus }));
-    };
-  
-    // render fuction
-    const renderDataColStatus = (status) => {
-      return (
-        <>
-          {status === "Active" ? (
-            <i className="bg-success" />
-          ) : (
-            <i className="bg-danger" />
-          )}
-          {status}
-        </>
-      );
-    }
-  
-    const renderContentItemLockDropdown = (emplId, status) => {
-      return (
-        <>
-          {status === "Active"
-            ? (
-              <DropdownItem
-                disabled={loadingLock}
-                href="#pablo"
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleLockAccount(emplId, status);
-                }}
-              >
-                Lock
-              </DropdownItem>
-            )
-            : (
-              <DropdownItem
-                disabled={loadingLock}
-                href="#pablo"
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleLockAccount(emplId, status)
-                }}
-              >
-                Unlock
-              </DropdownItem>
-            )
-          }
-        </>
-      )
-    }
-  
+   
     // render
     if (loading) return (
       <>
@@ -220,7 +112,7 @@ import {
           <Row>
             <div className="col">
               {bodyView === "create"
-                ? (<AccountAdd onCancel={handleCancelCreate} />)
+                ? (<SalaryHistoryAdd onCancel={handleCancelCreate} />)
                 : (
                   <Card className="shadow">
                     <CardHeader className="border-0">
@@ -253,20 +145,16 @@ import {
                         </Row>
                       </Container>
                     </CardHeader>
-                    {loadingLock && (
-                      <div className="overlay-spinner-table-loading">
-                        <Spinner color="info"></Spinner>
-                      </div>
-                    )}
                     <Table className="align-items-center table-flush" responsive>
                       <thead className="thead-light">
                         <tr className="text-center">
                           <th scope="col">Id</th>
-                          <th scope="col">Email</th>
-                          <th scope="col">Role Name</th>
-                          <th scope="col">Employee Id</th>
-                          <th scope="col">Employee Name</th>
-                          <th scope="col">Status</th>
+                          <th scope="col">Basic Salary</th>
+                          <th scope="col">Bonus Salary</th>
+                          <th scope="col">Penalty</th>
+                          <th scope="col">Tax</th>
+                          <th scope="col">Date<br/>(YYYY-MM-DD)</th>
+                          <th scope="col">Employee</th>
                           <th scope="col" />
                         </tr>
                       </thead>
@@ -275,40 +163,14 @@ import {
                           ? data.results.map((item, index) => (
                             <tr key={index} className="text-center">
                               <th scope="row">{item.id}</th>
+                              <td>{item.basicSalary}</td>
+                              <td>{item.bonusSalary}</td>
                               <td>
-                                <Media className="align-items-center">
-                                  <a
-                                    className="avatar rounded-circle mr-3"
-                                    href="#pablo"
-                                    onClick={(e) => e.preventDefault()}
-                                  >
-                                    <img
-                                      alt="..."
-                                      src={require("../../../assets/img/theme/bootstrap.jpg")}
-                                    />
-                                  </a>
-                                  <Media>
-                                    <span className="mb-0 text-sm">
-                                      {item.email}
-                                    </span>
-                                  </Media>
-                                </Media>
+                                {item.penalty}
                               </td>
-                              <td>{item.roleName}</td>
-                              <td>
-                                {item.employeeId}
-                              </td>
-                              <td>{item.employeeName}</td>
-                              <td>
-                                <Badge
-                                  color=""
-                                  className="badge-dot mr-4">
-                                  {statusColMap[item.id]
-                                    ? renderDataColStatus(statusColMap[item.id])
-                                    : renderDataColStatus(item.status)
-                                  }
-                                </Badge>
-                              </td>
+                              <td>{item.tax}</td>
+                              <td>{item.date.split("T")[0]}</td>
+                              <td>{`${item.employeeId} - ${item.employeeName}`}</td>
                               <td className="text-right">
                                 <UncontrolledDropdown>
                                   <DropdownToggle
@@ -323,19 +185,15 @@ import {
                                   </DropdownToggle>
                                   <DropdownMenu className="dropdown-menu-arrow" right>
                                     <DropdownItem
-                                      href={`account/view?id=${item.id}`}
+                                      href={`employee/view?id=${item.id}`}
                                     >
                                       View Details
                                     </DropdownItem>
                                     <DropdownItem
-                                      href={`account/view?id=${item.id}&mode=edit`}
+                                      href={`employee/view?id=${item.id}&mode=edit`}
                                     >
                                       Edit
                                     </DropdownItem>
-                                    {statusColMap[item.id]
-                                      ? renderContentItemLockDropdown(item.id, statusColMap[item.id])
-                                      : renderContentItemLockDropdown(item.id, item.status)
-                                    }
                                   </DropdownMenu>
                                 </UncontrolledDropdown>
                               </td>
@@ -362,9 +220,6 @@ import {
             </div>
           </Row>
         </Container>
-        <div>
-          <ToastContainer />
-        </div>
       </>
     );
   };

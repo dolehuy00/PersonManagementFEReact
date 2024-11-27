@@ -25,6 +25,8 @@ import Employee from "views/admin/employee/EmployeeTable.js";
 import EmployeeView from "views/admin/employee/EmployeeView.js";
 import Account from "views/admin/account/AccountTable.js";
 import AccountView from "views/admin/account/AccountView.js";
+import SalaryHistory from "views/admin/salaryHistory/SalaryHistoryTable.js";
+import SalaryHistoryView from "views/admin/salaryHistory/SalaryHistoryView.js";
 
 //User
 import UserDashboard from "views/user/Dashboard.js";
@@ -70,6 +72,22 @@ export var managerRoutes = [
     component: <AccountView />,
     layout: "/admin",
     viewOnSidebar: false,
+  },
+  {
+    path: "/salary-history",
+    name: "Salary",
+    icon: "fa-solid fa-hand-holding-dollar text-yellow",
+    component: <SalaryHistory />,
+    layout: "/admin",
+    viewOnSidebar: true,
+  },
+  {
+    path: "/salary-history/view",
+    name: "Salary View",
+    icon: "fa-solid fa-sack-dollar text-yellow",
+    component: <SalaryHistoryView />,
+    layout: "/admin",
+    viewOnSidebar: false,
   }
 ];
 
@@ -81,7 +99,7 @@ export var userRoutes = [
     name: "Dashboard",
     icon: "ni ni-tv-2 text-primary",
     component: <UserDashboard />,
-    layout: "/user",
+    layout: "",
     viewOnSidebar: true,
   },
   {
@@ -89,7 +107,7 @@ export var userRoutes = [
     name: "User Profile",
     icon: "ni ni-single-02 text-yellow",
     component: <Profile />,
-    layout: "/user",
+    layout: "",
     viewOnSidebar: true,
   }
 ];

@@ -12,6 +12,7 @@ import {
     Spinner,
     Form
 } from "reactstrap";
+
 // core components
 import { useState, useEffect } from "react";
 import { useLocation } from 'react-router-dom';
@@ -68,7 +69,7 @@ const ViewAccount = () => {
             setFormValuesDefault(dataGetAcc)
             setStatusValue(dataGetAcc.results[0].status || "")
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dataGetAcc]);
 
     // effect error edit to show toast error
@@ -106,7 +107,7 @@ const ViewAccount = () => {
             });
         }
     }, [dataEditResponse]);
- 
+
     // effect error lock object to show error toast
     useEffect(() => {
         if (errorLock) {
@@ -142,7 +143,6 @@ const ViewAccount = () => {
         }
     }, [dataLockResponse]);
 
-
     // handle submit form
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -150,7 +150,7 @@ const ViewAccount = () => {
         setFormValueIsValid(false);
     };
 
-    //handle click cancel edit mode
+    // handle click cancel edit mode
     const handleCancelEdit = (event) => {
         event.preventDefault();
         setViewMode("view");
@@ -158,6 +158,7 @@ const ViewAccount = () => {
         setFormValueIsValid(false);
     }
 
+    // handle select dropdown and choose employee
     const handleSelectChange = (e) => {
         const { name, value } = e.target;
         setFormValues((prevValues) => ({
@@ -193,24 +194,27 @@ const ViewAccount = () => {
                 roleId: result.roleId || -1,
                 employeeId: result.employeeId || -1
             });
-            arrSetValueInput[0]({fullname: result.employeeName, id: result.employeeId})     
+            arrSetValueInput[0]({ fullname: result.employeeName, id: result.employeeId })
         }
     }
 
-
-    // render
+    // render loading data
     if (loadingGetAcc) return (
         <>
             <Header />
             <LoadingOrError status="loading" />
         </>
     );
+
+    // render error load data
     if (errorGetAcc) return (
         <>
             <Header />
             <LoadingOrError status="error" />
         </>
     );
+
+    // render data
     return (
         <>
             <Header />

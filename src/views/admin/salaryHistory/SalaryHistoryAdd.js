@@ -1,4 +1,4 @@
-// reactstrap component
+// reactstap component
 import {
     Button,
     Card,
@@ -8,8 +8,8 @@ import {
     Input,
     Row,
     Col,
-    InputGroup,
     Spinner,
+    InputGroup
 } from "reactstrap";
 
 // core component
@@ -19,42 +19,34 @@ import { useState, useRef, useEffect } from "react";
 import { Slide, ToastContainer, toast } from 'react-toastify';
 
 // custom component
+import SearchWithPopup from "components/Popups/SearchWithPopup.js";
 import DatePickerWithTooltip from "components/DateTimePickers/DatePickerWithTooltip.js";
 
 // hooks
-import { useAddEmployee } from "hooks/UseEmployeeApi.js";
+import { useAddSalaryHistory } from "hooks/UseSalaryHistoryApi.js";
+import { useSearchEmployee } from "hooks/UseEmployeeApi.js";
 
-const EmployeeAdd = ({ onCancel }) => {
+const SalaryHistoryAdd = ({ onCancel }) => {
     // state constant
     const [dataBody, setDataBody] = useState({});
-    const [dateOfBirth, setDateOfBirth] = useState("");
-    const [startDate, setStartDate] = useState("");
+    const [date, setDate] = useState("");
     const [formValueIsValid, setFormValueIsValid] = useState(false);
+    const [basicSalary, setBasicSalary] = useState("");
 
     // ref constant
     const formRef = useRef(null);
-    const dateOfBirthRef = useRef(null);
-    const startDateRef = useRef(null);
-    
+    const dateRef = useRef(null);
+
+    // state variable
+    let arrSetValueInput = useState([]);
+
     // request data
-    const { data, loading, error } = useAddEmployee(dataBody);
+    const { data, loading, error } = useAddSalaryHistory(dataBody);
 
-    // handle change date of birth input
-    const handleDateOfBirthChange = (date, isValid) => {
-        setDateOfBirth(date);
-        setFormValueIsValid(isValid)
-    }
-
-    // handle change start date of birth input
-    const handleStartDateChange = (date, isValid) => {
-        setStartDate(date);
-        setFormValueIsValid(isValid)
-    }
-
-    // effect show toast response add employee request
+    // effect show toast response save object
     useEffect(() => {
         if (error) {
-            toast.error("Save failed, an error occurred, please try again later!", {
+            toast.error(error.response.data.messages[0] || "Save failed, an error occurred, please try again later!", {
                 position: "bottom-right",
                 autoClose: 10000,
                 hideProgressBar: false,
@@ -80,9 +72,16 @@ const EmployeeAdd = ({ onCancel }) => {
                 transition: Slide,
             });
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [error, data]);
 
-    // handle submit form data
+    // handle date input change
+    const handleDateChange = (date, isValid) => {
+        setDate(date);
+        setFormValueIsValid(isValid);
+    }
+
+    // handle submit form
     const handleSubmit = (event) => {
         event.preventDefault();
         const formData = new FormData(formRef.current);
@@ -90,13 +89,23 @@ const EmployeeAdd = ({ onCancel }) => {
         setDataBody(data);
     };
 
-    // handle reset form data
+    // handle reset form
     const handleReset = () => {
-        dateOfBirthRef.current.state.inputValue = '';
-        startDateRef.current.state.inputValue = '';
-        setDateOfBirth('');
-        setStartDate('');
+        // clear date input
+        setDate("");
+        dateRef.current.state.inputValue = "";
+        // clear common input
         formRef.current.reset();
+        // clear choose employee input
+        arrSetValueInput[0]({ fullname: "", id: "" })
+        // clear basic salary input
+        setBasicSalary("");
+    };
+
+    // handle select choose employee
+    const handleSelectEmployeeChange = (e) => {
+        const otherData = e.otherData;
+        setBasicSalary(otherData.basicSalary)
     };
 
     // render
@@ -106,7 +115,7 @@ const EmployeeAdd = ({ onCancel }) => {
                 <CardHeader className="bg-white border-0">
                     <Row className="align-items-center">
                         <Col xs="8">
-                            <h3 className="mb-0">Add Employee</h3>
+                            <h3 className="mb-0">Create SalaryHistory</h3>
                         </Col>
                         <Col className="text-right" xs="4">
                             <Button
@@ -128,58 +137,28 @@ const EmployeeAdd = ({ onCancel }) => {
                                     <FormGroup>
                                         <label
                                             className="form-control-label"
-                                            htmlFor="input-fullname"
+                                            htmlFor="input-status"
                                         >
-                                            Fullname
+                                            Employee
                                         </label>
-                                        <Input
-                                            className="form-control-alternative"
-                                            id="input-fullname"
-                                            type="text"
-                                            name="fullname"
-                                            required
-                                        />
-                                    </FormGroup>
-                                </Col>
-                                <Col lg="6">
-                                    <FormGroup>
-                                        <label
-                                            className="form-control-label"
-                                            htmlFor="input-date-of-birth"
-                                        >
-                                            Date of Birth
-                                        </label>
-                                        <InputGroup className="input-group-alternative">
-                                            <DatePickerWithTooltip
-                                                ref={dateOfBirthRef}
-                                                value={dateOfBirth || ""}
-                                                dateFormat="YYYY-MM-DD"
-                                                className="form-control-alternative form-control"
-                                                name="dateOfBirth"
-                                                required="required"
-                                                placeholder="YYYY-MM-DD"
-                                                id="dateOfBirth"
-                                                onChange={(date, isValid) => handleDateOfBirthChange(date, isValid)}
-                                            />
-                                        </InputGroup>
-                                    </FormGroup>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col lg="6">
-                                    <FormGroup>
-                                        <label
-                                            className="form-control-label"
-                                            htmlFor="input-position"
-                                        >
-                                            Position
-                                        </label>
-                                        <Input
-                                            className="form-control-alternative"
-                                            id="input-position"
-                                            type="text"
-                                            name="position"
-                                            required
+                                        <SearchWithPopup
+                                            titleModal="Search Employee (Name or ID)"
+                                            nameInput="employeeId"
+                                            searchApiFunc={useSearchEmployee}
+                                            propertyInDataToViewSearch={
+                                                [
+                                                    { text: "ID: ", property: "id" },
+                                                    { text: " ~ ", property: "fullname" },
+                                                    { text: " ~ ", property: "dateOfBirth" },
+                                                ]
+                                            }
+                                            propertyInDataToViewDisableInput={["id", "fullname"]}
+                                            propertyInDataToSetRealInput="id"
+                                            required="required"
+                                            deboundTimeOut={1500}
+                                            arraySetValueInput={arrSetValueInput}
+                                            propertyPassedToOtherDataEventOnChange={["basicSalary"]}
+                                            onChange={handleSelectEmployeeChange}
                                         />
                                     </FormGroup>
                                 </Col>
@@ -197,74 +176,102 @@ const EmployeeAdd = ({ onCancel }) => {
                                             type="number"
                                             step="0.01"
                                             name="basicSalary"
+                                            value={basicSalary || ""}
+                                            onChange={(e) => e.preventDefault()}
                                             required
                                         />
                                     </FormGroup>
                                 </Col>
                             </Row>
-                        </div>
-                        <div className="pl-lg-4">
                             <Row>
-                                <Col md="12">
+                                <Col lg="6">
                                     <FormGroup>
                                         <label
                                             className="form-control-label"
-                                            htmlFor="input-address"
+                                            htmlFor="input-bonus-salary"
                                         >
-                                            Address
+                                            Bonus Salary
                                         </label>
                                         <Input
                                             className="form-control-alternative"
-                                            id="input-address"
-                                            type="text"
-                                            name="address"
+                                            id="input-bonus-salary"
+                                            type="number"
+                                            step="0.01"
+                                            name="bonusSalary"
+                                            required
+                                        />
+                                    </FormGroup>
+                                </Col>
+                                <Col lg="6">
+                                    <FormGroup>
+                                        <label
+                                            className="form-control-label"
+                                            htmlFor="input-penalty-salary"
+                                        >
+                                            Penalty
+                                        </label>
+                                        <Input
+                                            className="form-control-alternative"
+                                            id="input-penalty-salary"
+                                            type="number"
+                                            step="0.01"
+                                            name="penalty"
                                             required
                                         />
                                     </FormGroup>
                                 </Col>
                             </Row>
                             <Row>
+                                <Col lg="6">
+                                    <FormGroup>
+                                        <label
+                                            className="form-control-label"
+                                            htmlFor="input-tax-salary"
+                                        >
+                                            Tax
+                                        </label>
+                                        <Input
+                                            className="form-control-alternative"
+                                            id="input-tax-salary"
+                                            type="number"
+                                            step="0.01"
+                                            name="tax"
+                                            required
+                                        />
+                                    </FormGroup>
+                                </Col>
                                 <Col lg="6">
                                     <FormGroup>
                                         <label
                                             className="form-control-label"
                                             htmlFor="input-date-of-birth"
                                         >
-                                            Start Date
+                                            Date
                                         </label>
                                         <InputGroup className="input-group-alternative">
                                             <DatePickerWithTooltip
-                                                ref={startDateRef}
-                                                value={startDate || ""}
+                                                ref={dateRef}
+                                                value={date || ""}
                                                 dateFormat="YYYY-MM-DD"
                                                 className="form-control-alternative form-control"
-                                                name="startDate"
+                                                name="date"
                                                 required="required"
                                                 placeholder="YYYY-MM-DD"
-                                                id="startDate"
-                                                onChange={(date, isValid) => handleStartDateChange(date, isValid)}
+                                                id="date"
+                                                onChange={(date, isValid) => handleDateChange(date, isValid)}
                                             />
                                         </InputGroup>
                                     </FormGroup>
                                 </Col>
+                            </Row>
+                        </div>
+                        <div className="pl-lg-4">
+                            <Row>
                                 <Col lg="6">
-                                    <FormGroup>
-                                        <label
-                                            className="form-control-label"
-                                            htmlFor="input-status"
-                                        >
-                                            Status
-                                        </label>
-                                        <select
-                                            id="status"
-                                            name="status"
-                                            className="form-control"
-                                            required
-                                        >
-                                            <option value="Active">Active</option>
-                                            <option value="Lock">Lock</option>
-                                        </select>
-                                    </FormGroup>
+
+                                </Col>
+                                <Col lg="6">
+
                                 </Col>
                             </Row>
                         </div>
@@ -300,4 +307,4 @@ const EmployeeAdd = ({ onCancel }) => {
     )
 }
 
-export default EmployeeAdd;
+export default SalaryHistoryAdd;
