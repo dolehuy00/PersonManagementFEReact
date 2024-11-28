@@ -61,7 +61,7 @@ const AdminNavbar = (props) => {
                   <h6 className="text-overflow m-0">Welcome!</h6>
                 </DropdownItem>
                 <DropdownItem to="/dashboard" tag={Link}>
-                  <i className="ni ni-single-02" />
+                  <i className="fa-solid fa-chart-line"></i>
                   <span>Dashboard</span>
                 </DropdownItem>
                 <DropdownItem to="/user-profile" tag={Link}>
