@@ -20,9 +20,8 @@ import { useLocation, Route, Routes, Navigate } from "react-router-dom";
 // reactstrap components
 import { Container } from "reactstrap";
 // core components
-import AdminNavbar from "components/Navbars/AdminNavbar.js";
+import UserNavbar from "components/Navbars/UserNavbar.js";
 import AdminFooter from "components/Footers/AdminFooter.js";
-import Sidebar from "components/Sidebar/Sidebar.js";
 
 import {userRoutes} from "routes.js";
 
@@ -62,7 +61,7 @@ const User = (props) => {
 
   return (
     <>
-      <Sidebar
+      {/* <Sidebar
         {...props}
         routes={userRoutes}
         logo={{
@@ -70,9 +69,9 @@ const User = (props) => {
           imgSrc: require("../assets/img/brand/argon-react.png"),
           imgAlt: "...",
         }}
-      />
+      /> */}
       <div className="main-content" ref={mainContent}>
-        <AdminNavbar
+        <UserNavbar
           {...props}
           brandText={getBrandText(props?.location?.pathname)}
         />

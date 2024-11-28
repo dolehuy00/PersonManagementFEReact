@@ -185,12 +185,12 @@ import {
                                   </DropdownToggle>
                                   <DropdownMenu className="dropdown-menu-arrow" right>
                                     <DropdownItem
-                                      href={`employee/view?id=${item.id}`}
+                                      href={`salary-history/view?id=${item.id}`}
                                     >
                                       View Details
                                     </DropdownItem>
                                     <DropdownItem
-                                      href={`employee/view?id=${item.id}&mode=edit`}
+                                      href={`salary-history/view?id=${item.id}&mode=edit`}
                                     >
                                       Edit
                                     </DropdownItem>

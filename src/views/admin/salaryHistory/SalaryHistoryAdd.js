@@ -115,7 +115,7 @@ const SalaryHistoryAdd = ({ onCancel }) => {
                 <CardHeader className="bg-white border-0">
                     <Row className="align-items-center">
                         <Col xs="8">
-                            <h3 className="mb-0">Create SalaryHistory</h3>
+                            <h3 className="mb-0">Create Salary</h3>
                         </Col>
                         <Col className="text-right" xs="4">
                             <Button
@@ -267,11 +267,23 @@ const SalaryHistoryAdd = ({ onCancel }) => {
                         </div>
                         <div className="pl-lg-4">
                             <Row>
-                                <Col lg="6">
-
-                                </Col>
-                                <Col lg="6">
-
+                                <Col>
+                                    <FormGroup>
+                                        <label
+                                            className="form-control-label"
+                                            htmlFor="input-tax-salary"
+                                        >
+                                            Detail
+                                        </label>
+                                        <Input
+                                            className="form-control-alternative"
+                                            id="input-tax-salary"
+                                            rows="3"
+                                            type="textarea"
+                                            name="detail"
+                                            required
+                                        />
+                                    </FormGroup>
                                 </Col>
                             </Row>
                         </div>
