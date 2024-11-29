@@ -27,11 +27,18 @@ import {
   Container,
   Row,
   Col,
+  Spinner,
+  Alert
 } from "reactstrap";
 // core components
 import UserHeader from "components/Headers/UserHeader.js";
+import ImageWithSkeleton from "components/Images/ImageWithSkeleton.js";
+import { useGetInfoByEmployee } from "hooks/UseEmployeeApi.js";
 
 const Profile = () => {
+
+  const { data, loading, error } = useGetInfoByEmployee();
+
   return (
     <>
       <UserHeader />
@@ -43,13 +50,12 @@ const Profile = () => {
               <Row className="justify-content-center">
                 <Col className="order-lg-2" lg="3">
                   <div className="card-profile-image">
-                    <a href="#pablo" onClick={(e) => e.preventDefault()}>
-                      <img
-                        alt="..."
+                      <ImageWithSkeleton
+                        alt="avatar"
+                        placeholder={require("../../assets/img/theme/img-gray.png")}
                         className="rounded-circle"
-                        src={require("../../assets/img/theme/team-4-800x800.jpg")}
+                        src={data.results ? data.results[0].image : ""}
                       />
-                    </a>
                   </div>
                 </Col>
               </Row>
@@ -106,6 +112,11 @@ const Profile = () => {
           </Col>
           <Col className="order-xl-1" xl="8">
             <Card className="bg-secondary shadow">
+              {loading && (
+                <div className="overlay-spinner-table-loading">
+                  <Spinner color="info"></Spinner>
+                </div>
+              )}
               <CardHeader className="bg-white border-0">
                 <Row className="align-items-center">
                   <Col xs="8">
@@ -119,135 +130,161 @@ const Profile = () => {
                   <h6 className="heading-small text-muted mb-4">
                     User information
                   </h6>
-                  <div className="pl-lg-4">
-                    <Row>
-                      <Col lg="6">
-                        <FormGroup>
-                          <label
-                            className="form-control-label"
-                            htmlFor="input-fullname"
-                          >
-                            Fullname
-                          </label>
-                          <Input
-                            className="form-control-alternative"
-                            id="input-fullname"
-                            placeholder="Fullname"
-                            type="text"
-                          />
-                        </FormGroup>
-                      </Col>
-                      <Col lg="6">
-                        <FormGroup>
-                          <label
-                            className="form-control-label"
-                            htmlFor="input-date-of-birth"
-                          >
-                            Date Of Birth
-                          </label>
-                          <Input
-                            className="form-control-alternative"
-                            id="input-date-of-birth"
-                            placeholder="Date Of Birth"
-                            type="text"
-                          />
-                        </FormGroup>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col lg="6">
-                        <FormGroup>
-                          <label
-                            className="form-control-label"
-                            htmlFor="input-basic-salary"
-                          >
-                            Basic Salary
-                          </label>
-                          <Input
-                            className="form-control-alternative"
-                            id="input-basic-salary"
-                            placeholder="Basic Salary"
-                            type="text"
-                          />
-                        </FormGroup>
-                      </Col>
-                      <Col lg="6">
-                        <FormGroup>
-                          <label
-                            className="form-control-label"
-                            htmlFor="input-position"
-                          >
-                            Position
-                          </label>
-                          <Input
-                            className="form-control-alternative"
-                            id="input-position"
-                            placeholder="Position"
-                            type="text"
-                          />
-                        </FormGroup>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col lg="6">
-                        <FormGroup>
-                          <label
-                            className="form-control-label"
-                            htmlFor="input-department"
-                          >
-                            Department
-                          </label>
-                          <Input
-                            className="form-control-alternative"
-                            id="input-department"
-                            placeholder="Department"
-                            type="text"
-                          />
-                        </FormGroup>
-                      </Col>
-                      <Col lg="6">
-                        <FormGroup>
-                          <label
-                            className="form-control-label"
-                            htmlFor="input-start-date"
-                          >
-                            Start Date
-                          </label>
-                          <Input
-                            className="form-control-alternative"
-                            id="input-start-date"
-                            placeholder="Start Date"
-                            type="text"
-                          />
-                        </FormGroup>
-                      </Col>
-                    </Row>
-                  </div>
-                  <hr className="my-4" />
-                  {/* Address */}
-                  <h6 className="heading-small text-muted mb-4">
-                    Contact information
-                  </h6>
-                  <div className="pl-lg-4">
-                    <Row>
-                      <Col md="12">
-                        <FormGroup>
-                          <label
-                            className="form-control-label"
-                            htmlFor="input-address"
-                          >
-                            Address
-                          </label>
-                          <Input
-                            className="form-control-alternative"
-                            id="input-address"
-                            placeholder="Home Address"
-                            type="text"
-                          />
-                        </FormGroup>
-                      </Col>
-                    </Row>
-                  </div>
+                  {error && (
+                    <Alert className="w-100 text-center mb-0" color="danger">
+                      <i className="fa-solid fa-circle-exclamation mr-1"></i><strong>Error load data!</strong>
+                    </Alert>
+                  )}
+                  {data?.results
+                    ? (<>
+                      <div>
+                        <div className="pl-lg-4">
+                          <Row>
+                            <Col lg="6">
+                              <FormGroup>
+                                <label
+                                  className="form-control-label"
+                                  htmlFor="input-fullname"
+                                >
+                                  Fullname
+                                </label>
+                                <Input
+                                  className="form-control-alternative"
+                                  id="input-fullname"
+                                  value={data.results[0].fullname || "No data"}
+                                  readOnly
+                                  placeholder="Fullname"
+                                  type="text"
+                                />
+                              </FormGroup>
+                            </Col>
+                            <Col lg="6">
+                              <FormGroup>
+                                <label
+                                  className="form-control-label"
+                                  htmlFor="input-date-of-birth"
+                                >
+                                  Date Of Birth
+                                </label>
+                                <Input
+                                  className="form-control-alternative"
+                                  id="input-date-of-birth"
+                                  placeholder="Date Of Birth"
+                                  type="text"
+                                  value={data.results[0].dateOfBirth || "No data"}
+                                  readOnly
+                                />
+                              </FormGroup>
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col lg="6">
+                              <FormGroup>
+                                <label
+                                  className="form-control-label"
+                                  htmlFor="input-basic-salary"
+                                >
+                                  Basic Salary
+                                </label>
+                                <Input
+                                  className="form-control-alternative"
+                                  id="input-basic-salary"
+                                  placeholder="Basic Salary"
+                                  type="text"
+                                  value={data.results[0].basicSalary || "No data"}
+                                  readOnly
+                                />
+                              </FormGroup>
+                            </Col>
+                            <Col lg="6">
+                              <FormGroup>
+                                <label
+                                  className="form-control-label"
+                                  htmlFor="input-position"
+                                >
+                                  Position
+                                </label>
+                                <Input
+                                  className="form-control-alternative"
+                                  id="input-position"
+                                  placeholder="Position"
+                                  type="text"
+                                  value={data.results[0].position || "No data"}
+                                  readOnly
+                                />
+                              </FormGroup>
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col lg="6">
+                              <FormGroup>
+                                <label
+                                  className="form-control-label"
+                                  htmlFor="input-department"
+                                >
+                                  Department
+                                </label>
+                                <Input
+                                  className="form-control-alternative"
+                                  id="input-department"
+                                  placeholder="Department"
+                                  type="text"
+                                  value={data.results[0].departmentName || "No data"}
+                                  readOnly
+                                />
+                              </FormGroup>
+                            </Col>
+                            <Col lg="6">
+                              <FormGroup>
+                                <label
+                                  className="form-control-label"
+                                  htmlFor="input-start-date"
+                                >
+                                  Start Date
+                                </label>
+                                <Input
+                                  className="form-control-alternative"
+                                  id="input-start-date"
+                                  placeholder="Start Date"
+                                  type="text"
+                                  value={data.results[0].startDate || "No data"}
+                                  readOnly
+                                />
+                              </FormGroup>
+                            </Col>
+                          </Row>
+                        </div>
+                        <hr className="my-4" />
+                        {/* Address */}
+                        <h6 className="heading-small text-muted mb-4">
+                          Contact information
+                        </h6>
+                        <div className="pl-lg-4">
+                          <Row>
+                            <Col md="12">
+                              <FormGroup>
+                                <label
+                                  className="form-control-label"
+                                  htmlFor="input-address"
+                                >
+                                  Address
+                                </label>
+                                <Input
+                                  className="form-control-alternative"
+                                  id="input-address"
+                                  placeholder="Home Address"
+                                  type="text"
+                                  value={data.results[0].address || "No data"}
+                                  readOnly
+                                />
+                              </FormGroup>
+                            </Col>
+                          </Row>
+                        </div>
+                      </div>
+                    </>)
+                    : ""
+                  }
                   <hr className="my-4" />
                   {/* Account */}
                   <h6 className="heading-small text-muted mb-4">
@@ -268,6 +305,8 @@ const Profile = () => {
                             id="input-email"
                             placeholder="jesse@example.com"
                             type="email"
+                            value={localStorage.getItem('email') || "No data"}
+                            readOnly
                           />
                         </FormGroup>
                       </Col>
@@ -284,6 +323,8 @@ const Profile = () => {
                             id="input-role"
                             placeholder="Role Name"
                             type="text"
+                            value={localStorage.getItem('role') || "No data"}
+                            readOnly
                           />
                         </FormGroup>
                       </Col>

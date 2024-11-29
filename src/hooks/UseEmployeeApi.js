@@ -7,7 +7,8 @@ import {
     editEmployee,
     lockEmployee,
     unlockEmployee,
-    searchEmployee
+    searchEmployee,
+    getInfoByEmployee
 } from 'services/management/EmployeeApi.js';
 import { useNavigate } from "react-router-dom";
 
@@ -93,6 +94,35 @@ export const useGetOneEmployee = (employeeId) => {
         };
         request();
     }, [employeeId, navigate]);
+
+    return { data, loading, error };
+};
+
+
+export const useGetInfoByEmployee = () => {
+    const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const request = async () => {
+            setLoading(true);
+            try {
+                const result = await getInfoByEmployee();
+                setData(result);
+                setLoading(false);
+            } catch (error) {
+                if (error.response.status === 401) {
+                    navigate('/auth');
+                } else {
+                    setLoading(false);
+                    setError(error);
+                }
+            }
+        };
+        request();
+    }, [navigate]);
 
     return { data, loading, error };
 };
