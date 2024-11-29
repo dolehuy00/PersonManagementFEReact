@@ -20,9 +20,8 @@ import { useLocation, Route, Routes, Navigate } from "react-router-dom";
 // reactstrap components
 import { Container } from "reactstrap";
 // core components
-import AdminNavbar from "components/Navbars/AdminNavbar.js";
+import UserNavbar from "components/Navbars/UserNavbar.js";
 import AdminFooter from "components/Footers/AdminFooter.js";
-import Sidebar from "components/Sidebar/Sidebar.js";
 
 import {userRoutes} from "routes.js";
 
@@ -38,7 +37,7 @@ const User = (props) => {
 
   const getRoutes = (routes) => {
     return routes.map((prop, key) => {
-      if (prop.layout === "/user") {
+      if (prop.layout === "") {
         return (
           <Route path={prop.path} element={prop.component} key={key} exact />
         );
@@ -62,23 +61,23 @@ const User = (props) => {
 
   return (
     <>
-      <Sidebar
+      {/* <Sidebar
         {...props}
         routes={userRoutes}
         logo={{
-          innerLink: "/user/dashboard",
+          innerLink: "/dashboard",
           imgSrc: require("../assets/img/brand/argon-react.png"),
           imgAlt: "...",
         }}
-      />
+      /> */}
       <div className="main-content" ref={mainContent}>
-        <AdminNavbar
+        <UserNavbar
           {...props}
           brandText={getBrandText(props?.location?.pathname)}
         />
         <Routes>
           {getRoutes(userRoutes)}
-          <Route path="*" element={<Navigate to="/user/dashboard" replace />} />
+          <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>
         <Container fluid>
           <AdminFooter />

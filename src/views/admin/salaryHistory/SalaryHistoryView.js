@@ -9,10 +9,11 @@ import {
     Input,
     CardBody,
     FormGroup,
-    InputGroup,
     Spinner,
-    Form
+    Form,
+    InputGroup,
 } from "reactstrap";
+
 // core components
 import { useState, useEffect } from "react";
 import { useLocation } from 'react-router-dom';
@@ -21,20 +22,21 @@ import { Slide, ToastContainer, toast } from 'react-toastify';
 // component
 import Header from "components/Headers/Header.js";
 import LoadingOrError from "components/Notifications/LoadingOrError.js";
+import SearchWithPopup from "components/Popups/SearchWithPopup.js";
 import DatePickerWithTooltip from "components/DateTimePickers/DatePickerWithTooltip.js";
 
 // custom hooks
 import {
-    useGetOneEmployee,
-    useEditEmployee,
-    useChangeStatusEmployee
-} from "hooks/UseEmployeeApi.js";
+    useGetOneSalaryHistory,
+    useEditSalaryHistory
+} from "hooks/UseSalaryHistoryApi.js";
+import { useSearchEmployee } from "hooks/UseEmployeeApi.js";
 
-const ViewEmployee = () => {
+const ViewSalaryHistory = () => {
     // search params
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
-    const employeeId = searchParams.get("id");
+    const salaryHistoryId = searchParams.get("id");
     const mode = searchParams.get("mode")
 
     // state constant
@@ -43,23 +45,24 @@ const ViewEmployee = () => {
     const [viewMode, setViewMode] = useState(mode || "");
     const [formValueIsValid, setFormValueIsValid] = useState(false);
     const [dataEdit, setDataEdit] = useState({});
-    const [statusValue, setStatusValue] = useState("");
+
+    // state variable
+    let arrSetValueInput = useState([]);
 
     // request data
-    const { data: dataGetEmpl, loading: loadingGetEmpl, error: errorGetEmpl } = useGetOneEmployee(employeeId);
-    const { data: dataEditResponse, loading: loadingEdit, error: errorEdit } = useEditEmployee(dataEdit);
-    const { data: dataLockResponse, loading: loadingLock, error: errorLock, request: requestLock } = useChangeStatusEmployee();
+    const { data: dataGetSalary, loading: loadingGetSalary, error: errorGetSalary } = useGetOneSalaryHistory(salaryHistoryId);
+    const { data: dataEditResponse, loading: loadingEdit, error: errorEdit } = useEditSalaryHistory(dataEdit);
 
-    // effect set data to form
+    // effect for get object data
     useEffect(() => {
-        if (Object.keys(dataGetEmpl).length > 0) {
-            setDataForm(dataGetEmpl);
-            setFormValuesDefault(dataGetEmpl)
-            setStatusValue(dataGetEmpl.results[0].status || "")
+        if (Object.keys(dataGetSalary).length > 0) {
+            setDataForm(dataGetSalary);
+            setFormValuesDefault(dataGetSalary)
         }
-    }, [dataGetEmpl]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [dataGetSalary]);
 
-    // effect show toast error respone save change
+    // effect error edit to show toast error
     useEffect(() => {
         if (errorEdit) {
             toast.error("Save failed, an error occurred, please try again later!", {
@@ -76,7 +79,7 @@ const ViewEmployee = () => {
         }
     }, [errorEdit]);
 
-    // effect show toast success respone save change
+    // effect success edit to show toast edit success
     useEffect(() => {
         if (dataEditResponse.status === 200) {
             setFormValuesDefault(dataEditResponse)
@@ -95,72 +98,20 @@ const ViewEmployee = () => {
         }
     }, [dataEditResponse]);
 
-    // effect show toast error change status
-    useEffect(() => {
-        if (errorLock) {
-            toast.error(`Change status fail, ${errorLock.response?.data?.messages[1]}`, {
-                position: "bottom-right",
-                autoClose: 10000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored",
-                transition: Slide,
-            });
-        }
-    }, [errorLock]);
-
-    // effect show toast success change status
-    useEffect(() => {
-        if (dataLockResponse.status === 200) {
-            setStatusValue(dataLockResponse?.messages[1])
-            toast.success('Change status successfully', {
-                position: "bottom-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored",
-                transition: Slide,
-            });
-        }
-    }, [dataLockResponse]);
-
-
-    // handle submit form data
+    // handle submit form
     const handleSubmit = (event) => {
         event.preventDefault();
         setDataEdit(formValues);
         setFormValueIsValid(false);
     };
 
-    // handle cancel edit mode
+    // handle click cancel edit mode
     const handleCancelEdit = (event) => {
         event.preventDefault();
         setViewMode("view");
         setDataForm(formValuesDefault);
         setFormValueIsValid(false);
     }
-
-    // handle view edit mode
-    const handleClickEdit = (event) => {
-        event.preventDefault();
-        setViewMode("edit");
-    }
-
-    // handle common input change
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormValues((prevValues) => ({
-            ...prevValues,
-            [name]: value,
-        }));
-        setFormValueIsValid(true);
-    };
 
     // handle date input change
     const handleDateChange = (date, isValid, name) => {
@@ -177,52 +128,77 @@ const ViewEmployee = () => {
             }));
             setFormValueIsValid(false);
         }
-    };
-
-    // handle click lock/unlock button
-    const handleLock = () => {
-        requestLock(employeeId, statusValue)
     }
 
+    // handle select dropdown and choose employee
+    const handleSelectEmployeeChange = (e) => {
+        const { name, value } = e.target;
+        const otherData = e.otherData;
+        setFormValues((prevValues) => ({
+            ...prevValues,
+            [name]: value,
+            basicSalary: otherData.basicSalary,
+        }));
+        setFormValueIsValid(true);
+    };
 
-    // check edit mode function
+    // handle common input change
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormValues((prevValues) => ({
+            ...prevValues,
+            [name]: value,
+        }));
+        setFormValueIsValid(true);
+    };
+
+
+    // handle click edit button
+    const handleClickEdit = (event) => {
+        event.preventDefault();
+        setViewMode("edit");
+    }
+
+    // check edit mode
     const isEditMode = () => {
         return viewMode === "edit";
     };
 
-    // set data to form fuction
+    // set data to dataForm constant
     const setDataForm = (data) => {
         if (data.results) {
             const result = data.results[0];
             setFormValues({
                 id: result.id || -1,
-                address: result.address || "",
-                basicSalary: result.basicSalary || -1,
-                dateOfBirth: result.dateOfBirth || "",
-                fullname: result.fullname || "",
-                position: result.position || "",
-                startDate: result.startDate || "",
+                basicSalary: result.basicSalary || "",
+                bonusSalary: result.bonusSalary || "",
+                employeeId: result.employeeId || "",
+                detail: result.detail || "",
+                penalty: result.penalty || "",
+                tax: result.tax || "",
+                date: result.date || "",
             });
+            arrSetValueInput[0]({ fullname: result.employeeName, id: result.employeeId })
         }
     }
 
-    // render loading data employee
-    if (loadingGetEmpl) return (
+    // render loading data
+    if (loadingGetSalary) return (
         <>
             <Header />
             <LoadingOrError status="loading" />
         </>
     );
 
-    // render error load data employee
-    if (errorGetEmpl) return (
+    // render error load data
+    if (errorGetSalary) return (
         <>
             <Header />
             <LoadingOrError status="error" />
         </>
     );
 
-    // render loaded data employee
+    // render data
     return (
         <>
             <Header />
@@ -235,7 +211,7 @@ const ViewEmployee = () => {
                                 <Row className="align-items-center">
                                     <Col xs="8">
                                         <h3 className="mb-0">
-                                            {isEditMode() ? "Edit Employee" : "View Employee"}
+                                            {isEditMode() ? "Edit SalaryHistory" : "View SalaryHistory"}
                                         </h3>
                                     </Col>
                                     <Col className="text-right" xs="4">
@@ -265,7 +241,7 @@ const ViewEmployee = () => {
                                 </Row>
                             </CardHeader>
                             <CardBody>
-                                {dataGetEmpl.results
+                                {dataGetSalary.results
                                     ? (<>
                                         <Form onSubmit={handleSubmit}>
                                             <div className="pl-lg-4">
@@ -276,7 +252,7 @@ const ViewEmployee = () => {
                                                                 className="form-control-label"
                                                                 htmlFor="input-id"
                                                             >
-                                                                Employee ID
+                                                                Salary ID
                                                             </label>
                                                             <Input
                                                                 className="form-control-alternative"
@@ -295,64 +271,29 @@ const ViewEmployee = () => {
                                                         <FormGroup>
                                                             <label
                                                                 className="form-control-label"
-                                                                htmlFor="input-fullname"
+                                                                htmlFor="input-status"
                                                             >
-                                                                Fullname
+                                                                Employee
                                                             </label>
-                                                            <Input
-                                                                className="form-control-alternative"
-                                                                id="input-fullname"
-                                                                type="text"
-                                                                name="fullname"
-                                                                value={formValues.fullname || ""}
-                                                                onChange={handleInputChange}
-                                                                required
+                                                            <SearchWithPopup
+                                                                titleModal="Search Employee (Name or ID)"
+                                                                nameInput="employeeId"
+                                                                searchApiFunc={useSearchEmployee}
+                                                                propertyInDataToViewSearch={
+                                                                    [
+                                                                        { text: "ID: ", property: "id" },
+                                                                        { text: " ~ ", property: "fullname" },
+                                                                        { text: " ~ ", property: "dateOfBirth" },
+                                                                    ]
+                                                                }
+                                                                propertyInDataToViewDisableInput={["id", "fullname"]}
+                                                                propertyInDataToSetRealInput="id"
+                                                                required="required"
+                                                                deboundTimeOut={1500}
                                                                 disabled={!isEditMode()}
-                                                            />
-                                                        </FormGroup>
-                                                    </Col>
-                                                    <Col lg="6">
-                                                        <FormGroup>
-                                                            <label
-                                                                className="form-control-label"
-                                                                htmlFor="input-date-of-birth"
-                                                            >
-                                                                Date of Birth
-                                                            </label>
-                                                            <InputGroup className="input-group-alternative">
-                                                                <DatePickerWithTooltip
-                                                                    value={formValues.dateOfBirth || ""}
-                                                                    dateFormat="YYYY-MM-DD"
-                                                                    className="form-control-alternative form-control"
-                                                                    name="dateOfBirth"
-                                                                    required="required"
-                                                                    placeholder="YYYY-MM-DD"
-                                                                    disabled={!isEditMode()}
-                                                                    id="dateOfBirth"
-                                                                    onChange={(date, isValid) => handleDateChange(date, isValid, "dateOfBirth")}
-                                                                />
-                                                            </InputGroup>
-                                                        </FormGroup>
-                                                    </Col>
-                                                </Row>
-                                                <Row>
-                                                    <Col lg="6">
-                                                        <FormGroup>
-                                                            <label
-                                                                className="form-control-label"
-                                                                htmlFor="input-position"
-                                                            >
-                                                                Position
-                                                            </label>
-                                                            <Input
-                                                                className="form-control-alternative"
-                                                                id="input-position"
-                                                                type="text"
-                                                                name="position"
-                                                                value={formValues.position || ""}
-                                                                required
-                                                                disabled={!isEditMode()}
-                                                                onChange={handleInputChange}
+                                                                arraySetValueInput={arrSetValueInput}
+                                                                propertyPassedToOtherDataEventOnChange={["basicSalary"]}
+                                                                onChange={handleSelectEmployeeChange}
                                                             />
                                                         </FormGroup>
                                                     </Col>
@@ -370,100 +311,126 @@ const ViewEmployee = () => {
                                                                 type="number"
                                                                 step="0.01"
                                                                 name="basicSalary"
-                                                                value={formValues.basicSalary || ""}
-                                                                required
                                                                 disabled={!isEditMode()}
-                                                                onChange={handleInputChange}
+                                                                value={formValues.basicSalary || ""}
+                                                                onChange={(e) => e.preventDefault()}
+                                                                required
                                                             />
                                                         </FormGroup>
                                                     </Col>
                                                 </Row>
-                                            </div>
-                                            <div className="pl-lg-4">
                                                 <Row>
-                                                    <Col md="12">
+                                                    <Col lg="6">
                                                         <FormGroup>
                                                             <label
                                                                 className="form-control-label"
-                                                                htmlFor="input-address"
+                                                                htmlFor="input-bonus-salary"
                                                             >
-                                                                Address
+                                                                Bonus Salary
                                                             </label>
                                                             <Input
                                                                 className="form-control-alternative"
-                                                                id="input-address"
-                                                                type="text"
-                                                                name="address"
-                                                                value={formValues.address || ""}
-                                                                required
+                                                                id="input-bonus-salary"
+                                                                type="number"
+                                                                step="0.01"
                                                                 disabled={!isEditMode()}
+                                                                value={formValues.bonusSalary || ""}
+                                                                name="bonusSalary"
                                                                 onChange={handleInputChange}
+                                                                required
+                                                            />
+                                                        </FormGroup>
+                                                    </Col>
+                                                    <Col lg="6">
+                                                        <FormGroup>
+                                                            <label
+                                                                className="form-control-label"
+                                                                htmlFor="input-penalty-salary"
+                                                            >
+                                                                Penalty
+                                                            </label>
+                                                            <Input
+                                                                className="form-control-alternative"
+                                                                id="input-penalty-salary"
+                                                                type="number"
+                                                                step="0.01"
+                                                                name="penalty"
+                                                                disabled={!isEditMode()}
+                                                                value={formValues.penalty || ""}
+                                                                onChange={handleInputChange}
+                                                                required
                                                             />
                                                         </FormGroup>
                                                     </Col>
                                                 </Row>
                                                 <Row>
+                                                    <Col lg="6">
+                                                        <FormGroup>
+                                                            <label
+                                                                className="form-control-label"
+                                                                htmlFor="input-tax-salary"
+                                                            >
+                                                                Tax
+                                                            </label>
+                                                            <Input
+                                                                className="form-control-alternative"
+                                                                id="input-tax-salary"
+                                                                type="number"
+                                                                step="0.01"
+                                                                name="tax"
+                                                                disabled={!isEditMode()}
+                                                                value={formValues.tax || ""}
+                                                                onChange={handleInputChange}
+                                                                required
+                                                            />
+                                                        </FormGroup>
+                                                    </Col>
                                                     <Col lg="6">
                                                         <FormGroup>
                                                             <label
                                                                 className="form-control-label"
                                                                 htmlFor="input-date-of-birth"
                                                             >
-                                                                Start Date
+                                                                Date
                                                             </label>
                                                             <InputGroup className="input-group-alternative">
                                                                 <DatePickerWithTooltip
-                                                                    value={formValues.startDate || ""}
+                                                                    value={formValues.date || ""}
                                                                     dateFormat="YYYY-MM-DD"
                                                                     className="form-control-alternative form-control"
-                                                                    name="startDate"
+                                                                    name="date"
                                                                     required="required"
                                                                     placeholder="YYYY-MM-DD"
                                                                     disabled={!isEditMode()}
-                                                                    id="startDate"
-                                                                    onChange={(date, isValid) => handleDateChange(date, isValid, "startDate")}
+                                                                    id="date"
+                                                                    onChange={(date, isValid) => handleDateChange(date, isValid, "date")}
                                                                 />
                                                             </InputGroup>
                                                         </FormGroup>
                                                     </Col>
-                                                    <Col lg="6">
+                                                </Row>
+                                            </div>
+                                            <div className="pl-lg-4">
+                                                <Row>
+                                                    <Col>
                                                         <FormGroup>
                                                             <label
                                                                 className="form-control-label"
-                                                                htmlFor="input-status"
+                                                                htmlFor="input-tax-salary"
                                                             >
-                                                                Status
+                                                                Detail
                                                             </label>
-                                                            <Row>
-                                                                <Col>
-                                                                    <Input
-                                                                        className="form-control-alternative"
-                                                                        id="input-status"
-                                                                        type="text"
-                                                                        value={statusValue}
-                                                                        required
-                                                                        disabled="disabled"
-                                                                    />
-                                                                </Col>
-                                                                {viewMode === "edit"
-                                                                    ? (<>
-                                                                        <Col lg={{ size: "auto" }} className="pl-0">
-                                                                            <Button
-                                                                                color={statusValue === "Active" ? "warning" : "info"}
-                                                                                type="button"
-                                                                                disabled={loadingLock}
-                                                                                onClick={handleLock}
-                                                                            >
-                                                                                {loadingLock
-                                                                                    ? (<Spinner color="primary" size="sm"> </Spinner>)
-                                                                                    : statusValue === "Active" ? "Lock" : "Unlock"
-                                                                                }
-                                                                            </Button>
-                                                                        </Col>
-                                                                    </>)
-                                                                    : ""
-                                                                }
-                                                            </Row>
+                                                            <Input
+                                                                className="form-control-alternative"
+                                                                id="input-tax-salary"
+                                                                rows="3"
+                                                                type="textarea"
+                                                                name="detail"
+                                                                value={formValues.detail || ""}
+                                                                disabled={!isEditMode()}
+                                                                onChange={handleInputChange}
+                                                                required
+                                                            />
                                                         </FormGroup>
                                                     </Col>
                                                 </Row>
@@ -499,4 +466,4 @@ const ViewEmployee = () => {
     );
 };
 
-export default ViewEmployee;
+export default ViewSalaryHistory;

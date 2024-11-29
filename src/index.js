@@ -40,7 +40,7 @@ root.render(
     <Routes>
       <Route path="/auth/*" element={<AuthRoute element={<AuthLayout />} />} />
       <Route path="/admin/*" element={<ProtectedRoute element={<AdminLayout />} allowedRoles={["Admin"]}/>} />
-      <Route path="/user/*" element={<ProtectedRoute element={<UserLayout />} allowedRoles={["Admin", "User"]}/>} />
+      <Route path="/*" element={<ProtectedRoute element={<UserLayout />} allowedRoles={["Admin", "User"]}/>} />
       <Route path="*" element={<Navigate to="/auth/login" replace />} />
     </Routes>
   </BrowserRouter>

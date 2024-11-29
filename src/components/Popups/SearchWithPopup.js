@@ -18,13 +18,14 @@ const SearchWithPopup = ({
   nameInput, // string
   searchApiFunc, // fuction
   propertyInDataToViewSearch, // array dictionaries [{text: "", property: "id"},{text: " ~ ", property: "fullname"}]
-  propertyInDataToViewDisableInput, // array ["property_1", ["property_2"]]
+  propertyInDataToViewDisableInput, // array ["property_1", "property_2"]
   required, // string
   propertyInDataToSetRealInput,// string
   deboundTimeOut, // integer
   arraySetValueInput, // array
   disabled, // string
-  onChange
+  onChange,
+  propertyPassedToOtherDataEventOnChange // array ["property_1", "property_2"]
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [disabledInputValue, setDisabledInputValue] = useState('');
@@ -57,13 +58,22 @@ const SearchWithPopup = ({
 
   // Handle selection of a search result
   const handleSelectResult = (result) => {
-    setDisabledInputValue(`${result[propertyInDataToViewDisableInput[0]]} ~ ${result[propertyInDataToViewDisableInput[1]]}`); // Update the disabled input
-    setRealInputValue(result[propertyInDataToSetRealInput])
+    setDisabledInputValue(
+      `${result[propertyInDataToViewDisableInput[0]]} ~ ` +
+      `${result[propertyInDataToViewDisableInput[1]]}`);
+    setRealInputValue(result[propertyInDataToSetRealInput]);
+    let otherData = {};
+    if (propertyPassedToOtherDataEventOnChange) {
+      propertyPassedToOtherDataEventOnChange.forEach(element => {
+        otherData[element] = result[element];
+      });
+    }
     const fakeEvent = {
       target: {
         name: nameInput,
         value: result[propertyInDataToSetRealInput],
       },
+      otherData
     };
     onChange(fakeEvent)
     toggleModal(); // Close modal
@@ -71,8 +81,8 @@ const SearchWithPopup = ({
 
   const handleSetData = (result) => {
     setDisabledInputValue(
-      `${result[propertyInDataToViewDisableInput[0]]}`+
-      `${result[propertyInDataToViewDisableInput[0]] && result[propertyInDataToViewDisableInput[1]] ? " ~ " : ""}`+
+      `${result[propertyInDataToViewDisableInput[0]]}` +
+      `${result[propertyInDataToViewDisableInput[0]] && result[propertyInDataToViewDisableInput[1]] ? " ~ " : ""}` +
       `${result[propertyInDataToViewDisableInput[1]]}`
     ); // Update the disabled input
     setRealInputValue(result[propertyInDataToSetRealInput])
