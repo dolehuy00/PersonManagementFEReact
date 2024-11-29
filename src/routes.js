@@ -27,6 +27,8 @@ import Account from "views/admin/account/AccountTable.js";
 import AccountView from "views/admin/account/AccountView.js";
 import SalaryHistory from "views/admin/salaryHistory/SalaryHistoryTable.js";
 import SalaryHistoryView from "views/admin/salaryHistory/SalaryHistoryView.js";
+import Department from "views/admin/department/DepartmentTable.js";
+import DepartmentView from "views/admin/department/DepartmentView.js";
 
 //User
 import UserDashboard from "views/user/Dashboard.js";
@@ -88,7 +90,39 @@ export var managerRoutes = [
     component: <SalaryHistoryView />,
     layout: "/admin",
     viewOnSidebar: false,
-  }
+  },
+  {
+    path: "/department",
+    name: "Department",
+    icon: "fa-solid fa-users text-orange",
+    component: <Department />,
+    layout: "/admin",
+    viewOnSidebar: true,
+  },
+  {
+    path: "/department/view",
+    name: "Department View",
+    icon: "fa-solid fa-users text-orange",
+    component: <DepartmentView />,
+    layout: "/admin",
+    viewOnSidebar: false,
+  },
+  {
+    path: "/project",
+    name: "Project",
+    icon: "fa-solid fa-users text-orange",
+    component: <Employee />,
+    layout: "/admin",
+    viewOnSidebar: true,
+  },
+  {
+    path: "/project/view",
+    name: "Project View",
+    icon: "fa-solid fa-users text-orange",
+    component: <EmployeeView />,
+    layout: "/admin",
+    viewOnSidebar: false,
+  }  
 ];
 
 export default managerRoutes;
