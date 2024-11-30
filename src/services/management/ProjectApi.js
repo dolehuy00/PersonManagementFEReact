@@ -1,12 +1,12 @@
 import axios from 'axios';
 //import MockAdapter from 'axios-mock-adapter';
 
-const API_BASE_URL = 'https://localhost:7297/api/department';
+const API_BASE_URL = 'https://localhost:7297/api/project';
 
-export const getOneDepartment = async (departmentId) => {
+export const getOneProject = async (projectId) => {
     try {
         const accessToken = localStorage.getItem('accessToken');
-        const response = await axios.get(`${API_BASE_URL}/get/${departmentId}`, {
+        const response = await axios.get(`${API_BASE_URL}/get/${projectId}`, {
             headers: {
                 'Authorization': `Bearer ${accessToken}`
             },
@@ -19,7 +19,7 @@ export const getOneDepartment = async (departmentId) => {
     }
 }
 
-export const filterDepartment = async (dataFilter, sortBy, pageNumber, pageSize) => {
+export const filterProject = async (dataFilter, sortBy, pageNumber, pageSize) => {
     try {
         const token = localStorage.getItem('accessToken');
 
@@ -29,8 +29,10 @@ export const filterDepartment = async (dataFilter, sortBy, pageNumber, pageSize)
             },
             params: {
                 Id: "id" in dataFilter ? dataFilter.id : "",
-                Name: "name" in dataFilter ? dataFilter.name : "",            
-                Status: "status" in dataFilter ? dataFilter.status : "",                
+                Name: "name" in dataFilter ? dataFilter.name : "",       
+                Status: "status" in dataFilter ? dataFilter.status : "",  
+                StartDate: "StartDate" in dataFilter ? dataFilter.StartDate : "",       
+                EndDate: "EndDate" in dataFilter ? dataFilter.EndDate : "",                
                 SortBy: sortBy,
                 Page: pageNumber,
                 PageSize: pageSize
@@ -42,7 +44,7 @@ export const filterDepartment = async (dataFilter, sortBy, pageNumber, pageSize)
     }
 };
 
-export const addDepartment = async (data) => {
+export const addProject = async (data) => {
     try {
         const token = localStorage.getItem('accessToken');
 
@@ -59,7 +61,7 @@ export const addDepartment = async (data) => {
     }
 };
 
-export async function editDepartment(dataRequest) {
+export async function editProject(dataRequest) {
     try {
         const token = localStorage.getItem('accessToken');
 
@@ -78,11 +80,11 @@ export async function editDepartment(dataRequest) {
     }
 };
 
-export async function lockDepartment(departmentId) {
+export async function lockProject(projectId) {
     try {
         const token = localStorage.getItem('accessToken');
 
-        const response = await axios.put(`${API_BASE_URL}/changeStatus/${departmentId}`, null, {
+        const response = await axios.put(`${API_BASE_URL}/changeStatus/${projectId}`, null, {
             headers: {
                 'Authorization': `Bearer ${token}`
             },
@@ -94,11 +96,11 @@ export async function lockDepartment(departmentId) {
     }
 };
 
-export async function unlockDepartment(departmentId) {
+export async function unlockProject(projectId) {
     try {
         const token = localStorage.getItem('accessToken');
 
-        const response = await axios.put(`${API_BASE_URL}/changeStatus/${departmentId}`, null, {
+        const response = await axios.put(`${API_BASE_URL}/changeStatus/${projectId}`, null, {
             headers: {
                 'Authorization': `Bearer ${token}`
             },
@@ -111,18 +113,20 @@ export async function unlockDepartment(departmentId) {
 };
 
 
-export const searchDepartment = async (fullnameOrId) => {
+export const searchProject = async (fullnameOrId) => {
     try {
         const accessToken = localStorage.getItem('accessToken');
-        const isNumber = !isNaN(fullnameOrId); 
-        const params = isNumber ? { id: fullnameOrId, name: fullnameOrId } : { name: fullnameOrId };
-        const response = await axios.get(`${API_BASE_URL}/filter`, {
-            params: params,
+        const response = await axios.get(`${API_BASE_URL}/search`, {
+            params: { fullnameOrId },
             headers: {
                 'Authorization': `Bearer ${accessToken}`
             },
         });
+
         var data = response.data;
+        for (let index = 0; index < data?.results?.length; index++) {
+            data.results[index].dateOfBirth = data.results[index].dateOfBirth.split("T")[0];  
+        }
         return data;
     } catch (error) {
         throw error;

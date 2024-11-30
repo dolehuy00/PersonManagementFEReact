@@ -25,16 +25,16 @@ import DatePickerWithTooltip from "components/DateTimePickers/DatePickerWithTool
 import { useSearchEmployee } from "hooks/UseEmployeeApi.js";
 // custom hooks
 import {
-    useGetOneDepartment,
-    useEditDepartment,
-    useChangeStatusDepartment
-} from "hooks/UseDepartmentApi.js";
+    useGetOneProject,
+    useEditProject,
+    useChangeStatusProject
+} from "hooks/UseProjectApi.js";
 
-const ViewDepartment = () => {
+const ViewProject = () => {
     // search params
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
-    const departmentId = searchParams.get("id");
+    const projectId = searchParams.get("id");
     const mode = searchParams.get("mode")
     let arrSetValueInput = useState([]);
     // state
@@ -46,19 +46,19 @@ const ViewDepartment = () => {
     const [statusValue, setStatusValue] = useState("");
 
     // request data
-    const { data: dataGetDept, loading: loadingGetDept, error: errorGetDept } = useGetOneDepartment(departmentId);
-    const { data: dataEditResponse, loading: loadingEdit, error: errorEdit } = useEditDepartment(dataEdit);
-    const { data: dataLockResponse, loading: loadingLock, error: errorLock, request: requestLock } = useChangeStatusDepartment();
+    const { data: dataGetProj, loading: loadingGetProj, error: errorGetProj } = useGetOneProject(projectId);
+    const { data: dataEditResponse, loading: loadingEdit, error: errorEdit } = useEditProject(dataEdit);
+    const { data: dataLockResponse, loading: loadingLock, error: errorLock, request: requestLock } = useChangeStatusProject();
 
     // effect
     useEffect(() => {
-        if (Object.keys(dataGetDept).length > 0) {
-            setDataForm(dataGetDept);
-            setFormValuesDefault(dataGetDept)
+        if (Object.keys(dataGetProj).length > 0) {
+            setDataForm(dataGetProj);
+            setFormValuesDefault(dataGetProj)
             console.log(formValues)
-            setStatusValue(dataGetDept.results[0].status || "")
+            setStatusValue(dataGetProj.results[0].status || "")
         }
-    }, [dataGetDept]);
+    }, [dataGetProj]);
 
     useEffect(() => {
         if (errorEdit) {
@@ -157,7 +157,7 @@ const ViewDepartment = () => {
     };
 
     const handleLock = () => {
-        requestLock(departmentId, statusValue)
+        requestLock(projectId, statusValue)
     }
 
 
@@ -181,13 +181,13 @@ const ViewDepartment = () => {
 
 
     // render
-    if (loadingGetDept) return (
+    if (loadingGetProj) return (
         <>
             <Header />
             <LoadingOrError status="loading" />
         </>
     );
-    if (errorGetDept) return (
+    if (errorGetProj) return (
         <>
             <Header />
             <LoadingOrError status="error" />
@@ -205,7 +205,7 @@ const ViewDepartment = () => {
                                 <Row className="align-items-center">
                                     <Col xs="8">
                                         <h3 className="mb-0">
-                                            {isEditMode() ? "Edit Department" : "View Department"}
+                                            {isEditMode() ? "Edit Project" : "View Project"}
                                         </h3>
                                     </Col>
                                     <Col className="text-right" xs="4">
@@ -235,7 +235,7 @@ const ViewDepartment = () => {
                                 </Row>
                             </CardHeader>
                             <CardBody>
-                                {dataGetDept.results
+                                {dataGetProj.results
                                     ? (<>
                                         <Form onSubmit={handleSubmit}>
                                             <div className="pl-lg-4">
@@ -246,7 +246,7 @@ const ViewDepartment = () => {
                                                                 className="form-control-label"
                                                                 htmlFor="input-id"
                                                             >
-                                                                Department ID
+                                                                Project ID
                                                             </label>
                                                             <Input
                                                                 className="form-control-alternative"
@@ -267,7 +267,7 @@ const ViewDepartment = () => {
                                                                 className="form-control-label"
                                                                 htmlFor="input-name"
                                                             >
-                                                                Department Name
+                                                                Project Name
                                                             </label>
                                                             <Input
                                                                 className="form-control-alternative"
@@ -404,4 +404,4 @@ const ViewDepartment = () => {
     );
 };
 
-export default ViewDepartment;
+export default ViewProject;
