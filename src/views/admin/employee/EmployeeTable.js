@@ -17,12 +17,16 @@ import {
   Button,
   Spinner
 } from "reactstrap";
+
 // core components
 import React, { useState, useEffect } from "react";
+
 // react toastify component
 import { Slide, ToastContainer, toast } from 'react-toastify';
+
 // hooks
 import { useFilterEmployee, useChangeStatusEmployee } from "hooks/UseEmployeeApi.js";
+
 //components
 import CustomPagination from "components/Pagination/Pagination.js";
 import DropdownButtonSmall from "components/Dropdowns/DropdownButtonSmall.js";
@@ -30,6 +34,7 @@ import FilterPopup from "components/Popups/FilterPopup.js";
 import Header from "components/Headers/Header.js";
 import EmployeeAdd from "./EmployeeAdd.js";
 import LoadingOrError from "components/Notifications/LoadingOrError.js";
+import ImageWithSkeleton from "components/Images/ImageWithSkeleton.js";
 
 const Tables = () => {
   // data component
@@ -295,9 +300,10 @@ const Tables = () => {
                                   href="#pablo"
                                   onClick={(e) => e.preventDefault()}
                                 >
-                                  <img
-                                    alt="..."
-                                    src={require("../../../assets/img/theme/bootstrap.jpg")}
+                                  <ImageWithSkeleton
+                                    alt="avatar"
+                                    placeholder={require("../../../assets/img/theme/img-gray.png")}
+                                    src={item.image}
                                   />
                                 </a>
                                 <Media>

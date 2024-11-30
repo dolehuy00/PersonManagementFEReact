@@ -20,6 +20,23 @@ export const getOneSalaryHistory = async (salaryHistoryId) => {
     }
 }
 
+export const getSalaryHistoryByUser = async (page, pageSize) => {
+    try {
+        const accessToken = localStorage.getItem('accessToken');
+        const response = await axios.get(`${API_BASE_URL}/get-by-user/${page}/${pageSize}`, {
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            },
+        });
+
+        var data = response.data;
+        return data;
+    } catch (error) {
+        throw error;
+    }
+}
+
+
 export const filterSalaryHistory = async (dataFilter, sortByDate, pageNumber, pageSize) => {
     try {
         const token = localStorage.getItem('accessToken');

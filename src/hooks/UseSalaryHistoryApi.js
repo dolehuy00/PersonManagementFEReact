@@ -4,7 +4,8 @@ import {
     filterSalaryHistory,
     addSalaryHistory,
     getOneSalaryHistory,
-    editSalaryHistory
+    editSalaryHistory,
+    getSalaryHistoryByUser
 } from 'services/management/SalaryHistoryApi.js';
 import { useNavigate } from "react-router-dom";
 
@@ -90,6 +91,34 @@ export const useGetOneSalaryHistory = (salaryHistoryId) => {
         };
         request();
     }, [salaryHistoryId, navigate]);
+
+    return { data, loading, error };
+};
+
+export const useGetSalaryHistoryByUser = (page, pageSize) => {
+    const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const request = async () => {
+            setLoading(true);
+            try {
+                const data = await getSalaryHistoryByUser(page, pageSize);
+                setData(data);
+                setLoading(false);
+            } catch (error) {
+                if (error.response.status === 401) {
+                    navigate('/auth');
+                } else {
+                    setLoading(false);
+                    setError(error);
+                }
+            }
+        };
+        request();
+    }, [page, pageSize, navigate]);
 
     return { data, loading, error };
 };

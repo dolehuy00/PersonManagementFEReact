@@ -28,16 +28,19 @@ import {
   Row,
   Col,
   Spinner,
-  Alert
+  Alert,
+  Table
 } from "reactstrap";
 // core components
 import UserHeader from "components/Headers/UserHeader.js";
 import ImageWithSkeleton from "components/Images/ImageWithSkeleton.js";
 import { useGetInfoByEmployee } from "hooks/UseEmployeeApi.js";
+import { useGetSalaryHistoryByUser } from "hooks/UseSalaryHistoryApi.js";
 
 const Profile = () => {
 
   const { data, loading, error } = useGetInfoByEmployee();
+  const { data: dataSalary, loading: loadingSalary, error: errorSalary } = useGetSalaryHistoryByUser(1, 6);
 
   return (
     <>
@@ -50,12 +53,14 @@ const Profile = () => {
               <Row className="justify-content-center">
                 <Col className="order-lg-2" lg="3">
                   <div className="card-profile-image">
-                      <ImageWithSkeleton
-                        alt="avatar"
-                        placeholder={require("../../assets/img/theme/img-gray.png")}
-                        className="rounded-circle"
-                        src={data.results ? data.results[0].image : ""}
-                      />
+                    <ImageWithSkeleton
+                      alt="avatar"
+                      placeholder={require("../../assets/img/theme/img-gray.png")}
+                      className="rounded-circle"
+                      transform="translate(-50%, 70%)"
+                      showSpiner="true"
+                      src={data.results ? data.results[0].image : ""}
+                    />
                   </div>
                 </Col>
               </Row>
@@ -97,17 +102,59 @@ const Profile = () => {
             </Card>
             <Card className="card-profile shadow mt-4">
               <Row className="justify-content-center mt-3">
-                <h3>My Salary History</h3>
+                <h3>My salary history</h3>
               </Row>
-              <hr className="my-1" />
-              <CardBody className="pt-5 pt-md-4">
-
+              {loadingSalary && (
+                <div className="overlay-spinner-table-loading">
+                  <Spinner color="info"></Spinner>
+                </div>
+              )}
+              <CardBody className="py-md-1">
+                <Table className="table-salary-user">
+                  <thead>
+                    <tr className="text-center">
+                      <th>Basic</th>
+                      <th>Total</th>
+                      <th>Date</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {dataSalary?.results?.length
+                      ? dataSalary.results.map((item, index) => (
+                        <tr key={`salary-${index}`} className="text-center" onClick={(e) => { e.preventDefault(); console.log(`salary ${item.id}`) }}>
+                          <td>{item.basicSalary}</td>
+                          <td>{item.total}</td>
+                          <td>{item.date.split("T")[0]}</td>
+                        </tr>
+                      ))
+                      : !loading
+                        ? errorSalary
+                          ? (
+                            <tr>
+                              <td className="text-center" colSpan="3" style={{ color: "red" }}>
+                                <i className="fa-solid fa-circle-exclamation mr-1"></i><strong>Error load data!</strong>
+                              </td>
+                            </tr>)
+                          : (
+                            <tr>
+                              <td className="text-center" colSpan="3">Salary history is empty !</td>
+                            </tr>
+                          )
+                        : (<tr></tr>)
+                    }
+                  </tbody>
+                </Table>
               </CardBody>
-              <Row className="justify-content-center my-3">
-                <a href="#pablo" onClick={(e) => e.preventDefault()}>
-                  View All <i className="fa-solid fa-arrow-right-long"></i>
-                </a>
-              </Row>
+              {dataSalary?.results?.length
+                ? (
+                  <Row className="justify-content-center my-3">
+                    <a href="#pablo" onClick={(e) => e.preventDefault()}>
+                      View All <i className="fa-solid fa-arrow-right-long"></i>
+                    </a>
+                  </Row>
+                )
+                : ""
+              }
             </Card>
           </Col>
           <Col className="order-xl-1" xl="8">

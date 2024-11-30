@@ -45,6 +45,7 @@ const ViewSalaryHistory = () => {
     const [viewMode, setViewMode] = useState(mode || "");
     const [formValueIsValid, setFormValueIsValid] = useState(false);
     const [dataEdit, setDataEdit] = useState({});
+    const [totalSalary, setTotalSalary] = useState(0);
 
     // state variable
     let arrSetValueInput = useState([]);
@@ -57,10 +58,19 @@ const ViewSalaryHistory = () => {
     useEffect(() => {
         if (Object.keys(dataGetSalary).length > 0) {
             setDataForm(dataGetSalary);
-            setFormValuesDefault(dataGetSalary)
+            setFormValuesDefault(dataGetSalary) 
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dataGetSalary]);
+
+    useEffect(() => {
+        try{
+            let total = parseFloat(formValues.basicSalary) + parseFloat(formValues.bonusSalary) - parseFloat(formValues.penalty) - parseFloat(formValues.tax)
+            setTotalSalary(total.toFixed(3));
+        }catch{
+            setTotalSalary(0);
+        }
+    }, [formValues.basicSalary, formValues.bonusSalary, formValues.penalty, formValues.tax]);
 
     // effect error edit to show toast error
     useEffect(() => {
@@ -410,6 +420,10 @@ const ViewSalaryHistory = () => {
                                                     </Col>
                                                 </Row>
                                             </div>
+                                            <div className="mx-4 py-0 text-right">
+                                                <h2><b>Total:</b> {totalSalary}</h2>
+                                            </div>
+                                            <hr className="my-3" />
                                             <div className="pl-lg-4">
                                                 <Row>
                                                     <Col>
