@@ -15,6 +15,9 @@ import Datetime from "react-datetime";
 import { Slide, ToastContainer, toast } from 'react-toastify';
 import { useAddDepartment } from "hooks/UseDepartmentApi.js";
 
+import SearchWithPopup from "components/Popups/SearchWithPopup.js";
+import { useSearchEmployee } from "hooks/UseEmployeeApi.js";
+
 const DepartmentAdd = ({ onCancel }) => {
     const [dataBody, setDataBody] = useState({});
     const [dateOfBirth, setDateOfBirth] = useState("");
@@ -22,6 +25,7 @@ const DepartmentAdd = ({ onCancel }) => {
     const formRef = useRef(null);
     const dateOfBirthRef = useRef(null);
     const startDateRef = useRef(null);
+    let arrSetValueInput = useState([]);
 
     const { data, loading, error } = useAddDepartment(dataBody);
 
@@ -132,20 +136,29 @@ const DepartmentAdd = ({ onCancel }) => {
                         </div>
                         <div className="pl-lg-4">                            
                             <Row>
-                            <Col lg="6">
+                                <Col lg="6">
                                     <FormGroup>
                                         <label
                                             className="form-control-label"
                                             htmlFor="input-leaderId"
                                         >
-                                            Department Leader
+                                            Leader
                                         </label>
-                                        <Input
-                                            className="form-control-alternative"
-                                            id="input-leaderId"
-                                            type="text"
-                                            name="leaderId"
-                                            required
+                                        <SearchWithPopup
+                                            titleModal="Search Employee (Name or ID)"
+                                            nameInput="leaderId"
+                                            searchApiFunc={useSearchEmployee}
+                                            propertyInDataToViewSearch={
+                                                [
+                                                    { text: "ID: ", property: "id" },
+                                                    { text: " ~ ", property: "fullname" }
+                                                ]
+                                            }
+                                            propertyInDataToViewDisableInput={["id", "fullname"]}
+                                            propertyInDataToSetRealInput="id"
+                                            required="required"
+                                            deboundTimeOut={1500}
+                                            arraySetValueInput = {arrSetValueInput}
                                         />
                                     </FormGroup>
                                 </Col>

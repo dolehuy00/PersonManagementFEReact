@@ -38,13 +38,13 @@ import React, { useState, useEffect } from "react";
 // react toastify component
 import { Slide, ToastContainer, toast } from 'react-toastify';
 // hooks
-import { useFilterDepartment, useChangeStatusDepartment } from "hooks/UseDepartmentApi.js";
+import { useFilterProject, useChangeStatusProject } from "hooks/UseProjectApi.js";
 //components
 import CustomPagination from "components/Pagination/Pagination.js";
 import DropdownButtonSmall from "components/Dropdowns/DropdownButtonSmall.js";
 import FilterPopup from "components/Popups/FilterPopup.js";
 import Header from "components/Headers/Header.js";
-import DepartmentAdd from "./DepartmentAdd.js";
+import ProjectAdd from "./ProjectAdd.js";
 import LoadingOrError from "components/Notifications/LoadingOrError.js";
 
 const Tables = () => {
@@ -107,19 +107,19 @@ const Tables = () => {
     setBodyView("table")
   }
 
-  const handleLockDepartment = (departmentId, statusValue) => {
-    requestLock(departmentId, statusValue)
+  const handleLockProject = (projectId, statusValue) => {
+    requestLock(projectId, statusValue)
   }
 
   // request data
-  const { data, loading, error } = useFilterDepartment(dataFilter, sortBy, pageIndex, pageSize);
+  const { data, loading, error } = useFilterProject(dataFilter, sortBy, pageIndex, pageSize);
   const totalPage = data.totalPage;
   const {
     data: dataLockResponse,
     loading: loadingLock,
     error: errorLock,
     request: requestLock
-  } = useChangeStatusDepartment();
+  } = useChangeStatusProject();
 
 
   // effect
@@ -169,17 +169,44 @@ const Tables = () => {
 
   // render fuction
   const renderDataColStatus = (status) => {
+    let statusClass = ""; // Lớp CSS mặc định
+    switch (status) {
+      case "Not Started":
+        statusClass = "bg-secondary"; // Trắng
+        break;
+      case "In Progress":
+        statusClass = "bg-primary"; // Xanh Dương
+        break;
+      case "On Hold":
+        statusClass = "bg-secondary"; // Xám
+        break;
+      case "Completed":
+        statusClass = "bg-success"; // Vàng
+        break;
+      case "Cancelled":
+        statusClass = "bg-danger"; // Đỏ
+        break;
+      default:
+        statusClass = "bg-light"; // Trạng thái không xác định
+    }
+  
     return (
       <>
-        {status === "Active" ? (
-          <i className="bg-success" />
-        ) : (
-          <i className="bg-danger" />
-        )}
+        <i
+          className={statusClass}      
+          style={{
+            display: "inline-block",
+            width: "10px",
+            height: "10px",
+            borderRadius: "50%",
+            marginRight: "5px",
+          }}    
+        />
         {status}
       </>
     );
-  }
+  };
+  
 
   const renderContentItemLockDropdown = (emplId, status) => {
     return (
@@ -191,7 +218,7 @@ const Tables = () => {
               href="#pablo"
               onClick={(e) => {
                 e.preventDefault();
-                handleLockDepartment(emplId, status);
+                handleLockProject(emplId, status);
               }}
             >
               Lock
@@ -203,7 +230,7 @@ const Tables = () => {
               href="#pablo"
               onClick={(e) => {
                 e.preventDefault();
-                handleLockDepartment(emplId, status)
+                handleLockProject(emplId, status)
               }}
             >
               Unlock
@@ -238,7 +265,7 @@ const Tables = () => {
         <Row>
           <div className="col">
             {bodyView === "create"
-              ? (<DepartmentAdd onCancel={handleCancelCreate} />)
+              ? (<ProjectAdd onCancel={handleCancelCreate} />)
               : (
                 <Card className="shadow">
                   <CardHeader className="border-0">
@@ -281,8 +308,9 @@ const Tables = () => {
                       <tr className="text-center">
                         <th scope="col">Id</th>
                         <th scope="col">Name</th>
-                        <th scope="col">Main Task</th>
-                        <th scope="col">Leader</th>
+                        <th scope="col">Start Date</th>
+                        <th scope="col">Duration</th>                        
+                        <th scope="col">Detail</th>                        
                         <th scope="col">Status</th>
                         <th scope="col" />
                       </tr>
@@ -292,9 +320,10 @@ const Tables = () => {
                         ? data.results.map((item, index) => (
                           <tr key={index} className="text-center">
                             <th scope="row">{item.id}</th>
-                            <td>{item.name}</td>
-                            <td>{item.taskDetail}</td>
-                            <td><a href={`employee/view?id=${item.leaderId}`} >{item.leaderName}</a></td>
+                            <td>{item.name}</td>                            
+                            <td>{item.startDate.split("T")[0]}</td>
+                            <td>{item.duration.split("T")[0]}</td>
+                            <td>{item.detail}</td>
                             <td>
                               <Badge
                                 color=""
@@ -319,12 +348,12 @@ const Tables = () => {
                                 </DropdownToggle>
                                 <DropdownMenu className="dropdown-menu-arrow" right>
                                   <DropdownItem
-                                    href={`department/view?id=${item.id}`}
+                                    href={`project/view?id=${item.id}`}
                                   >
                                     View
                                   </DropdownItem>
                                   <DropdownItem
-                                    href={`department/view?id=${item.id}&mode=edit`}
+                                    href={`project/view?id=${item.id}&mode=edit`}
                                   >
                                     Edit
                                   </DropdownItem>

@@ -1,12 +1,12 @@
 import axios from 'axios';
 //import MockAdapter from 'axios-mock-adapter';
 
-const API_BASE_URL = 'https://localhost:7297/api/department';
+const API_BASE_URL = 'https://localhost:7297/api/deptassignment';
 
-export const getOneDepartment = async (departmentId) => {
+export const getOneDeptAssignment = async (deptassignmentId) => {
     try {
         const accessToken = localStorage.getItem('accessToken');
-        const response = await axios.get(`${API_BASE_URL}/get/${departmentId}`, {
+        const response = await axios.get(`${API_BASE_URL}/get/${deptassignmentId}`, {
             headers: {
                 'Authorization': `Bearer ${accessToken}`
             },
@@ -19,7 +19,7 @@ export const getOneDepartment = async (departmentId) => {
     }
 }
 
-export const filterDepartment = async (dataFilter, sortBy, pageNumber, pageSize) => {
+export const filterDeptAssignment = async (dataFilter, sortBy, pageNumber, pageSize) => {
     try {
         const token = localStorage.getItem('accessToken');
 
@@ -29,11 +29,9 @@ export const filterDepartment = async (dataFilter, sortBy, pageNumber, pageSize)
             },
             params: {
                 Id: "id" in dataFilter ? dataFilter.id : "",
-                Name: "name" in dataFilter ? dataFilter.name : "",            
-                Status: "status" in dataFilter ? dataFilter.status : "",                
-                SortBy: sortBy,
-                Page: pageNumber,
-                PageSize: pageSize
+                projectId: "projectId" in dataFilter ? dataFilter.projectId : "",            
+                departmentId: "departmentId" in dataFilter ? dataFilter.departmentId : "",                
+                SortBy: sortBy
             }
         });
         return response.data;
@@ -42,7 +40,25 @@ export const filterDepartment = async (dataFilter, sortBy, pageNumber, pageSize)
     }
 };
 
-export const addDepartment = async (data) => {
+export const addManyDeptAssignment = async (deptAssignments) => {
+    try {
+        const token = localStorage.getItem('accessToken');
+
+        const response = await axios.post(`${API_BASE_URL}/addMany`, deptAssignments, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            },
+        });
+
+        return response.data;
+
+    } catch (error) {
+        throw error;
+    }
+};
+
+
+export const addDeptAssignment = async (data) => {
     try {
         const token = localStorage.getItem('accessToken');
 
@@ -59,7 +75,7 @@ export const addDepartment = async (data) => {
     }
 };
 
-export async function editDepartment(dataRequest) {
+export async function editDeptAssignment(dataRequest) {
     try {
         const token = localStorage.getItem('accessToken');
 
@@ -78,11 +94,11 @@ export async function editDepartment(dataRequest) {
     }
 };
 
-export async function lockDepartment(departmentId) {
+export async function lockDeptAssignment(deptassignmentId) {
     try {
         const token = localStorage.getItem('accessToken');
 
-        const response = await axios.put(`${API_BASE_URL}/changeStatus/${departmentId}`, null, {
+        const response = await axios.put(`${API_BASE_URL}/changeStatus/${deptassignmentId}`, null, {
             headers: {
                 'Authorization': `Bearer ${token}`
             },
@@ -94,11 +110,11 @@ export async function lockDepartment(departmentId) {
     }
 };
 
-export async function unlockDepartment(departmentId) {
+export async function unlockDeptAssignment(deptassignmentId) {
     try {
         const token = localStorage.getItem('accessToken');
 
-        const response = await axios.put(`${API_BASE_URL}/changeStatus/${departmentId}`, null, {
+        const response = await axios.put(`${API_BASE_URL}/changeStatus/${deptassignmentId}`, null, {
             headers: {
                 'Authorization': `Bearer ${token}`
             },
@@ -111,7 +127,7 @@ export async function unlockDepartment(departmentId) {
 };
 
 
-export const searchDepartment = async (fullnameOrId) => {
+export const searchDeptAssignment = async (fullnameOrId) => {
     try {
         const accessToken = localStorage.getItem('accessToken');
         const isNumber = !isNaN(fullnameOrId); 
