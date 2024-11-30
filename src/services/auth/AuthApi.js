@@ -1,6 +1,16 @@
 import axios from 'axios';
+import { saveImageToLocalStorage } from 'services/Image.js';
 
 const API_BASE_URL = 'https://localhost:7297/api/Account';
+
+function clearLocalStorage(){
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('role');
+    localStorage.removeItem('leaderOfDepartments');
+    localStorage.removeItem('email');
+    localStorage.removeItem('image');
+}
 
 export const login = async (email, password) => {
     try {
@@ -11,9 +21,12 @@ export const login = async (email, password) => {
         });
         const data = await response.json();
         if (response.ok) {
+            localStorage.setItem('email', data.results[0].email);
+            localStorage.setItem('leaderOfDepartments', data.results[0].leaderOfDepartments);
             localStorage.setItem('accessToken', data.results[0].accessToken);
             localStorage.setItem('refreshToken', data.results[0].refreshToken);
             localStorage.setItem('role', data.results[0].role);
+            saveImageToLocalStorage(data.results[0].employeeImage, "image")
             return data;
         } else {
             throw new Error(data.messages || 'Login failed');
@@ -36,11 +49,7 @@ export const logout = async (navigate) => {
     } catch (error) {
         console.error('Logout API error:', error);
     }
-
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
-    localStorage.removeItem('role');
-
+    clearLocalStorage();
     navigate('/auth');
 };
 
@@ -66,9 +75,7 @@ async function refreshAccessToken() {
 
         return newAccessToken;
     } catch (error) {
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
-        localStorage.removeItem('role');
+        clearLocalStorage();
     }
 }
 

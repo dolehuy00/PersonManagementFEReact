@@ -22,6 +22,25 @@ export const getOneEmployee = async (employeeId) => {
     }
 }
 
+export const getInfoByEmployee = async () => {
+    try {
+        const accessToken = localStorage.getItem('accessToken');
+        const response = await axios.get(`${API_BASE_URL}/get`, {
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            },
+        });
+
+        var data = response.data;
+        data.results[0].startDate = data.results[0].startDate.split("T")[0];
+        data.results[0].dateOfBirth = data.results[0].dateOfBirth.split("T")[0];
+
+        return data;
+    } catch (error) {
+        throw error;
+    }
+}
+
 export const filterEmployee = async (dataFilter, sortBy, pageNumber, pageSize) => {
     try {
         const token = localStorage.getItem('accessToken');
