@@ -28,7 +28,6 @@ export const filterDeptAssignment = async (dataFilter, sortBy, pageNumber, pageS
                 'Authorization': `Bearer ${token}`
             },
             params: {
-                Id: "id" in dataFilter ? dataFilter.id : "",
                 projectId: "projectId" in dataFilter ? dataFilter.projectId : "",            
                 departmentId: "departmentId" in dataFilter ? dataFilter.departmentId : "",                
                 SortBy: sortBy
@@ -39,6 +38,28 @@ export const filterDeptAssignment = async (dataFilter, sortBy, pageNumber, pageS
         throw error;
     }
 };
+
+export const getDeptsAssignmentsByProject = async (projectId) => {
+    try {
+        const token = localStorage.getItem('accessToken');
+        
+        const response = await axios.get(`${API_BASE_URL}/filter`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            },
+            params: {
+                projectId: projectId ? projectId : 0
+            }
+        });
+        console.log(response.data);
+        return response.data;
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+};
+
+
 
 export const addManyDeptAssignment = async (deptAssignments) => {
     try {

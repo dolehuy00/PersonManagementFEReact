@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import {
     filterDeptAssignment,
     addDeptAssignment,
+    getDeptsAssignmentsByProject,
     getOneDeptAssignment,
     editDeptAssignment,
     lockDeptAssignment,
@@ -36,6 +37,36 @@ export const useFilterDeptAssignment = (dataFilter, sortBy, page, pageSize) => {
         };
         getData();
     }, [dataFilter, sortBy, page, pageSize, navigate]);
+
+    return { data, loading, error };
+};
+
+
+export const useGetDeptsAssignmentsByProject = (projectId) => {
+    const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const getData = async () => {
+            setLoading(true);
+            try {
+                
+                const result = await getDeptsAssignmentsByProject(projectId);
+                setData(result);
+                setLoading(false);
+            } catch (error) {
+                if (error.status === 401) {
+                    navigate('/auth');
+                } else {
+                    setLoading(false);
+                    setError(error);
+                }
+            }
+        };
+        getData();
+    }, [projectId, navigate]);
 
     return { data, loading, error };
 };
@@ -80,7 +111,6 @@ export const useAddManyDeptAssignment = (deptAssignments) => {
         
         const request = async () => {
             setLoading(true);
-            alert(deptAssignments.length)
             try {
                 if (Object.keys(deptAssignments).length > 0) {
                     const result = await addManyDeptAssignment(deptAssignments);
