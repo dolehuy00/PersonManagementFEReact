@@ -28,3 +28,8 @@
     background-color: rgba(226, 226, 226, 0.533);
     cursor: pointer;
 }
+
+.table-row-salary-user:hover{
+    background-color: rgba(226, 226, 226, 0.533);
+    cursor: pointer;
+}

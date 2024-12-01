@@ -20,7 +20,24 @@ export const getOneSalaryHistory = async (salaryHistoryId) => {
     }
 }
 
-export const getSalaryHistoryByUser = async (page, pageSize) => {
+export const getOneSalaryHistoryByUser = async (salaryHistoryId) => {
+    try {
+        const accessToken = localStorage.getItem('accessToken');
+        const response = await axios.get(`${API_BASE_URL}/get-by-user/${salaryHistoryId}`, {
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            },
+        });
+
+        var data = response.data;
+        data.results[0].date = data.results[0].date.split("T")[0];
+        return data;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export const getPageSalaryHistoryByUser = async (page, pageSize) => {
     try {
         const accessToken = localStorage.getItem('accessToken');
         const response = await axios.get(`${API_BASE_URL}/get-by-user/${page}/${pageSize}`, {
@@ -36,6 +53,25 @@ export const getSalaryHistoryByUser = async (page, pageSize) => {
     }
 }
 
+export const filterSalaryHistoryByUser = async (sortByDate, pageNumber, pageSize) => {
+    try {
+        const token = localStorage.getItem('accessToken');
+
+        const response = await axios.get(`${API_BASE_URL}/filter-by-user`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            },
+            params: {
+                sortByDate: sortByDate,
+                Page: pageNumber,
+                PageSize: pageSize
+            }
+        });
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
 
 export const filterSalaryHistory = async (dataFilter, sortByDate, pageNumber, pageSize) => {
     try {

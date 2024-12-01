@@ -72,6 +72,7 @@ const User = (props) => {
         <UserNavbar
           {...props}
           brandText={getBrandText(location?.pathname)}
+          linkText={location?.pathname.split("/")[1]}
         />
         <Routes>
           {getRoutes(userRoutes)}

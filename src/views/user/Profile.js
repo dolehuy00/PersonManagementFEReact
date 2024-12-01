@@ -35,12 +35,15 @@ import {
 import UserHeader from "components/Headers/UserHeader.js";
 import ImageWithSkeleton from "components/Images/ImageWithSkeleton.js";
 import { useGetInfoByEmployee } from "hooks/UseEmployeeApi.js";
-import { useGetSalaryHistoryByUser } from "hooks/UseSalaryHistoryApi.js";
+import { useGetPageSalaryHistoryByUser } from "hooks/UseSalaryHistoryApi.js";
+import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
 
+  const navigate = useNavigate();
+
   const { data, loading, error } = useGetInfoByEmployee();
-  const { data: dataSalary, loading: loadingSalary, error: errorSalary } = useGetSalaryHistoryByUser(1, 6);
+  const { data: dataSalary, loading: loadingSalary, error: errorSalary } = useGetPageSalaryHistoryByUser(1, 6);
 
   return (
     <>
@@ -121,7 +124,11 @@ const Profile = () => {
                   <tbody>
                     {dataSalary?.results?.length
                       ? dataSalary.results.map((item, index) => (
-                        <tr key={`salary-${index}`} className="text-center" onClick={(e) => { e.preventDefault(); console.log(`salary ${item.id}`) }}>
+                        <tr
+                          key={`salary-${index}`}
+                          className="text-center"
+                          onClick={(e) => { e.preventDefault(); navigate(`/salary-history/view?id=${item.id}`); }}
+                        >
                           <td>{item.basicSalary}</td>
                           <td>{item.total}</td>
                           <td>{item.date.split("T")[0]}</td>
@@ -148,7 +155,7 @@ const Profile = () => {
               {dataSalary?.results?.length
                 ? (
                   <Row className="justify-content-center my-3">
-                    <a href="#pablo" onClick={(e) => e.preventDefault()}>
+                    <a href="/salary-history">
                       View All <i className="fa-solid fa-arrow-right-long"></i>
                     </a>
                   </Row>

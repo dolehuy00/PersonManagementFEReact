@@ -58,16 +58,16 @@ const ViewSalaryHistory = () => {
     useEffect(() => {
         if (Object.keys(dataGetSalary).length > 0) {
             setDataForm(dataGetSalary);
-            setFormValuesDefault(dataGetSalary) 
+            setFormValuesDefault(dataGetSalary)
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dataGetSalary]);
 
     useEffect(() => {
-        try{
+        try {
             let total = parseFloat(formValues.basicSalary) + parseFloat(formValues.bonusSalary) - parseFloat(formValues.penalty) - parseFloat(formValues.tax)
             setTotalSalary(total.toFixed(3));
-        }catch{
+        } catch {
             setTotalSalary(0);
         }
     }, [formValues.basicSalary, formValues.bonusSalary, formValues.penalty, formValues.tax]);
@@ -449,19 +449,21 @@ const ViewSalaryHistory = () => {
                                                     </Col>
                                                 </Row>
                                             </div>
-                                            <hr />
                                             {isEditMode()
                                                 ? (
-                                                    <div className="py-0 text-right">
-                                                        <Button className="btn-icon btn-3" color="success" type="submit" disabled={!formValueIsValid}>
-                                                            <span className="btn-inner--text m-0">
-                                                                {loadingEdit
-                                                                    ? (<><Spinner size="sm">Waiting...</Spinner><span> Waiting...</span></>)
-                                                                    : (<><i className="fa-solid fa-floppy-disk"></i> Save</>)
-                                                                }
-                                                            </span>
-                                                        </Button>
-                                                    </div>
+                                                    <>
+                                                        <hr />
+                                                        <div className="py-0 text-right">
+                                                            <Button className="btn-icon btn-3" color="success" type="submit" disabled={!formValueIsValid}>
+                                                                <span className="btn-inner--text m-0">
+                                                                    {loadingEdit
+                                                                        ? (<><Spinner size="sm">Waiting...</Spinner><span> Waiting...</span></>)
+                                                                        : (<><i className="fa-solid fa-floppy-disk"></i> Save</>)
+                                                                    }
+                                                                </span>
+                                                            </Button>
+                                                        </div>
+                                                    </>
                                                 )
                                                 : ""
                                             }

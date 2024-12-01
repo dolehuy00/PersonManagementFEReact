@@ -414,19 +414,21 @@ const ViewAccount = () => {
                                                     </Col>
                                                 </Row>
                                             </div>
-                                            <hr />
                                             {isEditMode()
                                                 ? (
-                                                    <div className="py-0 text-right">
-                                                        <Button className="btn-icon btn-3" color="success" type="submit" disabled={!formValueIsValid}>
-                                                            <span className="btn-inner--text m-0">
-                                                                {loadingEdit
-                                                                    ? (<><Spinner size="sm">Waiting...</Spinner><span> Waiting...</span></>)
-                                                                    : (<><i className="fa-solid fa-floppy-disk"></i> Save</>)
-                                                                }
-                                                            </span>
-                                                        </Button>
-                                                    </div>
+                                                    <>
+                                                        <hr />
+                                                        <div className="py-0 text-right">
+                                                            <Button className="btn-icon btn-3" color="success" type="submit" disabled={!formValueIsValid}>
+                                                                <span className="btn-inner--text m-0">
+                                                                    {loadingEdit
+                                                                        ? (<><Spinner size="sm">Waiting...</Spinner><span> Waiting...</span></>)
+                                                                        : (<><i className="fa-solid fa-floppy-disk"></i> Save</>)
+                                                                    }
+                                                                </span>
+                                                            </Button>
+                                                        </div>
+                                                    </>
                                                 )
                                                 : ""
                                             }

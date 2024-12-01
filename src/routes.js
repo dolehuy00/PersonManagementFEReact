@@ -35,6 +35,8 @@ import ProjectView from "views/admin/project/ProjectView.js";
 //User
 import UserDashboard from "views/user/Dashboard.js";
 import Profile from "views/user/Profile.js";
+import SalaryHistoryUser from "views/user/salaryHistory/SalaryHistoryTable.js";
+import SalaryHistoryViewUser from "views/user/salaryHistory/SalaryHistoryView.js";
 
 export var managerRoutes = [
   {
@@ -140,11 +142,27 @@ export var userRoutes = [
   },
   {
     path: "/user-profile",
-    name: "User Profile",
+    name: "Your Profile",
     icon: "ni ni-single-02 text-yellow",
     component: <Profile />,
     layout: "",
     viewOnSidebar: true,
+  },
+  {
+    path: "/salary-history",
+    name: "Your Salary",
+    icon: "fa-solid fa-hand-holding-dollar text-yellow",
+    component: <SalaryHistoryUser />,
+    layout: "",
+    viewOnSidebar: true,
+  },
+  {
+    path: "/salary-history/view",
+    name: "Salary Detail",
+    icon: "fa-solid fa-sack-dollar text-yellow",
+    component: <SalaryHistoryViewUser />,
+    layout: "",
+    viewOnSidebar: false,
   }
 ];
 
