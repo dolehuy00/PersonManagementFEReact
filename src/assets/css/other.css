@@ -10,7 +10,26 @@
     justify-content: center;
     z-index: 10;
 }
-.loading-row {
+.loading-row {  
     opacity: 0.5;
     pointer-events: none; /* Prevent interactions */
+}
+
+.table-salary-user td{
+    border-top: 0;
+    padding: 0.8rem 0.8rem;
+}
+
+.table-salary-user thead tr th{
+    font-weight: bold;
+}
+
+.table-salary-user tbody tr:hover{
+    background-color: rgba(226, 226, 226, 0.533);
+    cursor: pointer;
+}
+
+.table-row-salary-user:hover{
+    background-color: rgba(226, 226, 226, 0.533);
+    cursor: pointer;
 }

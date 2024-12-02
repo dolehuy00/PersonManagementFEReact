@@ -45,6 +45,7 @@ const ViewSalaryHistory = () => {
     const [viewMode, setViewMode] = useState(mode || "");
     const [formValueIsValid, setFormValueIsValid] = useState(false);
     const [dataEdit, setDataEdit] = useState({});
+    const [totalSalary, setTotalSalary] = useState(0);
 
     // state variable
     let arrSetValueInput = useState([]);
@@ -61,6 +62,15 @@ const ViewSalaryHistory = () => {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dataGetSalary]);
+
+    useEffect(() => {
+        try {
+            let total = parseFloat(formValues.basicSalary) + parseFloat(formValues.bonusSalary) - parseFloat(formValues.penalty) - parseFloat(formValues.tax)
+            setTotalSalary(total.toFixed(3));
+        } catch {
+            setTotalSalary(0);
+        }
+    }, [formValues.basicSalary, formValues.bonusSalary, formValues.penalty, formValues.tax]);
 
     // effect error edit to show toast error
     useEffect(() => {
@@ -410,6 +420,10 @@ const ViewSalaryHistory = () => {
                                                     </Col>
                                                 </Row>
                                             </div>
+                                            <div className="mx-4 py-0 text-right">
+                                                <h2><b>Total:</b> {totalSalary}</h2>
+                                            </div>
+                                            <hr className="my-3" />
                                             <div className="pl-lg-4">
                                                 <Row>
                                                     <Col>
@@ -435,19 +449,21 @@ const ViewSalaryHistory = () => {
                                                     </Col>
                                                 </Row>
                                             </div>
-                                            <hr />
                                             {isEditMode()
                                                 ? (
-                                                    <div className="py-0 text-right">
-                                                        <Button className="btn-icon btn-3" color="success" type="submit" disabled={!formValueIsValid}>
-                                                            <span className="btn-inner--text m-0">
-                                                                {loadingEdit
-                                                                    ? (<><Spinner size="sm">Waiting...</Spinner><span> Waiting...</span></>)
-                                                                    : (<><i className="fa-solid fa-floppy-disk"></i> Save</>)
-                                                                }
-                                                            </span>
-                                                        </Button>
-                                                    </div>
+                                                    <>
+                                                        <hr />
+                                                        <div className="py-0 text-right">
+                                                            <Button className="btn-icon btn-3" color="success" type="submit" disabled={!formValueIsValid}>
+                                                                <span className="btn-inner--text m-0">
+                                                                    {loadingEdit
+                                                                        ? (<><Spinner size="sm">Waiting...</Spinner><span> Waiting...</span></>)
+                                                                        : (<><i className="fa-solid fa-floppy-disk"></i> Save</>)
+                                                                    }
+                                                                </span>
+                                                            </Button>
+                                                        </div>
+                                                    </>
                                                 )
                                                 : ""
                                             }

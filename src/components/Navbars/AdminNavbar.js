@@ -29,10 +29,26 @@ import {
   Container,
   Media,
 } from "reactstrap";
+import ImageWithSkeleton from "components/Images/ImageWithSkeleton.js";
+import { useEffect, useState } from "react";
 
 const AdminNavbar = (props) => {
   const navigate = useNavigate();
-  
+  const [imageUser, setImageUser] = useState("");
+
+  useEffect(() => {
+    let counter = 0;
+    const interval = setInterval(() => {
+      counter++;
+      let img = localStorage.getItem('image');
+      setImageUser(img);
+
+      if (img || counter === 10) {
+        clearInterval(interval); // Dừng sau 10 lần
+      }
+    }, 1000);
+  }, [])
+
   return (
     <>
       <Navbar className="navbar-top navbar-dark" expand="md" id="navbar-main">
@@ -60,9 +76,11 @@ const AdminNavbar = (props) => {
               <DropdownToggle className="pr-0" nav>
                 <Media className="align-items-center">
                   <span className="avatar avatar-sm rounded-circle">
-                    <img
-                      alt="..."
-                      src={localStorage.getItem('image') || require("../../assets/img/theme/img-gray.png")}
+                    <ImageWithSkeleton
+                      alt="avatar"
+                      placeholder={require("../../assets/img/theme/img-gray.png")}
+                      className="rounded-circle"
+                      src={imageUser}
                     />
                   </span>
                   <Media className="ml-2 d-none d-lg-block">
@@ -80,12 +98,12 @@ const AdminNavbar = (props) => {
                   <i className="ni ni-single-02" />
                   <span>My profile</span>
                 </DropdownItem>
-                <DropdownItem to="/user-profile" tag={Link}>
-                  <i className="ni ni-settings-gear-65" />
-                  <span>Settings</span>
+                <DropdownItem to="/" tag={Link}>
+                  <i className="fa-solid fa-person-walking-luggage" />
+                  <span>Go to user page</span>
                 </DropdownItem>
                 <DropdownItem divider />
-                <DropdownItem href="#pablo" onClick={(e) => {e.preventDefault(); logout(navigate)}}>
+                <DropdownItem href="#pablo" onClick={(e) => { e.preventDefault(); logout(navigate) }}>
                   <i className="ni ni-user-run" />
                   <span>Logout</span>
                 </DropdownItem>

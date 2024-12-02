@@ -8,7 +8,7 @@ import {
     CardBody
 } from "reactstrap";
 
-const LoadingOrError = ({ status }) => {
+const LoadingOrError = ({ status, errorMessage="Error load data!" }) => {
     return (
         <>
             <Container className="mt--7" fluid>
@@ -41,7 +41,7 @@ const LoadingOrError = ({ status }) => {
                                 </>)
                                 : (
                                     <Alert className="w-100 text-center mb-0" color="danger">
-                                        <i className="fa-solid fa-circle-exclamation mr-1"></i><strong>Error load data!</strong>
+                                        <i className="fa-solid fa-circle-exclamation mr-1"></i><strong>{errorMessage}</strong>
                                     </Alert>
                                 )
                             }

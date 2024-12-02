@@ -23,7 +23,7 @@ import { Container } from "reactstrap";
 import UserNavbar from "components/Navbars/UserNavbar.js";
 import AdminFooter from "components/Footers/AdminFooter.js";
 
-import {userRoutes} from "routes.js";
+import { userRoutes } from "routes.js";
 
 const User = (props) => {
   const mainContent = React.useRef(null);
@@ -50,15 +50,13 @@ const User = (props) => {
   const getBrandText = (path) => {
     for (let i = 0; i < userRoutes.length; i++) {
       if (
-        props?.location?.pathname.indexOf(userRoutes[i].layout + userRoutes[i].path) !==
-        -1
+        path.indexOf(userRoutes[i].layout + userRoutes[i].path) !== -1
       ) {
         return userRoutes[i].name;
       }
     }
     return "Brand";
   };
-
   return (
     <>
       {/* <Sidebar
@@ -73,7 +71,8 @@ const User = (props) => {
       <div className="main-content" ref={mainContent}>
         <UserNavbar
           {...props}
-          brandText={getBrandText(props?.location?.pathname)}
+          brandText={getBrandText(location?.pathname)}
+          linkText={location?.pathname.split("/")[1]}
         />
         <Routes>
           {getRoutes(userRoutes)}
