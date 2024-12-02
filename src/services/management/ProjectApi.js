@@ -1,12 +1,12 @@
-import axios from 'axios';
+import api from "services/Api.js";
 //import MockAdapter from 'axios-mock-adapter';
 
-const API_BASE_URL = 'https://localhost:7297/api/project';
+const API_BASE_URL = '/api/project';
 
 export const getOneProject = async (projectId) => {
     try {
         const accessToken = localStorage.getItem('accessToken');
-        const response = await axios.get(`${API_BASE_URL}/get/${projectId}`, {
+        const response = await api.get(`${API_BASE_URL}/get/${projectId}`, {
             headers: {
                 'Authorization': `Bearer ${accessToken}`
             },
@@ -25,7 +25,7 @@ export const filterProject = async (dataFilter, sortBy, pageNumber, pageSize) =>
     try {
         const token = localStorage.getItem('accessToken');
 
-        const response = await axios.get(`${API_BASE_URL}/filter`, {
+        const response = await api.get(`${API_BASE_URL}/filter`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             },
@@ -50,7 +50,7 @@ export const addProject = async (data) => {
     try {
         const token = localStorage.getItem('accessToken');
 
-        const response = await axios.post(`${API_BASE_URL}/add`, data, {
+        const response = await api.post(`${API_BASE_URL}/add`, data, {
             headers: {
                 'Authorization': `Bearer ${token}`
             },
@@ -66,7 +66,7 @@ export async function editProject(dataRequest) {
     try {
         const token = localStorage.getItem('accessToken');
 
-        const response = await axios.put(`${API_BASE_URL}/edit`, dataRequest, {
+        const response = await api.put(`${API_BASE_URL}/edit`, dataRequest, {
             headers: {
                 'Authorization': `Bearer ${token}`
             },
@@ -83,7 +83,7 @@ export async function lockProject(projectId) {
     try {
         const token = localStorage.getItem('accessToken');
 
-        const response = await axios.put(`${API_BASE_URL}/changeStatus/${projectId}`, null, {
+        const response = await api.put(`${API_BASE_URL}/changeStatus/${projectId}`, null, {
             headers: {
                 'Authorization': `Bearer ${token}`
             },
@@ -99,7 +99,7 @@ export async function unlockProject(projectId) {
     try {
         const token = localStorage.getItem('accessToken');
 
-        const response = await axios.put(`${API_BASE_URL}/changeStatus/${projectId}`, null, {
+        const response = await api.put(`${API_BASE_URL}/changeStatus/${projectId}`, null, {
             headers: {
                 'Authorization': `Bearer ${token}`
             },
@@ -115,7 +115,7 @@ export async function unlockProject(projectId) {
 export const searchProject = async (fullnameOrId) => {
     try {
         const accessToken = localStorage.getItem('accessToken');
-        const response = await axios.get(`${API_BASE_URL}/search`, {
+        const response = await api.get(`${API_BASE_URL}/search`, {
             params: { fullnameOrId },
             headers: {
                 'Authorization': `Bearer ${accessToken}`

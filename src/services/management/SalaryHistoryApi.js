@@ -1,12 +1,12 @@
-import axios from 'axios';
+import api from "services/Api.js";
 //import MockAdapter from 'axios-mock-adapter';
 
-const API_BASE_URL = 'https://localhost:7297/api/SalaryHistory';
+const API_BASE_URL = '/api/SalaryHistory';
 
 export const getOneSalaryHistory = async (salaryHistoryId) => {
     try {
         const accessToken = localStorage.getItem('accessToken');
-        const response = await axios.get(`${API_BASE_URL}/get/${salaryHistoryId}`, {
+        const response = await api.get(`${API_BASE_URL}/get/${salaryHistoryId}`, {
             headers: {
                 'Authorization': `Bearer ${accessToken}`
             },
@@ -23,7 +23,7 @@ export const getOneSalaryHistory = async (salaryHistoryId) => {
 export const getOneSalaryHistoryByUser = async (salaryHistoryId) => {
     try {
         const accessToken = localStorage.getItem('accessToken');
-        const response = await axios.get(`${API_BASE_URL}/get-by-user/${salaryHistoryId}`, {
+        const response = await api.get(`${API_BASE_URL}/get-by-user/${salaryHistoryId}`, {
             headers: {
                 'Authorization': `Bearer ${accessToken}`
             },
@@ -40,7 +40,7 @@ export const getOneSalaryHistoryByUser = async (salaryHistoryId) => {
 export const getPageSalaryHistoryByUser = async (page, pageSize) => {
     try {
         const accessToken = localStorage.getItem('accessToken');
-        const response = await axios.get(`${API_BASE_URL}/get-by-user/${page}/${pageSize}`, {
+        const response = await api.get(`${API_BASE_URL}/get-by-user/${page}/${pageSize}`, {
             headers: {
                 'Authorization': `Bearer ${accessToken}`
             },
@@ -57,7 +57,7 @@ export const filterSalaryHistoryByUser = async (sortByDate, pageNumber, pageSize
     try {
         const token = localStorage.getItem('accessToken');
 
-        const response = await axios.get(`${API_BASE_URL}/filter-by-user`, {
+        const response = await api.get(`${API_BASE_URL}/filter-by-user`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             },
@@ -77,7 +77,7 @@ export const filterSalaryHistory = async (dataFilter, sortByDate, pageNumber, pa
     try {
         const token = localStorage.getItem('accessToken');
 
-        const response = await axios.get(`${API_BASE_URL}/filter`, {
+        const response = await api.get(`${API_BASE_URL}/filter`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             },
@@ -98,7 +98,7 @@ export const addSalaryHistory = async (data) => {
     try {
         const token = localStorage.getItem('accessToken');
 
-        const response = await axios.post(`${API_BASE_URL}/add`, data, {
+        const response = await api.post(`${API_BASE_URL}/add`, data, {
             headers: {
                 'Authorization': `Bearer ${token}`
             },
@@ -115,7 +115,7 @@ export async function editSalaryHistory(dataRequest) {
     try {
         const token = localStorage.getItem('accessToken');
 
-        const response = await axios.put(`${API_BASE_URL}/edit`, dataRequest, {
+        const response = await api.put(`${API_BASE_URL}/edit`, dataRequest, {
             headers: {
                 'Authorization': `Bearer ${token}`
             },

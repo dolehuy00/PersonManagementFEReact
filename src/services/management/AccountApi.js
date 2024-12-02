@@ -1,11 +1,11 @@
-import axios from 'axios';
+import api from "services/Api.js";
 
-const API_BASE_URL = 'https://localhost:7297/api/Account';
+const API_BASE_URL = '/api/Account';
 
 export const getOneAccount = async (accountId) => {
     try {
         const accessToken = localStorage.getItem('accessToken');
-        const response = await axios.get(`${API_BASE_URL}/get/${accountId}`, {
+        const response = await api.get(`${API_BASE_URL}/get/${accountId}`, {
             headers: {
                 'Authorization': `Bearer ${accessToken}`
             },
@@ -22,7 +22,7 @@ export const filterAccount = async (dataFilter, sortBy, pageNumber, pageSize) =>
     try {
         const token = localStorage.getItem('accessToken');
 
-        const response = await axios.get(`${API_BASE_URL}/filter`, {
+        const response = await api.get(`${API_BASE_URL}/filter`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             },
@@ -46,7 +46,7 @@ export const addAccount = async (data) => {
     try {
         const token = localStorage.getItem('accessToken');
 
-        const response = await axios.post(`${API_BASE_URL}/add`, data, {
+        const response = await api.post(`${API_BASE_URL}/add`, data, {
             headers: {
                 'Authorization': `Bearer ${token}`
             },
@@ -63,7 +63,7 @@ export async function editAccount(dataRequest) {
     try {
         const token = localStorage.getItem('accessToken');
 
-        const response = await axios.put(`${API_BASE_URL}/edit`, dataRequest, {
+        const response = await api.put(`${API_BASE_URL}/edit`, dataRequest, {
             headers: {
                 'Authorization': `Bearer ${token}`
             },
@@ -81,7 +81,7 @@ export async function lockAccount(accountId) {
     try {
         const token = localStorage.getItem('accessToken');
 
-        const response = await axios.put(`${API_BASE_URL}/lock/${accountId}`, null, {
+        const response = await api.put(`${API_BASE_URL}/lock/${accountId}`, null, {
             headers: {
                 'Authorization': `Bearer ${token}`
             },
@@ -97,7 +97,7 @@ export async function unlockAccount(accountId) {
     try {
         const token = localStorage.getItem('accessToken');
 
-        const response = await axios.put(`${API_BASE_URL}/unlock/${accountId}`, null, {
+        const response = await api.put(`${API_BASE_URL}/unlock/${accountId}`, null, {
             headers: {
                 'Authorization': `Bearer ${token}`
             },

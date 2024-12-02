@@ -1,12 +1,12 @@
-import axios from 'axios';
+import api from 'services/Api.js';
 //import MockAdapter from 'axios-mock-adapter';
 
-const API_BASE_URL = 'https://localhost:7297/api/Employee';
+const API_BASE_URL = '/api/Employee';
 
 export const getOneEmployee = async (employeeId) => {
     try {
         const accessToken = localStorage.getItem('accessToken');
-        const response = await axios.get(`${API_BASE_URL}/get/${employeeId}`, {
+        const response = await api.get(`${API_BASE_URL}/get/${employeeId}`, {
             headers: {
                 'Authorization': `Bearer ${accessToken}`
             },
@@ -25,7 +25,7 @@ export const getOneEmployee = async (employeeId) => {
 export const getInfoByEmployee = async () => {
     try {
         const accessToken = localStorage.getItem('accessToken');
-        const response = await axios.get(`${API_BASE_URL}/get`, {
+        const response = await api.get(`${API_BASE_URL}/get`, {
             headers: {
                 'Authorization': `Bearer ${accessToken}`
             },
@@ -45,7 +45,7 @@ export const filterEmployee = async (dataFilter, sortBy, pageNumber, pageSize) =
     try {
         const token = localStorage.getItem('accessToken');
 
-        const response = await axios.get(`${API_BASE_URL}/filter`, {
+        const response = await api.get(`${API_BASE_URL}/filter`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             },
@@ -76,7 +76,7 @@ export const addEmployee = async (data) => {
     try {
         const token = localStorage.getItem('accessToken');
 
-        const response = await axios.post(`${API_BASE_URL}/add`, data, {
+        const response = await api.post(`${API_BASE_URL}/add`, data, {
             headers: {
                 'Authorization': `Bearer ${token}`
             },
@@ -93,7 +93,7 @@ export async function editEmployee(dataRequest) {
     try {
         const token = localStorage.getItem('accessToken');
 
-        const response = await axios.put(`${API_BASE_URL}/edit`, dataRequest, {
+        const response = await api.put(`${API_BASE_URL}/edit`, dataRequest, {
             headers: {
                 'Authorization': `Bearer ${token}`
             },
@@ -114,7 +114,7 @@ export async function lockEmployee(employeeId) {
     try {
         const token = localStorage.getItem('accessToken');
 
-        const response = await axios.put(`${API_BASE_URL}/lock/${employeeId}`, null, {
+        const response = await api.put(`${API_BASE_URL}/lock/${employeeId}`, null, {
             headers: {
                 'Authorization': `Bearer ${token}`
             },
@@ -130,7 +130,7 @@ export async function unlockEmployee(employeeId) {
     try {
         const token = localStorage.getItem('accessToken');
 
-        const response = await axios.put(`${API_BASE_URL}/unlock/${employeeId}`, null, {
+        const response = await api.put(`${API_BASE_URL}/unlock/${employeeId}`, null, {
             headers: {
                 'Authorization': `Bearer ${token}`
             },
@@ -146,7 +146,7 @@ export async function unlockEmployee(employeeId) {
 export const searchEmployee = async (fullnameOrId) => {
     try {
         const accessToken = localStorage.getItem('accessToken');
-        const response = await axios.get(`${API_BASE_URL}/search`, {
+        const response = await api.get(`${API_BASE_URL}/search`, {
             params: { fullnameOrId },
             headers: {
                 'Authorization': `Bearer ${accessToken}`

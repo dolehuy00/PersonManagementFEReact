@@ -27,7 +27,6 @@ export const useLogin = () => {
             } else {
                 throw new Error('Role invalid.');
             }
-            return data;
         } catch (error) {
             setIsLoading(false);
             setError(error.message);
