@@ -62,13 +62,32 @@ const Tables = () => {
     { text: "Sort by id decreasing", value: "id:dec" },
     { text: "Sort by name ascending", value: "name:asc" },
     { text: "Sort by name decreasing", value: "name:dec" },
+    { text: "Sort by start date ascending", value: "startDate:asc" },
+    { text: "Sort by start date decreasing", value: "startDate:dec" },
+    { text: "Sort by duration ascending", value: "duration:asc" },
+    { text: "Sort by duration decreasing", value: "duration:dec" },
   ];
   const itemSingleFilters = [
     { labelName: "Id", nameInput: "id", type: "text" },
-    { labelName: "Name", nameInput: "name", type: "text" },
-    { labelName: "Status", nameInput: "status", type: "text" }
+    { labelName: "Name", nameInput: "name", type: "text" }
   ];
-
+  const itemRangeFilters = [
+    { labelName: "Start Date", nameInputFrom: "StartDate", nameInputTo: "EndDate", type: "date" }
+  ];
+  const itemSelectOptions = [
+    {
+        labelName: "Status",
+        nameSelect: "status",
+        Option: [
+            { labelName: "Not Started", value: "Not Started" },
+            { labelName: "In Progress", value: "In Progress" },
+            { labelName: "On Hold", value: "On Hold" },
+            { labelName: "Completed", value: "Completed" },
+            { labelName: "Cancelled", value: "Cancelled" },
+        ],
+        type: "select_option"
+    }
+  ];
   //states
   const [pageIndex, setPageIndex] = useState(1);
   const [pageSize, setPageSize] = useState(5);
@@ -291,6 +310,8 @@ const Tables = () => {
                           />
                           <FilterPopup
                             itemSingleFilters={itemSingleFilters}
+                            itemRangeFilters={itemRangeFilters}
+                            itemSelectOptions={itemSelectOptions}
                             onConfirmFilter={onConfirmFilter}
                             dataFilterUseState={dataFilter}
                           />
@@ -356,11 +377,7 @@ const Tables = () => {
                                     href={`project/view?id=${item.id}&mode=edit`}
                                   >
                                     Edit
-                                  </DropdownItem>
-                                  {statusColMap[item.id]
-                                    ? renderContentItemLockDropdown(item.id, statusColMap[item.id])
-                                    : renderContentItemLockDropdown(item.id, item.status)
-                                  }
+                                  </DropdownItem>                                  
                                 </DropdownMenu>
                               </UncontrolledDropdown>
                             </td>

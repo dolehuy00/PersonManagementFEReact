@@ -11,8 +11,10 @@ export const getOneProject = async (projectId) => {
                 'Authorization': `Bearer ${accessToken}`
             },
         });
-
+        
         var data = response.data;
+        data.results[0].startDate = data.results[0].startDate.split("T")[0];
+        data.results[0].duration = data.results[0].duration.split("T")[0];
         return data;
     } catch (error) {
         throw error;
@@ -52,8 +54,7 @@ export const addProject = async (data) => {
             headers: {
                 'Authorization': `Bearer ${token}`
             },
-        });
-
+        });        
         return response.data;
 
     } catch (error) {
@@ -70,11 +71,9 @@ export async function editProject(dataRequest) {
                 'Authorization': `Bearer ${token}`
             },
         });
-
+                
         var dataResponse = response.data;
-
         return dataResponse;
-
     } catch (error) {
         throw error;
     }
@@ -125,8 +124,10 @@ export const searchProject = async (fullnameOrId) => {
 
         var data = response.data;
         for (let index = 0; index < data?.results?.length; index++) {
-            data.results[index].dateOfBirth = data.results[index].dateOfBirth.split("T")[0];  
+            data.results[0].startDate = data.results[0].startDate.split("T")[0];
+            data.results[0].duration = data.results[0].duration.split("T")[0]; 
         }
+        
         return data;
     } catch (error) {
         throw error;

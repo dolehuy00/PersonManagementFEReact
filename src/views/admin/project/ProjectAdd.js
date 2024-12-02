@@ -133,7 +133,6 @@ const ProjectAdd = ({ onCancel }) => {
     const handleSubmitAddDeptDepartment = (event) => {
         event.preventDefault();
         try {
-            alert(deptAssignments.length)
             setDataBodyDeptAssignments(deptAssignments);
             toast.success('Add successfully:', {
                 position: "bottom-right",
@@ -438,8 +437,8 @@ const ProjectAdd = ({ onCancel }) => {
                         <Table className="align-items-center table-flush" responsive>
                             <thead className="thead-light">
                             <tr className="text-center">
-                                <th scope="col">Department Id</th>
                                 <th scope="col">Project Id</th>
+                                <th scope="col">Department Id</th>                                
                                 <th scope="col">Priotity Level</th>
                                 <th scope="col">Main Task Detail</th>
                                 <th scope="col">Delete</th>
@@ -448,20 +447,20 @@ const ProjectAdd = ({ onCancel }) => {
                             <tbody>                           
                                 {deptAssignments.map((assignment, index) => (
                                     <tr className="text-center" key={index}>
-                                    <td>{assignment.departmentId}</td>
-                                    <td>{assignment.projectId}</td>
-                                    <td>{assignment.PriotityLevel}</td>
-                                    <td>{assignment.mainTaskDetail}</td>
-                                    <td>
-                                        <Button className="btn-icon btn-3" color="" type="button" disabled={loading}  onClick={() => deleteDeptAssignment(assignment.departmentId)}>
-                                            <span className="btn-inner--text m-0">
-                                                {loading
-                                                    ? (<><Spinner size="sm">Waiting...</Spinner><span> Waiting...</span></>)
-                                                    : (<> <i className="fas fa-trash" /></>)
-                                                }
-                                            </span>
-                                        </Button>
-                                    </td>
+                                        <td>{assignment.projectId}</td>
+                                        <td>{assignment.departmentId}</td>                                    
+                                        <td>{assignment.PriotityLevel}</td>
+                                        <td>{assignment.mainTaskDetail}</td>
+                                        <td>
+                                            <Button className="btn-icon btn-3" color="" type="button" disabled={loading}  onClick={() => deleteDeptAssignment(assignment.departmentId)}>
+                                                <span className="btn-inner--text m-0">
+                                                    {loading
+                                                        ? (<><Spinner size="sm">Waiting...</Spinner><span> Waiting...</span></>)
+                                                        : (<> <i className="fas fa-trash" /></>)
+                                                    }
+                                                </span>
+                                            </Button>
+                                        </td>
                                     </tr>
                                 ))}
                             </tbody>
