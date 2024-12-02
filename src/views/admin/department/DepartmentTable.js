@@ -64,9 +64,19 @@ const Tables = () => {
     { text: "Sort by name decreasing", value: "name:dec" },
   ];
   const itemSingleFilters = [
-    { labelName: "Id", nameInput: "id", type: "text" },
-    { labelName: "Name", nameInput: "name", type: "text" },
-    { labelName: "Status", nameInput: "status", type: "text" }
+    { labelName: "Id", nameInput: "id", type: "number" },
+    { labelName: "Name", nameInput: "name", type: "text" }
+  ];
+  const itemSelectOptions = [
+    {
+        labelName: "Status",
+        nameSelect: "status",
+        Option: [
+            { labelName: "Lock", value: "Lock" },
+            { labelName: "Active", value: "Active" }
+        ],
+        type: "select_option"
+    }
   ];
 
   //states
@@ -264,6 +274,7 @@ const Tables = () => {
                           />
                           <FilterPopup
                             itemSingleFilters={itemSingleFilters}
+                            itemSelectOptions={itemSelectOptions}
                             onConfirmFilter={onConfirmFilter}
                             dataFilterUseState={dataFilter}
                           />

@@ -96,7 +96,7 @@ export var managerRoutes = [
   {
     path: "/department",
     name: "Department",
-    icon: "fa-solid fa-users text-orange",
+    icon: "fa-solid fa-people-group",
     component: <Department />,
     layout: "/admin",
     viewOnSidebar: true,
@@ -104,7 +104,7 @@ export var managerRoutes = [
   {
     path: "/department/view",
     name: "Department View",
-    icon: "fa-solid fa-users text-orange",
+    icon: "fa-solid fa-people-group",
     component: <DepartmentView />,
     layout: "/admin",
     viewOnSidebar: false,
@@ -112,7 +112,7 @@ export var managerRoutes = [
   {
     path: "/project",
     name: "Project",
-    icon: "fa-solid fa-users text-orange",
+    icon: "fa-solid fa-folder-open text-blue",
     component: <Project />,
     layout: "/admin",
     viewOnSidebar: true,
@@ -120,7 +120,7 @@ export var managerRoutes = [
   {
     path: "/project/view",
     name: "Project View",
-    icon: "fa-solid fa-users text-orange",
+    icon: "fa-solid fa-folder-open text-blue",
     component: <ProjectView />,
     layout: "/admin",
     viewOnSidebar: false,

@@ -60,8 +60,9 @@ class Modals extends React.Component {
     render() {
         // itemSingleFilters = [{ labelName: "Name Or Id", nameInput: "nameOrId", type: "text" }];
         // itemRangeFilters = [{ labelName: "Salary", nameInputFrom: "fromSalary", nameInputTo: "toSalary", type: "number" }];
+        // itemSelectOptions = [{ labelName: "Status", nameSelect: "status", Option[{labelName: "Lock", value: "Lock"}, {labelName: "Active", value: "Active"}], type: "select_option"}]
 
-        const { itemSingleFilters, itemRangeFilters, onConfirmFilter, dataFilterUseState } = this.props;
+        const { itemSingleFilters, itemRangeFilters, itemSelectOptions, onConfirmFilter, dataFilterUseState } = this.props;
 
         if (itemRangeFilters) {
             itemRangeFilters.forEach((item) => {
@@ -151,6 +152,32 @@ class Modals extends React.Component {
                                             </Col>
                                         </Row>))
                                     : ""}
+                                {
+                                    itemSelectOptions &&
+                                    itemSelectOptions.map((item) => (
+                                        <Row className="d-flex align-items-center mb-2" key={"filter-select-" + item.nameSelect}>
+                                            <Col lg="3">
+                                                <span>{item.labelName}</span>
+                                            </Col>
+                                            <Col>
+                                                <Input
+                                                    type="select"
+                                                    name={item.nameSelect}
+                                                    className="form-control-alternative"
+                                                    value={this.state.dataFilters[item.nameSelect] || ""}
+                                                    onChange={this.handleInputChange}
+                                                >
+                                                    <option value="">-- Select --</option>
+                                                    {item.Option.map((option) => (
+                                                        <option key={option.value} value={option.value}>
+                                                            {option.labelName}
+                                                        </option>
+                                                    ))}
+                                                </Input>
+                                            </Col>
+                                        </Row>
+                                    ))
+                                }
                                 {itemRangeFilters && (<h3 className="text-center mt-4">Range Filter</h3>)}
                                 {itemRangeFilters
                                     ? itemRangeFilters.map((item) => (
@@ -227,7 +254,7 @@ class Modals extends React.Component {
                                             )
                                     ))
                                     : ""
-                                }
+                                }                                
                             </Container>
                         </div>
                         <div className="modal-footer">

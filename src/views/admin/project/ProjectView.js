@@ -200,7 +200,6 @@ const ViewProject = () => {
 
     const handleClickEdit = (event) => {
         event.preventDefault();
-        setViewMode("edit");
     }
 
     const handleInputChange = (e) => {
@@ -281,22 +280,21 @@ const ViewProject = () => {
                                             ? (
                                                 <Button
                                                     color="primary"
-                                                    href="#pablo"
-                                                    onClick={handleCancelEdit}
+                                                    href={`?id=${projectId}`}
                                                     size="sm"
                                                 >
                                                     Cancel
                                                 </Button>
                                             )
                                             : (
-                                                <Button
-                                                    color="primary"
-                                                    href="#pablo"
-                                                    onClick={handleClickEdit}
-                                                    size="sm"
-                                                >
-                                                    Edit
-                                                </Button>
+                                                    <Button
+                                                        color="primary"
+                                                        size="sm"
+                                                        href={`?id=${projectId}&mode=edit`}
+                                                    >
+                                                        Edit
+                                                    </Button>
+                                                
                                             )
                                         }
                                     </Col>
