@@ -78,6 +78,23 @@ export const addManyDeptAssignment = async (deptAssignments) => {
     }
 };
 
+export const editManyDeptAssignment = async (projectId, deptAssignments) => {
+    try {
+        const token = localStorage.getItem('accessToken');
+
+        const response = await axios.put(`${API_BASE_URL}/editMany/${projectId}`, deptAssignments, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            },
+        });
+
+        return response.data;
+
+    } catch (error) {
+        throw error;
+    }
+};
+
 
 export const addDeptAssignment = async (data) => {
     try {

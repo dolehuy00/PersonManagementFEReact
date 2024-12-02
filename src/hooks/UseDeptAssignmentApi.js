@@ -9,7 +9,8 @@ import {
     lockDeptAssignment,
     unlockDeptAssignment,
     searchDeptAssignment,
-    addManyDeptAssignment
+    addManyDeptAssignment,
+    editManyDeptAssignment
 } from 'services/management/DeptAssignmentApi.js';
 import { useNavigate } from "react-router-dom";
 
@@ -114,6 +115,37 @@ export const useAddManyDeptAssignment = (deptAssignments) => {
             try {
                 if (Object.keys(deptAssignments).length > 0) {
                     const result = await addManyDeptAssignment(deptAssignments);
+                    setData(result);
+                }
+                setLoading(false);
+            } catch (error) {
+                if (error.status === 401) {
+                    navigate('/auth');
+                } else {
+                    setLoading(false);
+                    setError(error);
+                }
+            }
+        };
+        request();
+    }, [deptAssignments, navigate]);
+
+    return { data, loading, error };
+};
+
+
+export const useEditManyDeptAssignment = (projectId, deptAssignments) => {
+    const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const navigate = useNavigate();
+    useEffect(() => {
+        
+        const request = async () => {
+            setLoading(true);
+            try {
+                if (Object.keys(deptAssignments).length > 0) {
+                    const result = await editManyDeptAssignment(projectId, deptAssignments);
                     setData(result);
                 }
                 setLoading(false);

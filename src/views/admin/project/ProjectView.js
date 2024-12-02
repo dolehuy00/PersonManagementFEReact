@@ -23,7 +23,7 @@ import SearchWithPopup from "components/Popups/SearchWithPopup.js";
 import Header from "components/Headers/Header.js";
 import LoadingOrError from "components/Notifications/LoadingOrError.js";
 import DatePickerWithTooltip from "components/DateTimePickers/DatePickerWithTooltip.js";
-import { useAddManyDeptAssignment } from "hooks/UseDeptAssignmentApi.js";
+import { useEditManyDeptAssignment } from "hooks/UseDeptAssignmentApi.js";
 import { useSearchDepartment } from "hooks/UseDepartmentApi.js";
 import { useGetDeptsAssignmentsByProject } from "hooks/UseDeptAssignmentApi.js";
 // custom hooks
@@ -51,10 +51,10 @@ const ViewProject = () => {
     const [dataEdit, setDataEdit] = useState({});
     const [statusValue, setStatusValue] = useState("");
     const [dataBodyDeptAssignments, setDataBodyDeptAssignments] = useState([]);
-    const { dataDeptAssignment, loadingDeptAssignment, errorDeptAssignment }  = useAddManyDeptAssignment(dataBodyDeptAssignments);
+    const { dataDeptAssignment, loadingDeptAssignment, errorDeptAssignment }  = useEditManyDeptAssignment(projectId, dataBodyDeptAssignments);
     const [deptAssignments, setDeptAssignments] = useState([]);
     const [errorDepartment, setErrorDepartment] = useState("");
-
+    const [firstSetDeptAssignment, setFirstSetDeptAssignment] = useState(true);
     // request data    
     const { data: dataGetProj, loading: loadingGetProj, error: errorGetProj } = useGetOneProject(projectId);
     const { data: dataEditResponse, loading: loadingEdit, error: errorEdit } = useEditProject(dataEdit);
@@ -93,7 +93,6 @@ const ViewProject = () => {
     };
 
 
-
     const handleAddDepartment = (event) => {
         event.preventDefault();
         const formAddDepartmentData = new FormData(formAddDepartmentRef.current);
@@ -116,7 +115,6 @@ const ViewProject = () => {
                 theme: "colored",
                 transition: Slide,
             });  
-            setDeptAssignments([])
         } catch (error){
             console.log(error)
             toast.error("Save Assignment failed, an error occurred, please try again later!", {
@@ -145,8 +143,9 @@ const ViewProject = () => {
     }, [dataGetProj]);
 
     useEffect(() => {
-        if (dataGetDeptAssignment.status === 200) {
+        if (dataGetDeptAssignment.status === 200 && firstSetDeptAssignment) {
             setDeptAssignments(dataGetDeptAssignment.results)
+            setFirstSetDeptAssignment(false);
         }
     })
 
@@ -363,7 +362,8 @@ const ViewProject = () => {
                                                                 name="status"
                                                                 className="form-control"
                                                                 required
-                                                                value={statusValue}
+                                                                value={formValues.status || "Not Started"}
+                                                                onChange={handleInputChange}
                                                                 disabled={!isEditMode()}
                                                             >
                                                                 <option value="Not Started">Not Started</option>

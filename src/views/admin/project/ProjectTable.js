@@ -356,11 +356,7 @@ const Tables = () => {
                                     href={`project/view?id=${item.id}&mode=edit`}
                                   >
                                     Edit
-                                  </DropdownItem>
-                                  {statusColMap[item.id]
-                                    ? renderContentItemLockDropdown(item.id, statusColMap[item.id])
-                                    : renderContentItemLockDropdown(item.id, item.status)
-                                  }
+                                  </DropdownItem>                                  
                                 </DropdownMenu>
                               </UncontrolledDropdown>
                             </td>
