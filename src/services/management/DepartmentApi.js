@@ -114,7 +114,7 @@ export const searchDepartment = async (fullnameOrId) => {
     try {
         const accessToken = localStorage.getItem('accessToken');
         const isNumber = !isNaN(fullnameOrId); 
-        const params = isNumber ? { id: fullnameOrId, name: fullnameOrId } : { name: fullnameOrId };
+        const params = isNumber ? { id: fullnameOrId, name: fullnameOrId, status: 'Active' } : { name: fullnameOrId, status: 'Active' };
         const response = await api.get(`${API_BASE_URL}/filter`, {
             params: params,
             headers: {
