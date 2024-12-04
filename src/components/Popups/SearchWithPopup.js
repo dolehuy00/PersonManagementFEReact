@@ -25,11 +25,12 @@ const SearchWithPopup = ({
   arraySetValueInput, // array
   disabled, // string
   onChange,
-  propertyPassedToOtherDataEventOnChange // array ["property_1", "property_2"]
+  propertyPassedToOtherDataEventOnChange, // array ["property_1", "property_2"]
+  departmentId = null// long
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [disabledInputValue, setDisabledInputValue] = useState('');
-  const [realInputValue, setRealInputValue] = useState('');
+  const [realInputValue, setRealInputValue] = useState("");
   const [searchValue, setSearchValue] = useState('');
   const [typingTimeout, setTypingTimeout] = useState(null);
 
@@ -51,7 +52,7 @@ const SearchWithPopup = ({
     // Set new timeout
     setTypingTimeout(
       setTimeout(() => {
-        requestSearch(value);
+        requestSearch(value, departmentId);
       }, deboundTimeOut)
     );
   };
@@ -59,8 +60,8 @@ const SearchWithPopup = ({
   // Handle selection of a search result
   const handleSelectResult = (result) => {
     setDisabledInputValue(
-      `${result[propertyInDataToViewDisableInput[0]]} ~ ` +
-      `${result[propertyInDataToViewDisableInput[1]]}`);
+      `${result[propertyInDataToViewDisableInput[0]]}` +
+      `${result[propertyInDataToViewDisableInput[1]] ? " ~ " + result[propertyInDataToViewDisableInput[1]] : ""}`);
     setRealInputValue(result[propertyInDataToSetRealInput]);
     let otherData = {};
     if (propertyPassedToOtherDataEventOnChange) {
@@ -68,22 +69,23 @@ const SearchWithPopup = ({
         otherData[element] = result[element];
       });
     }
-    const fakeEvent = {
-      target: {
-        name: nameInput,
-        value: result[propertyInDataToSetRealInput],
-      },
-      otherData
-    };
-    onChange(fakeEvent)
+    if (onChange) {
+      const fakeEvent = {
+        target: {
+          name: nameInput,
+          value: result[propertyInDataToSetRealInput],
+        },
+        otherData
+      };
+      onChange(fakeEvent)
+    }
     toggleModal(); // Close modal
   };
 
   const handleSetData = (result) => {
     setDisabledInputValue(
       `${result[propertyInDataToViewDisableInput[0]]}` +
-      `${result[propertyInDataToViewDisableInput[0]] && result[propertyInDataToViewDisableInput[1]] ? " ~ " : ""}` +
-      `${result[propertyInDataToViewDisableInput[1]]}`
+      `${result[propertyInDataToViewDisableInput[1]] ? " ~ " + result[propertyInDataToViewDisableInput[1]] : ""}`
     ); // Update the disabled input
     setRealInputValue(result[propertyInDataToSetRealInput])
   };
@@ -103,13 +105,13 @@ const SearchWithPopup = ({
             onChange={(e) => e.preventDefault()}
           />
           <Input
-            type="number"
-            value={realInputValue}
-            hidden
-            readOnly
-            name={nameInput}
-            required={required}
-          />
+              type="number"
+              value={realInputValue}
+              hidden
+              readOnly
+              name={realInputValue.toString().length > 0 ? nameInput : ""}
+              required={required}
+            />
         </Col>
         <Col lg={{ size: "auto" }} className="pr-0">
           {/* Button to open modal */}

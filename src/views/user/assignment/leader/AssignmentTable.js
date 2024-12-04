@@ -20,7 +20,7 @@ import {
 import React, { useState } from "react";
 
 // hooks
-import { useFilterAssignment } from "hooks/UseAssignmentApi.js";
+import { useFilterAssignmentByLeader } from "hooks/UseAssignmentApi.js";
 
 //components
 import CustomPagination from "components/Pagination/Pagination.js";
@@ -29,8 +29,15 @@ import FilterPopup from "components/Popups/FilterPopup.js";
 import Header from "components/Headers/Header.js";
 import AssignmentAdd from "./AssignmentAdd.js";
 import LoadingOrError from "components/Notifications/LoadingOrError.js";
+import { useLocation } from "react-router-dom";
 
 const Tables = () => {
+  // search params
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const departmentId = searchParams.get("department");
+  const deptAssignmentId = searchParams.get("dept_assignment");
+
   // data component
   const arrayItemPerPage = [
     { text: "Item per page: ", value: 5 },
@@ -49,7 +56,6 @@ const Tables = () => {
   const itemSingleFilters = [
     { labelName: "Responsible Peson Id", nameInput: "responsiblePesonId", type: "number" },
     { labelName: "Project Id", nameInput: "projectId", type: "number" },
-    { labelName: "Department Id", nameInput: "departmentId", type: "number" },
     { labelName: "Status", nameInput: "status", type: "text" }
   ];
 
@@ -91,7 +97,7 @@ const Tables = () => {
   }
 
   // request data
-  const { data, loading, error } = useFilterAssignment(dataFilter, sortBy, pageIndex, pageSize);
+  const { data, loading, error } = useFilterAssignmentByLeader(departmentId, deptAssignmentId, dataFilter, sortBy, pageIndex, pageSize);
   const totalPage = data.totalPage;
 
   // render
@@ -100,55 +106,64 @@ const Tables = () => {
     let style = {};
     switch (status) {
       case "Pending":
-        style = { "backgroundColor": "#A0A0A0",
+        style = {
+          "backgroundColor": "#A0A0A0",
           "width": "0.5rem",
           "height": "0.5rem"
         };
         break;
       case "Assigned":
-        style = { "backgroundColor": "#007BFF",
+        style = {
+          "backgroundColor": "#007BFF",
           "width": "0.5rem",
           "height": "0.5rem"
         };
         break;
       case "In Progress":
-        style = { "backgroundColor": "#FFA500",
+        style = {
+          "backgroundColor": "#FFA500",
           "width": "0.5rem",
           "height": "0.5rem"
         };
         break;
       case "On Hold":
-        style = { "backgroundColor": "#FFD700",
+        style = {
+          "backgroundColor": "#FFD700",
           "width": "0.5rem",
           "height": "0.5rem"
         };
         break;
       case "Completed":
-        style = { "backgroundColor": "#28A745",
+        style = {
+          "backgroundColor": "#28A745",
           "width": "0.5rem",
           "height": "0.5rem"
         };
         break;
       case "Verified":
-        style = { "backgroundColor": "#20C997",
+        style = {
+          "backgroundColor": "#20C997",
           "width": "0.5rem",
           "height": "0.5rem"
         };
         break;
       case "Rejected":
-        style = { "backgroundColor": "#DC3545",
+        style = {
+          "backgroundColor": "#DC3545",
           "width": "0.5rem",
           "height": "0.5rem"
         };
         break;
       case "Cancelled":
-        style = { "backgroundColor": "#F8D7DA",
+        style = {
+          "backgroundColor": "#F8D7DA",
           "width": "0.5rem",
           "height": "0.5rem"
         };
         break;
       case "Failed":
-        style = { "backgroundColor": "#B22222",
+        style = {
+          "backgroundColor": "#B22222",
           "width": "0.5rem",
           "height": "0.5rem"
         };
@@ -190,8 +205,8 @@ const Tables = () => {
               ? (<AssignmentAdd onCancel={handleCancelCreate} />)
               : (
                 <Card className="shadow">
-                  <CardHeader className="border-0">
-                    <Container>
+                  <CardHeader className="border-0">   
+                    <Container className="mw-100">
                       <Row>
                         <Col className="text-left">
                           <Button
@@ -235,7 +250,7 @@ const Tables = () => {
                     <tbody>
                       {data
                         ? data.results.map((item, index) => (
-                          <tr key={index}>
+                          <tr key={index} className="text-center">
                             <th scope="row">{item.id}</th>
                             <td>{item.name}</td>
                             <td className="text-center">{item.priotityLevel}</td>
@@ -266,12 +281,12 @@ const Tables = () => {
                                 </DropdownToggle>
                                 <DropdownMenu className="dropdown-menu-arrow" right>
                                   <DropdownItem
-                                    href={`assignment/view?id=${item.id}`}
+                                    href={`assignment/view?id=${item.id}&department=${departmentId}`}
                                   >
                                     View Details
                                   </DropdownItem>
                                   <DropdownItem
-                                    href={`assignment/view?id=${item.id}&mode=edit`}
+                                    href={`assignment/view?id=${item.id}&mode=edit&department=${departmentId}`}
                                   >
                                     Edit
                                   </DropdownItem>
@@ -284,7 +299,7 @@ const Tables = () => {
                     </tbody>
                   </Table>
                   <CardFooter className="py-4">
-                    <Container>
+                    <Container className="mw-100">
                       <Row>
                         <Col>
                           <DropdownButtonSmall selectedItemState={buttonPerPageState} viewValue={true} arrayItems={arrayItemPerPage} onSelectChange={handleSelectPerPageChange} />

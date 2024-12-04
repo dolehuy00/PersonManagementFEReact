@@ -1,11 +1,11 @@
-import axios from 'axios';
+import api from "services/Api.js";
 
-const API_BASE_URL = 'https://localhost:7297/api/Role';
+const API_BASE_URL = '/api/Role';
 
 export const getAllRole = async () => {
     try {
         const accessToken = localStorage.getItem('accessToken');
-        const response = await axios.get(`${API_BASE_URL}/get/all`, {
+        const response = await api.get(`${API_BASE_URL}/get/all`, {
             headers: {
                 'Authorization': `Bearer ${accessToken}`
             },

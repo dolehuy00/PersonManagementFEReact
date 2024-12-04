@@ -1,12 +1,11 @@
-import axios from 'axios';
-//import MockAdapter from 'axios-mock-adapter';
+import api from 'services/Api.js';
 
-const API_BASE_URL = 'https://localhost:7297/api/department';
+const API_BASE_URL = '/api/department';
 
 export const getOneDepartment = async (departmentId) => {
     try {
         const accessToken = localStorage.getItem('accessToken');
-        const response = await axios.get(`${API_BASE_URL}/get/${departmentId}`, {
+        const response = await api.get(`${API_BASE_URL}/get/${departmentId}`, {
             headers: {
                 'Authorization': `Bearer ${accessToken}`
             },
@@ -23,7 +22,7 @@ export const filterDepartment = async (dataFilter, sortBy, pageNumber, pageSize)
     try {
         const token = localStorage.getItem('accessToken');
 
-        const response = await axios.get(`${API_BASE_URL}/filter`, {
+        const response = await api.get(`${API_BASE_URL}/filter`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             },
@@ -46,7 +45,7 @@ export const addDepartment = async (data) => {
     try {
         const token = localStorage.getItem('accessToken');
 
-        const response = await axios.post(`${API_BASE_URL}/add`, data, {
+        const response = await api.post(`${API_BASE_URL}/add`, data, {
             headers: {
                 'Authorization': `Bearer ${token}`
             },
@@ -63,7 +62,7 @@ export async function editDepartment(dataRequest) {
     try {
         const token = localStorage.getItem('accessToken');
 
-        const response = await axios.put(`${API_BASE_URL}/edit`, dataRequest, {
+        const response = await api.put(`${API_BASE_URL}/edit`, dataRequest, {
             headers: {
                 'Authorization': `Bearer ${token}`
             },
@@ -82,7 +81,7 @@ export async function lockDepartment(departmentId) {
     try {
         const token = localStorage.getItem('accessToken');
 
-        const response = await axios.put(`${API_BASE_URL}/changeStatus/${departmentId}`, null, {
+        const response = await api.put(`${API_BASE_URL}/changeStatus/${departmentId}`, null, {
             headers: {
                 'Authorization': `Bearer ${token}`
             },
@@ -98,7 +97,7 @@ export async function unlockDepartment(departmentId) {
     try {
         const token = localStorage.getItem('accessToken');
 
-        const response = await axios.put(`${API_BASE_URL}/changeStatus/${departmentId}`, null, {
+        const response = await api.put(`${API_BASE_URL}/changeStatus/${departmentId}`, null, {
             headers: {
                 'Authorization': `Bearer ${token}`
             },
@@ -116,7 +115,7 @@ export const searchDepartment = async (fullnameOrId) => {
         const accessToken = localStorage.getItem('accessToken');
         const isNumber = !isNaN(fullnameOrId); 
         const params = isNumber ? { id: fullnameOrId, name: fullnameOrId } : { name: fullnameOrId };
-        const response = await axios.get(`${API_BASE_URL}/filter`, {
+        const response = await api.get(`${API_BASE_URL}/filter`, {
             params: params,
             headers: {
                 'Authorization': `Bearer ${accessToken}`

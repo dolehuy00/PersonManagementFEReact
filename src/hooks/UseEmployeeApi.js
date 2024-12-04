@@ -8,7 +8,8 @@ import {
     lockEmployee,
     unlockEmployee,
     searchEmployee,
-    getInfoByEmployee
+    getInfoByEmployee,
+    searchEmployeeByLeader
 } from 'services/management/EmployeeApi.js';
 import { useNavigate } from "react-router-dom";
 
@@ -193,11 +194,38 @@ export const useSearchEmployee = () => {
     const [error, setError] = useState(null);
     const navigate = useNavigate();
 
-    const requestSearch = async (fullnameOrId) => {
+    const requestSearch = async (fullnameOrId, departmentId) => {
         setLoading(true);
         try {
             if (fullnameOrId.length > 0) {
-                const result = await searchEmployee(fullnameOrId);
+                const result = await searchEmployee(fullnameOrId, departmentId);
+                setData(result.results);
+            }
+            setLoading(false);
+        } catch (error) {
+            if (error.response.status === 401) {
+                navigate('/auth');
+            } else {
+                setLoading(false);
+                setError(error);
+            }
+        }
+    };
+
+    return { data, loading, error, requestSearch };
+};
+
+export const useSearchEmployeeByLeader = () => {
+    const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const navigate = useNavigate();
+
+    const requestSearch = async (fullnameOrId, departmentId) => {
+        setLoading(true);
+        try {
+            if (fullnameOrId.length > 0) {
+                const result = await searchEmployeeByLeader(fullnameOrId, departmentId);
                 setData(result.results);
             }
             setLoading(false);

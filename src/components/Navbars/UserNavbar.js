@@ -19,6 +19,7 @@ import { useEffect, useState } from "react";
 const AdminNavbar = (props) => {
   const navigate = useNavigate();
   const role = localStorage.getItem("role");
+  const leaderOfDepartment = JSON.parse(localStorage.getItem("leaderOfDepartments"));
   const [imageUser, setImageUser] = useState("");
 
   useEffect(() => {
@@ -83,10 +84,22 @@ const AdminNavbar = (props) => {
                   <i className="fa-solid fa-chart-line"></i>
                   <span>Dashboard</span>
                 </DropdownItem>
+                <DropdownItem to="/assignment" tag={Link}>
+                  <i className="ni ni-single-02" />
+                  <span>Assignment</span>
+                </DropdownItem>
                 <DropdownItem to="/user-profile" tag={Link}>
                   <i className="ni ni-single-02" />
                   <span>My profile</span>
                 </DropdownItem>
+                {leaderOfDepartment?.length > 0 
+                ? (
+                  <DropdownItem to="/leader/department-management" tag={Link}>
+                      <i className="fa-solid fa-screwdriver-wrench" />
+                      <span>Department Management</span>
+                    </DropdownItem>
+                ) 
+                : ""}
                 {role.toLowerCase() === "admin"
                   ? (
                     <DropdownItem to="/admin" tag={Link}>

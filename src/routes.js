@@ -31,12 +31,20 @@ import Department from "views/admin/department/DepartmentTable.js";
 import DepartmentView from "views/admin/department/DepartmentView.js";
 import Project from "views/admin/project/ProjectTable.js";
 import ProjectView from "views/admin/project/ProjectView.js";
+import Assignment from "views/admin/assignment/AssignmentTable.js";
+import AssignmentView from "views/admin/assignment/AssignmentView.js";
 
 //User
 import UserDashboard from "views/user/Dashboard.js";
 import Profile from "views/user/Profile.js";
 import SalaryHistoryUser from "views/user/salaryHistory/SalaryHistoryTable.js";
 import SalaryHistoryViewUser from "views/user/salaryHistory/SalaryHistoryView.js";
+import LeaderOfDepartmet from "views/user/Department/Learder/LeaderOfDeparmentList.js"
+import DeptAssignmentLeaderTable from "views/user/deptAssignment/DeptAssignmentLeaderTable.js"
+import AssignmentLeader from "views/user/assignment/leader/AssignmentTable.js";
+import AssignmentLeaderView from "views/user/assignment/leader/AssignmentView.js";
+import AssignmentCommon from "views/user/assignment/commonUser/AssignmentTable.js";
+import AssignmentCommonView from "views/user/assignment/commonUser/AssignmentView.js";
 
 export var managerRoutes = [
   {
@@ -126,7 +134,23 @@ export var managerRoutes = [
     component: <ProjectView />,
     layout: "/admin",
     viewOnSidebar: false,
-  }  
+  },
+  {
+    path: "/assignment",
+    name: "Assignment",
+    icon: "fa-solid fa-clipboard-check",
+    component: <Assignment />,
+    layout: "/admin",
+    viewOnSidebar: true,
+  },
+  {
+    path: "/assignment/view",
+    name: "Assignment View",
+    icon: "fa-solid fa-clipboard-check",
+    component: <AssignmentView />,
+    layout: "/admin",
+    viewOnSidebar: false,
+  } 
 ];
 
 export default managerRoutes;
@@ -163,7 +187,55 @@ export var userRoutes = [
     component: <SalaryHistoryViewUser />,
     layout: "",
     viewOnSidebar: false,
-  }
+  },
+  {
+    path: "/leader/department-management",
+    name: "Department Management",
+    icon: "fa-solid fa-sack-dollar text-yellow",
+    component: <LeaderOfDepartmet />,
+    layout: "",
+    viewOnSidebar: false,
+  },
+  {
+    path: "/leader/dept-assignment",
+    name: "Department Management",
+    icon: "fa-solid fa-sack-dollar text-yellow",
+    component: <DeptAssignmentLeaderTable />,
+    layout: "",
+    viewOnSidebar: false,
+  },
+  {
+    path: "/leader/assignment",
+    name: "Assignment Management",
+    icon: "fa-solid fa-clipboard-check",
+    component: <AssignmentLeader />,
+    layout: "",
+    viewOnSidebar: true,
+  },
+  {
+    path: "/leader/assignment/view",
+    name: "Assignment Management",
+    icon: "fa-solid fa-clipboard-check",
+    component: <AssignmentLeaderView />,
+    layout: "",
+    viewOnSidebar: false,
+  },
+  {
+    path: "/assignment",
+    name: "Assignment",
+    icon: "fa-solid fa-clipboard-check",
+    component: <AssignmentCommon />,
+    layout: "",
+    viewOnSidebar: true,
+  },
+  {
+    path: "assignment/view",
+    name: "Assignment",
+    icon: "fa-solid fa-clipboard-check",
+    component: <AssignmentCommonView />,
+    layout: "",
+    viewOnSidebar: false,
+  } 
 ];
 
 export var authRoutes = [
@@ -183,4 +255,5 @@ export var authRoutes = [
     layout: "/auth",
     viewOnSidebar: false,
   },
+
 ];

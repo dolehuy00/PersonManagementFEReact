@@ -90,7 +90,7 @@ const Login = () => {
               </FormGroup>
               {error && (
                 <Alert color="danger" className="py-1 mb-0">
-                  {error}
+                  {error.response?.data?.messages[0]}
                 </Alert>
               )}
               <div className="text-center">
