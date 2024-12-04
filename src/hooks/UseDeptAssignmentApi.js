@@ -10,7 +10,9 @@ import {
     unlockDeptAssignment,
     searchDeptAssignment,
     addManyDeptAssignment,
-    editManyDeptAssignment
+    editManyDeptAssignment,
+    searchId,
+    filterDeptAssignmentByLeader
 } from 'services/management/DeptAssignmentApi.js';
 import { useNavigate } from "react-router-dom";
 
@@ -38,6 +40,35 @@ export const useFilterDeptAssignment = (dataFilter, sortBy, page, pageSize) => {
         };
         getData();
     }, [dataFilter, sortBy, page, pageSize, navigate]);
+
+    return { data, loading, error };
+};
+
+
+export const useFilterDeptAssignmentByLeader = (departmentId, dataFilter, sortBy, page, pageSize) => {
+    const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const getData = async () => {
+            setLoading(true);
+            try {
+                const result = await filterDeptAssignmentByLeader(departmentId, dataFilter, sortBy, page, pageSize);
+                setData(result);
+                setLoading(false);
+            } catch (error) {
+                if (error.response.status === 401) {
+                    navigate('/auth');
+                } else {
+                    setLoading(false);
+                    setError(error);
+                }
+            }
+        };
+        getData();
+    }, [departmentId, dataFilter, sortBy, page, pageSize, navigate]);
 
     return { data, loading, error };
 };
@@ -263,6 +294,33 @@ export const useSearchDeptAssignment = () => {
         try {
             if (fullnameOrId.length > 0) {
                 const result = await searchDeptAssignment(fullnameOrId);
+                setData(result.results);
+            }
+            setLoading(false);
+        } catch (error) {
+            if (error.response.status === 401) {
+                navigate('/auth');
+            } else {
+                setLoading(false);
+                setError(error);
+            }
+        }
+    };
+
+    return { data, loading, error, requestSearch };
+};
+
+export const useSearchIdDeptAssignment = () => {
+    const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const navigate = useNavigate();
+
+    const requestSearch = async (id) => {
+        setLoading(true);
+        try {
+            if (id.length > 0) {
+                const result = await searchId(id);
                 setData(result.results);
             }
             setLoading(false);

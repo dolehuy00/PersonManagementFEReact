@@ -21,20 +21,20 @@ import { Slide, ToastContainer, toast } from 'react-toastify';
 import Header from "components/Headers/Header.js";
 import LoadingOrError from "components/Notifications/LoadingOrError.js";
 import SearchWithPopup from "components/Popups/SearchWithPopup.js";
-import { useSearchIdDeptAssignment } from "hooks/UseDeptAssignmentApi.js";
 
 // custom hooks
 import {
-    useGetOneAssignment,
-    useEditAssignment
+    useGetOneAssignmentByLeader,
+    useEditAssignmentByLeader
 } from "hooks/UseAssignmentApi.js";
-import { useSearchEmployee } from "hooks/UseEmployeeApi.js";
+import { useSearchEmployeeByLeader } from "hooks/UseEmployeeApi.js";
 
 const ViewAssignment = () => {
     // search params
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
     const assignmentId = searchParams.get("id");
+    const departmentId = searchParams.get("department");
     const mode = searchParams.get("mode")
 
     // state constant
@@ -46,11 +46,10 @@ const ViewAssignment = () => {
 
     // state variable
     let arrSetValueInputEmployee = useState([]);
-    let arrSetValueInputDeptAssignment = useState([]);
 
     // request data
-    const { data: dataGetAssignment, loading: loadingGetAssignment, error: errorGetAssignment } = useGetOneAssignment(assignmentId);
-    const { data: dataEditResponse, loading: loadingEdit, error: errorEdit } = useEditAssignment(dataEdit);
+    const { data: dataGetAssignment, loading: loadingGetAssignment, error: errorGetAssignment } = useGetOneAssignmentByLeader(departmentId, assignmentId);
+    const { data: dataEditResponse, loading: loadingEdit, error: errorEdit } = useEditAssignmentByLeader(departmentId, dataEdit);
 
     // effect set data to form
     useEffect(() => {
@@ -58,7 +57,7 @@ const ViewAssignment = () => {
             setDataForm(dataGetAssignment);
             setFormValuesDefault(dataGetAssignment)
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dataGetAssignment]);
 
     // effect show toast error respone save change
@@ -147,7 +146,6 @@ const ViewAssignment = () => {
                 deptAssignmentId: result.deptAssignmentId || "",
             });
             arrSetValueInputEmployee[0]({ fullname: result.responsiblePesonName || "", id: result.responsiblePesonId || "" })
-            arrSetValueInputDeptAssignment[0]({ id: result.deptAssignmentId })
         }
     }
 
@@ -284,26 +282,16 @@ const ViewAssignment = () => {
                                                                 className="form-control-label"
                                                                 htmlFor="input-dept"
                                                             >
-                                                                Dept Assignment
+                                                                Department Assignment
                                                             </label>
-                                                            <SearchWithPopup
-                                                                titleModal="Search Dept Assignment (ID)"
-                                                                nameInput="deptAssignmentId"
-                                                                searchApiFunc={useSearchIdDeptAssignment}
-                                                                propertyInDataToViewSearch={
-                                                                    [
-                                                                        { text: "ID: ", property: "id" },
-                                                                        { text: " ~ Project #", property: "projectId" },
-                                                                        { text: " ~ Department: ", property: "departmentName" },
-                                                                    ]
-                                                                }
-                                                                propertyInDataToViewDisableInput={["id"]}
-                                                                propertyInDataToSetRealInput="id"
-                                                                required="required"
-                                                                deboundTimeOut={1500}
-                                                                disabled={!isEditMode()}
-                                                                arraySetValueInput={arrSetValueInputDeptAssignment}
-                                                                onChange={handleInputChange}
+                                                            <Input
+                                                                className="form-control-alternative"
+                                                                id="input-priotity-level"
+                                                                type="number"
+                                                                value={formValues.deptAssignmentId || ""}
+                                                                readOnly
+                                                                name="deptAssignmentId"
+                                                                required
                                                             />
                                                         </FormGroup>
                                                     </Col>
@@ -318,7 +306,7 @@ const ViewAssignment = () => {
                                                             <SearchWithPopup
                                                                 titleModal="Search Employee (Name or ID)"
                                                                 nameInput="responsiblePesonId"
-                                                                searchApiFunc={useSearchEmployee}
+                                                                searchApiFunc={useSearchEmployeeByLeader}
                                                                 propertyInDataToViewSearch={
                                                                     [
                                                                         { text: "ID: ", property: "id" },
@@ -332,6 +320,7 @@ const ViewAssignment = () => {
                                                                 disabled={!isEditMode()}
                                                                 arraySetValueInput={arrSetValueInputEmployee}
                                                                 onChange={handleInputChange}
+                                                                departmentId = {departmentId}
                                                             />
                                                         </FormGroup>
                                                     </Col>

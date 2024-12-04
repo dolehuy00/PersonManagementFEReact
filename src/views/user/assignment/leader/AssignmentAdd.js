@@ -13,6 +13,7 @@ import {
 
 // core component
 import { useState, useRef, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
 // react toastify component
 import { Slide, ToastContainer, toast } from 'react-toastify';
@@ -21,23 +22,26 @@ import { Slide, ToastContainer, toast } from 'react-toastify';
 import SearchWithPopup from "components/Popups/SearchWithPopup.js";
 
 // hooks
-import { useAddAssignment } from "hooks/UseAssignmentApi.js";
-import { useSearchEmployee } from "hooks/UseEmployeeApi.js";
-import { useSearchIdDeptAssignment } from "hooks/UseDeptAssignmentApi.js";
-
+import { useAddAssignmentByLeader } from "hooks/UseAssignmentApi.js";
+import { useSearchEmployeeByLeader } from "hooks/UseEmployeeApi.js";
 
 const AssignmentAdd = ({ onCancel }) => {
+    // search params
+    const location = useLocation();
+    const searchParams = new URLSearchParams(location.search);
+    const departmentId = searchParams.get("department");
+    const deptAssignmentId = searchParams.get("dept_assignment");
+
     // state constant
     const [dataBody, setDataBody] = useState({});
     let arrSetValueInputEmployee = useState([]);
-    let arrSetValueInputDeptAssignment = useState([]);
     const [status, setStatus] = useState("Pending");
 
     // ref constant
     const formRef = useRef(null);
 
     // request data
-    const { data, loading, error } = useAddAssignment(dataBody);
+    const { data, loading, error } = useAddAssignmentByLeader(departmentId, dataBody);
 
     // effect show toast response add assignment request
     useEffect(() => {
@@ -68,7 +72,7 @@ const AssignmentAdd = ({ onCancel }) => {
                 transition: Slide,
             });
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [error, data]);
 
     // handle submit form data
@@ -82,8 +86,7 @@ const AssignmentAdd = ({ onCancel }) => {
     // handle reset form data
     const handleReset = () => {
         formRef.current.reset();
-        arrSetValueInputEmployee[0]({fullname: "", id: ""})
-        arrSetValueInputDeptAssignment[0]({fullname: "", id: ""})
+        arrSetValueInputEmployee[0]({ fullname: "", id: "" })
         setStatus("Pending");
     };
 
@@ -161,22 +164,14 @@ const AssignmentAdd = ({ onCancel }) => {
                                         >
                                             Dept Assignment
                                         </label>
-                                        <SearchWithPopup
-                                            titleModal="Search Dept Assignment (ID)"
-                                            nameInput="deptAssignmentId"
-                                            searchApiFunc={useSearchIdDeptAssignment}
-                                            propertyInDataToViewSearch={
-                                                [
-                                                    { text: "ID: ", property: "id" },
-                                                    { text: " ~ Project #", property: "projectId" },
-                                                    { text: " ~ Department: ", property: "departmentName" },
-                                                ]
-                                            }
-                                            propertyInDataToViewDisableInput={["id"]}
-                                            propertyInDataToSetRealInput="id"
-                                            required="required"
-                                            deboundTimeOut={1500}
-                                            arraySetValueInput={arrSetValueInputDeptAssignment}
+                                        <Input
+                                            className="form-control-alternative"
+                                            id="input-priotity-level"
+                                            type="number"
+                                            value={deptAssignmentId}
+                                            readOnly
+                                            name="deptAssignmentId"
+                                            required
                                         />
                                     </FormGroup>
                                 </Col>
@@ -191,7 +186,7 @@ const AssignmentAdd = ({ onCancel }) => {
                                         <SearchWithPopup
                                             titleModal="Search Employee (Name or ID)"
                                             nameInput="responsiblePesonId"
-                                            searchApiFunc={useSearchEmployee}
+                                            searchApiFunc={useSearchEmployeeByLeader}
                                             propertyInDataToViewSearch={
                                                 [
                                                     { text: "ID: ", property: "id" },
@@ -204,6 +199,7 @@ const AssignmentAdd = ({ onCancel }) => {
                                             deboundTimeOut={1500}
                                             arraySetValueInput={arrSetValueInputEmployee}
                                             onChange={handleSelectResponsiblePersonChange}
+                                            departmentId = {departmentId}
                                         />
                                     </FormGroup>
                                 </Col>

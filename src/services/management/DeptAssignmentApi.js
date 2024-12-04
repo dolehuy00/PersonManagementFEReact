@@ -28,9 +28,36 @@ export const filterDeptAssignment = async (dataFilter, sortBy, pageNumber, pageS
                 'Authorization': `Bearer ${token}`
             },
             params: {
+                id: "id" in dataFilter ? dataFilter.id : "",
                 projectId: "projectId" in dataFilter ? dataFilter.projectId : "",            
-                departmentId: "departmentId" in dataFilter ? dataFilter.departmentId : "",                
-                SortBy: sortBy
+                departmentId: "departmentId" in dataFilter ? dataFilter.departmentId : "",           
+                SortBy: sortBy,
+                Page: pageNumber,
+                PageSize: pageSize
+            }
+        });
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+
+export const filterDeptAssignmentByLeader = async (departmentId, dataFilter, sortBy, pageNumber, pageSize) => {
+    try {
+        const token = localStorage.getItem('accessToken');
+
+        const response = await api.get(`${API_BASE_URL}/filter-by-leader`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            },
+            params: {
+                id: "id" in dataFilter ? dataFilter.id : "",
+                projectId: "projectId" in dataFilter ? dataFilter.projectId : "",            
+                departmentId: departmentId,
+                SortBy: sortBy,
+                Page: pageNumber,
+                PageSize: pageSize
             }
         });
         return response.data;
@@ -176,6 +203,23 @@ export const searchDeptAssignment = async (fullnameOrId) => {
                 'Authorization': `Bearer ${accessToken}`
             },
         });
+        var data = response.data;
+        return data;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export const searchId = async (id) => {
+    try {
+        const accessToken = localStorage.getItem('accessToken');
+        const response = await api.get(`${API_BASE_URL}/search`, {
+            params: { id },
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            },
+        });
+
         var data = response.data;
         return data;
     } catch (error) {

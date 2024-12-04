@@ -90,7 +90,7 @@ export const login = async (email, password) => {
         const data = response.data;
         if (response.status === 200) {
             localStorage.setItem('email', data.results[0].email);
-            localStorage.setItem('leaderOfDepartments', data.results[0].leaderOfDepartments);
+            localStorage.setItem('leaderOfDepartments',  JSON.stringify(data.results[0].leaderOfDepartments));
             localStorage.setItem('accessToken', data.results[0].accessToken);
             localStorage.setItem('role', data.results[0].role);
             saveImageToLocalStorage(data.results[0].employeeImage, "image")
