@@ -78,7 +78,8 @@ export const addEmployee = async (data) => {
 
         const response = await api.post(`${API_BASE_URL}/add`, data, {
             headers: {
-                'Authorization': `Bearer ${token}`
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'multipart/form-data'
             },
         });
 
@@ -155,7 +156,7 @@ export const searchEmployee = async (fullnameOrId, departmentId) => {
 
         var data = response.data;
         for (let index = 0; index < data?.results?.length; index++) {
-            data.results[index].dateOfBirth = data.results[index].dateOfBirth.split("T")[0];  
+            data.results[index].dateOfBirth = data.results[index].dateOfBirth.split("T")[0];
         }
         return data;
     } catch (error) {
@@ -175,13 +176,63 @@ export const searchEmployeeByLeader = async (fullnameOrId, departmentId) => {
 
         var data = response.data;
         for (let index = 0; index < data?.results?.length; index++) {
-            data.results[index].dateOfBirth = data.results[index].dateOfBirth.split("T")[0];  
+            data.results[index].dateOfBirth = data.results[index].dateOfBirth.split("T")[0];
         }
         return data;
     } catch (error) {
         throw error;
     }
 }
+
+export const changeImageEmployeeByAdmin = async (file, id) => {
+    try {
+        // Tạo form data
+        const formData = new FormData();
+        formData.append("file", file);
+
+        // Gửi yêu cầu POST
+        const response = await api.post(
+            `${API_BASE_URL}/change-image/${id}`,
+            formData,
+            {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                    Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+                },
+            }
+        );
+
+        return response.data;
+    } catch (error) {
+        console.error("Error changing image:", error);
+        throw error;
+    }
+};
+
+export const changeImageEmployeeByUser= async (file) => {
+    try {
+        // Tạo form data
+        const formData = new FormData();
+        formData.append("file", file);
+
+        // Gửi yêu cầu POST
+        const response = await api.post(
+            `${API_BASE_URL}/change-image`,
+            formData,
+            {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                    Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+                },
+            }
+        );
+
+        return response.data;
+    } catch (error) {
+        console.error("Error changing image:", error);
+        throw error;
+    }
+};
 
 
 // // delay

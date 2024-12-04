@@ -109,7 +109,7 @@ const SearchWithPopup = ({
               value={realInputValue}
               hidden
               readOnly
-              name={realInputValue.toString().length > 0 ? nameInput : ""}
+              name={realInputValue?.toString().length > 0 ? nameInput : ""}
               required={required}
             />
         </Col>

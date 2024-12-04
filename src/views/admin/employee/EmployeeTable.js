@@ -282,7 +282,6 @@ const Tables = () => {
                         <th scope="col">Id</th>
                         <th scope="col">Name</th>
                         <th scope="col">Basic Salary</th>
-                        <th scope="col">Account Id</th>
                         <th scope="col">Department</th>
                         <th scope="col">Status</th>
                         <th scope="col" />
@@ -315,12 +314,11 @@ const Tables = () => {
                             </td>
                             <td>{item.basicSalary}</td>
                             <td>
-                              {item.accountId === null
-                                ? "No account"
-                                : item.accountId
+                              {item.departmentId === null
+                                ? "No department"
+                                : item.departmentName
                               }
                             </td>
-                            <td>{item.departmentName}</td>
                             <td>
                               <Badge
                                 color=""

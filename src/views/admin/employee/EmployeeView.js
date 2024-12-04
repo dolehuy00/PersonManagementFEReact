@@ -22,13 +22,17 @@ import { Slide, ToastContainer, toast } from 'react-toastify';
 import Header from "components/Headers/Header.js";
 import LoadingOrError from "components/Notifications/LoadingOrError.js";
 import DatePickerWithTooltip from "components/DateTimePickers/DatePickerWithTooltip.js";
+import SearchWithPopup from "components/Popups/SearchWithPopup";
+import ImagePopup from "components/Popups/ViewImage.js";
 
 // custom hooks
 import {
     useGetOneEmployee,
     useEditEmployee,
-    useChangeStatusEmployee
+    useChangeStatusEmployee,
+    useChangeImageEmployeeByAdmin
 } from "hooks/UseEmployeeApi.js";
+import { useSearchDepartment } from "hooks/UseDepartmentApi.js";
 
 const ViewEmployee = () => {
     // search params
@@ -44,11 +48,23 @@ const ViewEmployee = () => {
     const [formValueIsValid, setFormValueIsValid] = useState(false);
     const [dataEdit, setDataEdit] = useState({});
     const [statusValue, setStatusValue] = useState("");
+    const [imageValue, setImageValue] = useState(null);
+    const [isImgChange, setIsImgChange] = useState(false);
+    const [imageLink, setImageLink] = useState("");
+
+    // state variable
+    let arrSetValueInputDepartment = useState([]);
 
     // request data
     const { data: dataGetEmpl, loading: loadingGetEmpl, error: errorGetEmpl } = useGetOneEmployee(employeeId);
     const { data: dataEditResponse, loading: loadingEdit, error: errorEdit } = useEditEmployee(dataEdit);
     const { data: dataLockResponse, loading: loadingLock, error: errorLock, request: requestLock } = useChangeStatusEmployee();
+    const {
+        data: dataChangeImageEmployeeResponse,
+        loading: loadingChangeImageEmployee,
+        error: errorChangeImageEmployee,
+        request: requestChangeImageEmployee
+    } = useChangeImageEmployeeByAdmin();
 
     // effect set data to form
     useEffect(() => {
@@ -56,7 +72,9 @@ const ViewEmployee = () => {
             setDataForm(dataGetEmpl);
             setFormValuesDefault(dataGetEmpl)
             setStatusValue(dataGetEmpl.results[0].status || "")
+            setImageLink(dataGetEmpl.results[0].image || "")
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dataGetEmpl]);
 
     // effect show toast error respone save change
@@ -130,6 +148,40 @@ const ViewEmployee = () => {
         }
     }, [dataLockResponse]);
 
+    // effect show toast error change status
+    useEffect(() => {
+        if (errorChangeImageEmployee) {
+            toast.error(`Change image fail, ${errorChangeImageEmployee.response?.data?.messages[1]}`, {
+                position: "bottom-right",
+                autoClose: 10000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+                transition: Slide,
+            });
+        }
+    }, [errorChangeImageEmployee]);
+
+    // effect show toast success change status
+    useEffect(() => {
+        if (dataChangeImageEmployeeResponse.status === 200) {
+            console.log(dataChangeImageEmployeeResponse?.results[0]?.fileUrl)
+            toast.success('Change image successfully', {
+                position: "bottom-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+                transition: Slide,
+            });
+        }
+    }, [dataChangeImageEmployeeResponse]);
 
     // handle submit form data
     const handleSubmit = (event) => {
@@ -184,7 +236,6 @@ const ViewEmployee = () => {
         requestLock(employeeId, statusValue)
     }
 
-
     // check edit mode function
     const isEditMode = () => {
         return viewMode === "edit";
@@ -203,7 +254,30 @@ const ViewEmployee = () => {
                 position: result.position || "",
                 startDate: result.startDate || "",
             });
+            arrSetValueInputDepartment[0]({ name: result.departmentName || "", id: result.departmentId || "" })
         }
+    }
+
+    // handle select image employee 
+    const handleImageChange = (event) => {
+        const file = event.target.files[0];
+        setImageValue(file);
+        setIsImgChange(true);
+        if (file) {
+            const reader = new FileReader();
+
+            // Đọc file dưới dạng Data URL (base64)
+            reader.onload = (e) => {
+                setImageLink(e.target.result);
+            };
+
+            reader.readAsDataURL(file); // Đọc file
+        }
+    }
+
+    // handle save change image
+    const handleChangeImageEmployee = () => {
+        requestChangeImageEmployee(employeeId, imageValue);
     }
 
     // render loading data employee
@@ -378,6 +452,82 @@ const ViewEmployee = () => {
                                                         </FormGroup>
                                                     </Col>
                                                 </Row>
+                                                <Row>
+                                                    <Col lg="6">
+                                                        <FormGroup>
+                                                            <label
+                                                                className="form-control-label"
+                                                                htmlFor="input-status"
+                                                            >
+                                                                Department
+                                                            </label>
+                                                            <SearchWithPopup
+                                                                titleModal="Search Department (Name)"
+                                                                nameInput="departmentId"
+                                                                searchApiFunc={useSearchDepartment}
+                                                                propertyInDataToViewSearch={
+                                                                    [
+                                                                        { text: "ID: ", property: "id" },
+                                                                        { text: " ~ ", property: "name" }
+                                                                    ]
+                                                                }
+                                                                propertyInDataToViewDisableInput={["id", "name"]}
+                                                                propertyInDataToSetRealInput="id"
+                                                                required="required"
+                                                                deboundTimeOut={1500}
+                                                                disabled={!isEditMode()}
+                                                                arraySetValueInput={arrSetValueInputDepartment}
+                                                                onChange={handleInputChange}
+                                                            />
+                                                        </FormGroup>
+                                                    </Col>
+                                                    <Col lg="6">
+                                                        <FormGroup>
+                                                            <label
+                                                                className="form-control-label"
+                                                                htmlFor="input-image-employee"
+                                                            >
+                                                                Image
+                                                            </label>
+                                                            <Row>
+                                                                <Col>
+                                                                    <Input
+                                                                        className="form-control-alternative input-file"
+                                                                        id="input-image-employee"
+                                                                        type="file"
+                                                                        required
+                                                                        accept="image/*"
+                                                                        disabled={!isEditMode()}
+                                                                        onChange={handleImageChange}
+                                                                    />
+                                                                </Col>
+                                                                <Col lg={{ size: "auto" }} className="pl-0">
+                                                                    <ImagePopup imageSrc={imageLink} imageAlt="Image Employee" />
+                                                                </Col>
+                                                                {viewMode === "edit"
+                                                                    ? (<>
+                                                                        <Col lg={{ size: "auto" }} className="pl-0">
+                                                                            <Button
+                                                                                color="info"
+                                                                                type="button"
+                                                                                disabled={loadingChangeImageEmployee || !isImgChange}
+                                                                                onClick={handleChangeImageEmployee}
+                                                                            >
+                                                                                {loadingChangeImageEmployee
+                                                                                    ? (<Spinner color="primary" size="sm"> </Spinner>)
+                                                                                    : "Save Image"
+                                                                                }
+                                                                            </Button>
+                                                                        </Col>
+                                                                    </>)
+                                                                    : ""
+                                                                }
+                                                            </Row>
+                                                        </FormGroup>
+                                                    </Col>
+                                                </Row>
+
+
                                             </div>
                                             <div className="pl-lg-4">
                                                 <Row>

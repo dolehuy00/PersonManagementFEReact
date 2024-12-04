@@ -76,7 +76,7 @@ const User = (props) => {
         />
         <Routes>
           {getRoutes(userRoutes)}
-          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+          <Route path="*" element={<Navigate to="/user-profile" replace />} />
         </Routes>
         <Container fluid>
           <AdminFooter />

@@ -9,7 +9,9 @@ import {
     unlockEmployee,
     searchEmployee,
     getInfoByEmployee,
-    searchEmployeeByLeader
+    searchEmployeeByLeader,
+    changeImageEmployeeByAdmin,
+    changeImageEmployeeByUser
 } from 'services/management/EmployeeApi.js';
 import { useNavigate } from "react-router-dom";
 
@@ -240,4 +242,55 @@ export const useSearchEmployeeByLeader = () => {
     };
 
     return { data, loading, error, requestSearch };
+};
+
+
+export const useChangeImageEmployeeByAdmin = () => {
+    const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const navigate = useNavigate();
+
+    const request = async (employeeId, file) => {
+        setLoading(true);
+        try {
+            const result = await changeImageEmployeeByAdmin(file, employeeId);
+            setData(result);
+            setLoading(false);
+        } catch (error) {
+            if (error.response.status === 401) {
+                navigate('/auth');
+            } else {
+                setLoading(false);
+                setError(error);
+            }
+        }
+    };
+
+    return { data, loading, error, request };
+};
+
+export const useChangeImageEmployeeByUser = () => {
+    const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const navigate = useNavigate();
+
+    const request = async (file) => {
+        setLoading(true);
+        try {
+            const result = await changeImageEmployeeByUser(file);
+            setData(result);
+            setLoading(false);
+        } catch (error) {
+            if (error.response.status === 401) {
+                navigate('/auth');
+            } else {
+                setLoading(false);
+                setError(error);
+            }
+        }
+    };
+
+    return { data, loading, error, request };
 };

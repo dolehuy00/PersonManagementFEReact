@@ -34,7 +34,7 @@ const AdminNavbar = (props) => {
       }
     }, 1000);
   }, [])
-  
+
   return (
     <>
       <Navbar className="navbar-top navbar-dark" expand="md" id="navbar-main">
@@ -62,7 +62,7 @@ const AdminNavbar = (props) => {
               <DropdownToggle className="pr-0" nav>
                 <Media className="align-items-center">
                   <span className="avatar avatar-sm rounded-circle">
-                  <ImageWithSkeleton
+                    <ImageWithSkeleton
                       alt="avatar"
                       placeholder={require("../../assets/img/theme/img-gray.png")}
                       className="rounded-circle"
@@ -80,26 +80,26 @@ const AdminNavbar = (props) => {
                 <DropdownItem className="noti-title" header tag="div">
                   <h6 className="text-overflow m-0">Welcome!</h6>
                 </DropdownItem>
-                <DropdownItem to="/dashboard" tag={Link}>
+                {/* <DropdownItem to="/dashboard" tag={Link}>
                   <i className="fa-solid fa-chart-line"></i>
                   <span>Dashboard</span>
+                </DropdownItem> */}
+                <DropdownItem to="/user-profile" tag={Link}>
+                  <i className="ni ni-single-02" />
+                  <span>My profile</span>
                 </DropdownItem>
                 <DropdownItem to="/assignment" tag={Link}>
                   <i className="ni ni-single-02" />
                   <span>Assignment</span>
                 </DropdownItem>
-                <DropdownItem to="/user-profile" tag={Link}>
-                  <i className="ni ni-single-02" />
-                  <span>My profile</span>
-                </DropdownItem>
-                {leaderOfDepartment?.length > 0 
-                ? (
-                  <DropdownItem to="/leader/department-management" tag={Link}>
+                {leaderOfDepartment?.length > 0
+                  ? (
+                    <DropdownItem to="/leader/department-management" tag={Link}>
                       <i className="fa-solid fa-screwdriver-wrench" />
                       <span>Department Management</span>
                     </DropdownItem>
-                ) 
-                : ""}
+                  )
+                  : ""}
                 {role.toLowerCase() === "admin"
                   ? (
                     <DropdownItem to="/admin" tag={Link}>

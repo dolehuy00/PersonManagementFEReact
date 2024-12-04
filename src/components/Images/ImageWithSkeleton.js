@@ -5,13 +5,18 @@ import {
 } from "reactstrap";
 import React, { useState } from 'react';
 
-const ImageWithSkeleton = ({ src, placeholder, alt, className, transform = "translate(-50%, -50%)", showSpiner = false }) => {
+const ImageWithSkeleton = ({ src, placeholder, alt, className, transform = "translate(-50%, -50%)", showSpiner = false, onClick, timeOut = 30000 }) => {
     const [loaded, setLoaded] = useState(false);
+    let [isTimeOut, setIsTimeOut] = useState(false);
+
+    setTimeout(() => {
+        setIsTimeOut(true);
+    }, timeOut);
 
     return (
         <>
             <div style={{ position: "relative" }}>
-                {showSpiner && (!loaded || !src)
+                {!isTimeOut && showSpiner && (!loaded || !src)
                     ? (
                         <div
                             style={{
@@ -34,6 +39,7 @@ const ImageWithSkeleton = ({ src, placeholder, alt, className, transform = "tran
                             src={src}
                             onLoad={() => { setLoaded(true) }}
                             alt={alt}
+                            onClick={onClick}
                         />
                     )
                     : (
@@ -41,6 +47,7 @@ const ImageWithSkeleton = ({ src, placeholder, alt, className, transform = "tran
                             className={className}
                             src={placeholder}
                             alt={alt}
+                            onClick={onClick}
                         />
                     )
                 }

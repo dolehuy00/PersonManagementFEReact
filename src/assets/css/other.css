@@ -38,3 +38,17 @@
     background-color: rgba(226, 226, 226, 0.533);
     cursor: pointer;
 }
+
+.input-file:disabled{
+    border-radius: 2px;
+    background-color: #e9ecef;
+    padding-top: 6px;
+    padding-bottom: 6px;
+}
+
+.input-file{
+    border-radius: 2px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    background-color: #ffff;
+}

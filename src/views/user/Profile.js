@@ -29,21 +29,112 @@ import {
   Col,
   Spinner,
   Alert,
-  Table
+  Table,
+  Button
 } from "reactstrap";
 // core components
 import UserHeader from "components/Headers/UserHeader.js";
 import ImageWithSkeleton from "components/Images/ImageWithSkeleton.js";
-import { useGetInfoByEmployee } from "hooks/UseEmployeeApi.js";
+import { useGetInfoByEmployee, useChangeImageEmployeeByUser } from "hooks/UseEmployeeApi.js";
 import { useGetPageSalaryHistoryByUser } from "hooks/UseSalaryHistoryApi.js";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { Slide, ToastContainer, toast } from 'react-toastify';
+import { saveImageToLocalStorage } from "services/Image.js";
 
 const Profile = () => {
 
   const navigate = useNavigate();
 
+  const fileInputRef = useRef(null);
+
+  const [imageValue, setImageValue] = useState(null);
+  const [isImgChange, setIsImgChange] = useState(false);
+  const [imageLink, setImageLink] = useState("");
+
   const { data, loading, error } = useGetInfoByEmployee();
   const { data: dataSalary, loading: loadingSalary, error: errorSalary } = useGetPageSalaryHistoryByUser(1, 6);
+  const {
+    data: dataChangeImageEmployeeResponse,
+    loading: loadingChangeImageEmployee,
+    error: errorChangeImageEmployee,
+    request: requestChangeImageEmployee
+  } = useChangeImageEmployeeByUser();
+
+  // effect set data to form
+  useEffect(() => {
+    if (Object.keys(data).length > 0) {
+      setImageLink(data.results ? data.results[0].image : "")
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data]);
+
+
+  // effect show toast error change img
+  useEffect(() => {
+    if (errorChangeImageEmployee) {
+      toast.error(`Change image fail, ${errorChangeImageEmployee.response?.data?.messages[1]}`, {
+        position: "bottom-right",
+        autoClose: 10000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Slide,
+      });
+    }
+  }, [errorChangeImageEmployee]);
+
+  // effect show toast success change img
+  useEffect(() => {
+    if (dataChangeImageEmployeeResponse.status === 200) {
+      setIsImgChange(false);
+      saveImageToLocalStorage(dataChangeImageEmployeeResponse?.results[0]?.fileUrl, "image")
+      toast.success('Change image successfully', {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Slide,
+      });
+    }
+  }, [dataChangeImageEmployeeResponse]);
+
+  // handle save change image
+  const handleChangeImageEmployee = () => {
+    requestChangeImageEmployee(imageValue);
+  }
+
+  // handle select image employee 
+  const handleImageChange = (event) => {
+    const file = event.target.files[0];
+    setImageValue(file);
+    setIsImgChange(true);
+    if (file) {
+      const reader = new FileReader();
+
+      // Đọc file dưới dạng Data URL (base64)
+      reader.onload = (e) => {
+        setImageLink(e.target.result);
+      };
+
+      reader.readAsDataURL(file); // Đọc file
+    }
+  }
+
+  const handleImageClick = () => {
+    // Kích hoạt sự kiện click trên input file
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+    console.log("click")
+  };
 
   return (
     <>
@@ -62,13 +153,50 @@ const Profile = () => {
                       className="rounded-circle"
                       transform="translate(-50%, 70%)"
                       showSpiner="true"
-                      src={data.results ? data.results[0].image : ""}
+                      src={imageLink}
+                      onClick={handleImageClick}
                     />
                   </div>
                 </Col>
               </Row>
               <CardBody className="pt-5 pt-md-4">
+                <Form>
+                  <input
+                    ref={fileInputRef}
+                    className="form-control-alternative input-file"
+                    id="input-image-employee"
+                    type="file"
+                    hidden
+                    accept="image/*"
+                    onChange={handleImageChange}
+                  />
+                </Form>
                 <Row className="pt-5">
+                  <div className="col">
+                    <div className="card-profile-stats d-flex justify-content-center mt-md-5">
+                      {isImgChange
+                        ? (<>
+                          <Col lg={{ size: "auto" }} className="pl-0">
+                            <Button
+                              color="info"
+                              type="button"
+                              disabled={loadingChangeImageEmployee}
+                              onClick={handleChangeImageEmployee}
+                            >
+                              {loadingChangeImageEmployee
+                                ? (<Spinner color="primary" size="sm"> </Spinner>)
+                                : "Save Image"
+                              }
+                            </Button>
+                          </Col>
+                        </>)
+                        : ""
+                      }
+                    </div>
+                  </div>
+                </Row>
+
+                {/* <Row className="pt-5">
                   <div className="col">
                     <div className="card-profile-stats d-flex justify-content-center mt-md-5">
                       <div>
@@ -100,7 +228,7 @@ const Profile = () => {
                     University of Computer Science
                   </div>
                   <p className="my-3"></p>
-                </div>
+                </div> */}
               </CardBody>
             </Card>
             <Card className="card-profile shadow mt-4">
@@ -129,8 +257,8 @@ const Profile = () => {
                           className="text-center"
                           onClick={(e) => { e.preventDefault(); navigate(`/salary-history/view?id=${item.id}`); }}
                         >
-                          <td>{item.basicSalary}</td>
-                          <td>{item.total}</td>
+                          <td>{item.basicSalary.toFixed(2)}</td>
+                          <td>{item.total.toFixed(2)}</td>
                           <td>{item.date.split("T")[0]}</td>
                         </tr>
                       ))
@@ -387,6 +515,9 @@ const Profile = () => {
                 </Form>
               </CardBody>
             </Card>
+            <div>
+              <ToastContainer />
+            </div>
           </Col>
         </Row>
       </Container>

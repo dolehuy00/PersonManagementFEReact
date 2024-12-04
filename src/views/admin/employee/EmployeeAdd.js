@@ -20,9 +20,12 @@ import { Slide, ToastContainer, toast } from 'react-toastify';
 
 // custom component
 import DatePickerWithTooltip from "components/DateTimePickers/DatePickerWithTooltip.js";
+import ImagePopup from "components/Popups/ViewImage";
 
 // hooks
 import { useAddEmployee } from "hooks/UseEmployeeApi.js";
+import SearchWithPopup from "components/Popups/SearchWithPopup";
+import { useSearchDepartment } from "hooks/UseDepartmentApi.js";
 
 const EmployeeAdd = ({ onCancel }) => {
     // state constant
@@ -30,12 +33,16 @@ const EmployeeAdd = ({ onCancel }) => {
     const [dateOfBirth, setDateOfBirth] = useState("");
     const [startDate, setStartDate] = useState("");
     const [formValueIsValid, setFormValueIsValid] = useState(false);
+    const [imageLink, setImageLink] = useState("");
+
+    // state variable
+    let arrSetValueInputDepartment = useState([]);
 
     // ref constant
     const formRef = useRef(null);
     const dateOfBirthRef = useRef(null);
     const startDateRef = useRef(null);
-    
+
     // request data
     const { data, loading, error } = useAddEmployee(dataBody);
 
@@ -49,6 +56,21 @@ const EmployeeAdd = ({ onCancel }) => {
     const handleStartDateChange = (date, isValid) => {
         setStartDate(date);
         setFormValueIsValid(isValid)
+    }
+
+    // handle select image employee 
+    const handleImageChange = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+
+            // Đọc file dưới dạng Data URL (base64)
+            reader.onload = (e) => {
+                setImageLink(e.target.result);
+            };
+
+            reader.readAsDataURL(file); // Đọc file
+        }
     }
 
     // effect show toast response add employee request
@@ -199,6 +221,58 @@ const EmployeeAdd = ({ onCancel }) => {
                                             name="basicSalary"
                                             required
                                         />
+                                    </FormGroup>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col lg="6">
+                                    <FormGroup>
+                                        <label
+                                            className="form-control-label"
+                                            htmlFor="input-status"
+                                        >
+                                            Department
+                                        </label>
+                                        <SearchWithPopup
+                                            titleModal="Search Department (Name)"
+                                            nameInput="departmentId"
+                                            searchApiFunc={useSearchDepartment}
+                                            propertyInDataToViewSearch={
+                                                [
+                                                    { text: "ID: ", property: "id" },
+                                                    { text: " ~ ", property: "name" }
+                                                ]
+                                            }
+                                            propertyInDataToViewDisableInput={["id", "name"]}
+                                            propertyInDataToSetRealInput="id"
+                                            deboundTimeOut={1500}
+                                            arraySetValueInput={arrSetValueInputDepartment}
+                                        />
+                                    </FormGroup>
+                                </Col>
+                                <Col lg="6">
+                                    <FormGroup>
+                                        <label
+                                            className="form-control-label"
+                                            htmlFor="input-image-employee"
+                                        >
+                                            Image
+                                        </label>
+                                        <Row>
+                                            <Col>
+                                                <Input
+                                                    className="form-control-alternative input-file"
+                                                    id="input-image-employee"
+                                                    type="file"
+                                                    name="fileImage"
+                                                    accept="image/*"
+                                                    onChange={handleImageChange}
+                                                />
+                                            </Col>
+                                            <Col lg={{ size: "auto" }} className="pl-0">
+                                                <ImagePopup imageSrc={imageLink} imageAlt="Image Employee" />
+                                            </Col>
+                                        </Row>
                                     </FormGroup>
                                 </Col>
                             </Row>
