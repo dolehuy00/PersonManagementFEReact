@@ -63,7 +63,7 @@ const ViewAssignment = () => {
     // effect show toast error respone save change
     useEffect(() => {
         if (errorEdit) {
-            toast.error("Save failed, an error occurred, please try again later!", {
+            toast.error(`Save failed, ${errorEdit.response?.data?.messages[0] || "an error occurred, please try again later!"}`, {
                 position: "bottom-right",
                 autoClose: 10000,
                 hideProgressBar: false,

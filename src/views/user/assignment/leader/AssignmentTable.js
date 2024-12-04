@@ -107,63 +107,63 @@ const Tables = () => {
     switch (status) {
       case "Pending":
         style = {
-          "background-color": "#A0A0A0",
+          "backgroundColor": "#A0A0A0",
           "width": "0.5rem",
           "height": "0.5rem"
         };
         break;
       case "Assigned":
         style = {
-          "background-color": "#007BFF",
+          "backgroundColor": "#007BFF",
           "width": "0.5rem",
           "height": "0.5rem"
         };
         break;
       case "In Progress":
         style = {
-          "background-color": "#FFA500",
+          "backgroundColor": "#FFA500",
           "width": "0.5rem",
           "height": "0.5rem"
         };
         break;
       case "On Hold":
         style = {
-          "background-color": "#FFD700",
+          "backgroundColor": "#FFD700",
           "width": "0.5rem",
           "height": "0.5rem"
         };
         break;
       case "Completed":
         style = {
-          "background-color": "#28A745",
+          "backgroundColor": "#28A745",
           "width": "0.5rem",
           "height": "0.5rem"
         };
         break;
       case "Verified":
         style = {
-          "background-color": "#20C997",
+          "backgroundColor": "#20C997",
           "width": "0.5rem",
           "height": "0.5rem"
         };
         break;
       case "Rejected":
         style = {
-          "background-color": "#DC3545",
+          "backgroundColor": "#DC3545",
           "width": "0.5rem",
           "height": "0.5rem"
         };
         break;
       case "Cancelled":
         style = {
-          "background-color": "#F8D7DA",
+          "backgroundColor": "#F8D7DA",
           "width": "0.5rem",
           "height": "0.5rem"
         };
         break;
       case "Failed":
         style = {
-          "background-color": "#B22222",
+          "backgroundColor": "#B22222",
           "width": "0.5rem",
           "height": "0.5rem"
         };

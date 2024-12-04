@@ -84,6 +84,10 @@ const AdminNavbar = (props) => {
                   <i className="fa-solid fa-chart-line"></i>
                   <span>Dashboard</span>
                 </DropdownItem>
+                <DropdownItem to="/assignment" tag={Link}>
+                  <i className="ni ni-single-02" />
+                  <span>Assignment</span>
+                </DropdownItem>
                 <DropdownItem to="/user-profile" tag={Link}>
                   <i className="ni ni-single-02" />
                   <span>My profile</span>

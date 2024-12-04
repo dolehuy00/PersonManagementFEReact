@@ -43,6 +43,8 @@ import LeaderOfDepartmet from "views/user/Department/Learder/LeaderOfDeparmentLi
 import DeptAssignmentLeaderTable from "views/user/deptAssignment/DeptAssignmentLeaderTable.js"
 import AssignmentLeader from "views/user/assignment/leader/AssignmentTable.js";
 import AssignmentLeaderView from "views/user/assignment/leader/AssignmentView.js";
+import AssignmentCommon from "views/user/assignment/commonUser/AssignmentTable.js";
+import AssignmentCommonView from "views/user/assignment/commonUser/AssignmentView.js";
 
 export var managerRoutes = [
   {
@@ -215,6 +217,22 @@ export var userRoutes = [
     name: "Assignment Management",
     icon: "fa-solid fa-clipboard-check",
     component: <AssignmentLeaderView />,
+    layout: "",
+    viewOnSidebar: false,
+  },
+  {
+    path: "/assignment",
+    name: "Assignment",
+    icon: "fa-solid fa-clipboard-check",
+    component: <AssignmentCommon />,
+    layout: "",
+    viewOnSidebar: true,
+  },
+  {
+    path: "assignment/view",
+    name: "Assignment",
+    icon: "fa-solid fa-clipboard-check",
+    component: <AssignmentCommonView />,
     layout: "",
     viewOnSidebar: false,
   } 

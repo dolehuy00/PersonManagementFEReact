@@ -19,6 +19,23 @@ export const getOneAssignment = async (assignmentId) => {
     }
 }
 
+export const getOneAssignmentByUser = async (assignmentId) => {
+    try {
+        const accessToken = localStorage.getItem('accessToken');
+        const response = await api.get(`${API_BASE_URL}/get-by-user/${assignmentId}`, {
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            },
+        });
+
+        var data = response.data;
+
+        return data;
+    } catch (error) {
+        throw error;
+    }
+}
+
 export const getOneAssignmentByLeader = async (departmentId, assignmentId) => {
     try {
         const accessToken = localStorage.getItem('accessToken');
@@ -47,6 +64,29 @@ export const filterAssignment = async (dataFilter, sortBy, pageNumber, pageSize)
             params: {
                 NameOrId: "status" in dataFilter ? dataFilter.status : "",
                 Address: "responsiblePesonId" in dataFilter ? dataFilter.responsiblePesonId : "",
+                Position: "projectId" in dataFilter ? dataFilter.projectId : "",
+                DepartmentId: "departmentId" in dataFilter ? dataFilter.departmentId : "",
+                SortBy: sortBy,
+                Page: pageNumber,
+                PageSize: pageSize
+            }
+        });
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const filterAssignmentByUser = async (dataFilter, sortBy, pageNumber, pageSize) => {
+    try {
+        const token = localStorage.getItem('accessToken');
+
+        const response = await api.get(`${API_BASE_URL}/filter-by-user`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            },
+            params: {
+                NameOrId: "status" in dataFilter ? dataFilter.status : "",
                 Position: "projectId" in dataFilter ? dataFilter.projectId : "",
                 DepartmentId: "departmentId" in dataFilter ? dataFilter.departmentId : "",
                 SortBy: sortBy,
@@ -152,6 +192,22 @@ export async function editAssignmentByLeader(departmentId, dataRequest) {
         
         return dataResponse;
 
+    } catch (error) {
+        throw error;
+    }
+};
+
+export async function changeStatusByUser(assignmentId, status) {
+    try {
+        const token = localStorage.getItem('accessToken');
+
+        const response = await api.put(`${API_BASE_URL}/change-status-by-user?id=${assignmentId}&status=${status}`, null, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            },
+        });
+
+        return response.data;
     } catch (error) {
         throw error;
     }
