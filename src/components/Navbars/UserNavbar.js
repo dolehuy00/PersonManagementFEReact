@@ -88,6 +88,10 @@ const AdminNavbar = (props) => {
                   <i className="ni ni-single-02" />
                   <span>My profile</span>
                 </DropdownItem>
+                <DropdownItem to="/change-password" tag={Link}>
+                  <i className="ni ni-single-02" />
+                  <span>Change Password</span>
+                </DropdownItem>
                 <DropdownItem to="/assignment" tag={Link}>
                   <i className="ni ni-single-02" />
                   <span>Assignment</span>

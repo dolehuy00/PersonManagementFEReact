@@ -108,3 +108,20 @@ export async function unlockAccount(accountId) {
         throw error;
     }
 };
+
+export const changePassword = async (data) => {
+    try {
+        const token = localStorage.getItem('accessToken');
+
+        const response = await api.post(`${API_BASE_URL}/change-password`, data, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            },
+        });
+
+        return response.data;
+
+    } catch (error) {
+        throw error;
+    }
+};

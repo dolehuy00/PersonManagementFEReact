@@ -6,7 +6,8 @@ import {
     getOneAccount,
     editAccount,
     lockAccount,
-    unlockAccount
+    unlockAccount,
+    changePassword
 } from 'services/management/AccountApi.js';
 import { useNavigate } from "react-router-dom";
 
@@ -154,4 +155,34 @@ export const useChangeStatusAccount = () => {
     };
 
     return { data, loading, error, request };
+};
+
+export const useChangePassword = (dataBody) => {
+    const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const request = async () => {
+            setLoading(true);
+            try {
+                if (Object.keys(dataBody).length > 0) {
+                    const result = await changePassword(dataBody);
+                    setData(result);
+                }
+                setLoading(false);
+            } catch (error) {
+                if (error.response.status === 401) {
+                    navigate('/auth');
+                } else {
+                    setLoading(false);
+                    setError(error);
+                }
+            }
+        };
+        request();
+    }, [dataBody, navigate]);
+
+    return { data, loading, error };
 };
