@@ -53,7 +53,7 @@ export var managerRoutes = [
     icon: "ni ni-tv-2 text-primary",
     component: <AdminDashboard />,
     layout: "/admin",
-    viewOnSidebar: true,
+    viewOnSidebar: false,
   },
   {
     path: "/employee",

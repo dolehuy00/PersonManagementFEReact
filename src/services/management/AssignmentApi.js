@@ -62,9 +62,9 @@ export const filterAssignment = async (dataFilter, sortBy, pageNumber, pageSize)
                 'Authorization': `Bearer ${token}`
             },
             params: {
-                NameOrId: "status" in dataFilter ? dataFilter.status : "",
-                Address: "responsiblePesonId" in dataFilter ? dataFilter.responsiblePesonId : "",
-                Position: "projectId" in dataFilter ? dataFilter.projectId : "",
+                status: "status" in dataFilter ? dataFilter.status : "",
+                responsiblePesonId: "responsiblePesonId" in dataFilter ? dataFilter.responsiblePesonId : "",
+                projectId: "projectId" in dataFilter ? dataFilter.projectId : "",
                 DepartmentId: "departmentId" in dataFilter ? dataFilter.departmentId : "",
                 SortBy: sortBy,
                 Page: pageNumber,
@@ -86,8 +86,8 @@ export const filterAssignmentByUser = async (dataFilter, sortBy, pageNumber, pag
                 'Authorization': `Bearer ${token}`
             },
             params: {
-                NameOrId: "status" in dataFilter ? dataFilter.status : "",
-                Position: "projectId" in dataFilter ? dataFilter.projectId : "",
+                status: "status" in dataFilter ? dataFilter.status : "",
+                projectId: "projectId" in dataFilter ? dataFilter.projectId : "",
                 DepartmentId: "departmentId" in dataFilter ? dataFilter.departmentId : "",
                 SortBy: sortBy,
                 Page: pageNumber,
@@ -109,9 +109,9 @@ export const filterAssignmentByLeader = async (departmentId, deptAssignmentId, d
                 'Authorization': `Bearer ${token}`
             },
             params: {
-                NameOrId: "status" in dataFilter ? dataFilter.status : "",
-                Address: "responsiblePesonId" in dataFilter ? dataFilter.responsiblePesonId : "",
-                Position: "projectId" in dataFilter ? dataFilter.projectId : "",
+                status: "status" in dataFilter ? dataFilter.status : "",
+                responsiblePesonId: "responsiblePesonId" in dataFilter ? dataFilter.responsiblePesonId : "",
+                projectId: "projectId" in dataFilter ? dataFilter.projectId : "",
                 DepartmentId: departmentId,
                 DeptAssignmentId: deptAssignmentId,
                 SortBy: sortBy,

@@ -49,8 +49,19 @@ const Tables = () => {
   const itemSingleFilters = [
     { labelName: "Keyword", nameInput: "keyword", type: "text" },
     { labelName: "Name Or Id Employee", nameInput: "keywordByEmployee", type: "text" },
-    { labelName: "Status", nameInput: "filterByStatus", type: "text" },
     { labelName: "Role", nameInput: "filterByRole", type: "text" },
+  ];
+
+  const itemSelectOptions = [
+    {
+        labelName: "Status",
+        nameSelect: "filterByStatus",
+        Option: [
+            { labelName: "Lock", value: "Lock" },
+            { labelName: "Active", value: "Active" }
+        ],
+        type: "select_option"
+    }
   ];
 
   //states
@@ -247,6 +258,7 @@ const Tables = () => {
                           />
                           <FilterPopup
                             itemSingleFilters={itemSingleFilters}
+                            itemSelectOptions={itemSelectOptions}
                             onConfirmFilter={onConfirmFilter}
                             dataFilterUseState={dataFilter}
                           />

@@ -78,10 +78,10 @@ const Admin = (props) => {
         />
         <Routes>
           {getRoutes(managerRoutes)}
-          <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
+          <Route path="*" element={<Navigate to="/admin/employee" replace />} />
         </Routes>
-        <Container fluid>
-          <AdminFooter />
+        <Container fluid className="my-6">
+          {/* <AdminFooter /> */}   
         </Container>
       </div>
     </>

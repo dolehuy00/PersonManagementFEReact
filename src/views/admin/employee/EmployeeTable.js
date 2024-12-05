@@ -58,14 +58,25 @@ const Tables = () => {
     { labelName: "Name Or Id", nameInput: "nameOrId", type: "text" },
     { labelName: "Address", nameInput: "address", type: "text" },
     { labelName: "Position", nameInput: "position", type: "text" },
-    { labelName: "Department Id", nameInput: "departmentId", type: "number" },
-    { labelName: "Status", nameInput: "status", type: "text" }
+    { labelName: "Department Id", nameInput: "departmentId", type: "number" }
   ];
 
   const itemRangeFilters = [
     { labelName: "Salary", nameInputFrom: "fromSalary", nameInputTo: "toSalary", type: "number" },
     { labelName: "Date Of Birth", nameInputFrom: "fromDoB", nameInputTo: "toDoB", type: "date" },
     { labelName: "Start Date", nameInputFrom: "fromStartDate", nameInputTo: "toStartDate", type: "date" }
+  ];
+
+  const itemSelectOptions = [
+    {
+        labelName: "Status",
+        nameSelect: "status",
+        Option: [
+            { labelName: "Lock", value: "Lock" },
+            { labelName: "Active", value: "Active" }
+        ],
+        type: "select_option"
+    }
   ];
 
   //states
@@ -266,6 +277,7 @@ const Tables = () => {
                             itemRangeFilters={itemRangeFilters}
                             onConfirmFilter={onConfirmFilter}
                             dataFilterUseState={dataFilter}
+                            itemSelectOptions={itemSelectOptions}
                           />
                         </Col>
                       </Row>

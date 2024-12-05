@@ -50,7 +50,25 @@ const Tables = () => {
     { labelName: "Responsible Peson Id", nameInput: "responsiblePesonId", type: "number" },
     { labelName: "Project Id", nameInput: "projectId", type: "number" },
     { labelName: "Department Id", nameInput: "departmentId", type: "number" },
-    { labelName: "Status", nameInput: "status", type: "text" }
+  ];
+
+  const itemSelectOptions = [
+    {
+        labelName: "Status",
+        nameSelect: "status",
+        Option: [
+            { labelName: "Pending", value: "Pending" },
+            { labelName: "Assigned", value: "Assigned" },
+            { labelName: "In Progress", value: "In Progress" },
+            { labelName: "On Hold", value: "On Hold" },
+            { labelName: "Completed", value: "Completed" },
+            { labelName: "Verified", value: "Verified" },
+            { labelName: "Rejected", value: "Rejected" },
+            { labelName: "Cancelled", value: "Cancelled" },
+            { labelName: "Failed", value: "Failed" },
+        ],
+        type: "select_option"
+    }
   ];
 
   //states
@@ -215,6 +233,7 @@ const Tables = () => {
                             itemSingleFilters={itemSingleFilters}
                             onConfirmFilter={onConfirmFilter}
                             dataFilterUseState={dataFilter}
+                            itemSelectOptions={itemSelectOptions}
                           />
                         </Col>
                       </Row>

@@ -25,7 +25,6 @@ import {
   DropdownItem,
   UncontrolledDropdown,
   DropdownToggle,
-  Media,
   Table,
   Container,
   Row,

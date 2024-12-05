@@ -78,8 +78,8 @@ const User = (props) => {
           {getRoutes(userRoutes)}
           <Route path="*" element={<Navigate to="/user-profile" replace />} />
         </Routes>
-        <Container fluid>
-          <AdminFooter />
+        <Container fluid className="my-6">
+          {/* <AdminFooter /> */}
         </Container>
       </div>
     </>
